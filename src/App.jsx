@@ -20,14 +20,15 @@ export default function App() {
   )
 
   return (
-    <div className="min-h-full pb-10">
+    <div className="min-h-full relative">
+      <div className="watermark select-none">2W</div>
       <Header
         company={company}
         companies={COMPANIES}
         onSelectCompany={setActiveId}
         onExport={() => exportCompanyCsv(company, FY)}
       />
-      <main className="max-w-[1480px] mx-auto px-6 mt-5 space-y-5">
+      <main className="max-w-[1400px] mx-auto px-6 py-7 space-y-7 relative">
         <HeroCard company={company} />
         <KpiCards kpis={company.kpis} onKpiClick={setModalKpi} />
         <PerformanceSection company={company} />

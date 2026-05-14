@@ -1,11 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Tooltip } from 'recharts'
+import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Tooltip, CartesianGrid } from 'recharts'
 import { FY, SUPPORT_BLOCKS } from '../data.js'
 
-const readPill = {
-  Positive: 'pill-positive',
-  Negative: 'pill-negative',
-  Neutral: 'pill-neutral',
+const AXIS_TICK = { fontSize: 10.5, fill: '#64748B' }
+const GRID = '#F1F5F9'
+
+const readClass = {
+  Positive: 'read-pill positive',
+  Negative: 'read-pill negative',
+  Neutral: 'read-pill neutral',
 }
 
 const fmtChange = (v, kind) => {
@@ -27,9 +30,7 @@ function Dropdown({ value, options, onChange }) {
   const [open, setOpen] = useState(false)
   const ref = useRef(null)
   useEffect(() => {
-    const close = (e) => {
-      if (ref.current && !ref.current.contains(e.target)) setOpen(false)
-    }
+    const close = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false) }
     window.addEventListener('mousedown', close)
     return () => window.removeEventListener('mousedown', close)
   }, [])
@@ -38,24 +39,21 @@ function Dropdown({ value, options, onChange }) {
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="w-full border border-brand-200 rounded-lg px-3 py-2 text-sm text-brand-700 font-semibold flex items-center justify-between bg-white"
+        className="w-full text-left flex items-center justify-between bg-white border border-[#D8CCF7] rounded-lg px-3 py-2 text-[13px] font-semibold text-[#6D28D9] hover:border-[#6D28D9] transition-colors"
       >
         {value}
-        <svg width="14" height="14" viewBox="0 0 20 20" fill="none">
+        <svg width="13" height="13" viewBox="0 0 20 20" fill="none">
           <path d="M5 7.5l5 5 5-5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </button>
       {open && (
-        <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-slate-100 rounded-lg shadow-lg overflow-hidden z-20">
+        <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-[#E5EAF1] rounded-lg shadow-lg overflow-hidden z-20">
           {options.map((o) => (
             <button
               key={o}
-              onClick={() => {
-                onChange(o)
-                setOpen(false)
-              }}
-              className={`w-full text-left px-3 py-2 text-sm hover:bg-brand-50 ${
-                o === value ? 'bg-brand-100 text-brand-700 font-semibold' : 'text-slate-700'
+              onClick={() => { onChange(o); setOpen(false) }}
+              className={`w-full text-left px-3 py-2 text-[13px] hover:bg-[#F4F7FB] ${
+                o === value ? 'bg-[#EFEAFE] text-[#6D28D9] font-semibold' : 'text-[#334E68]'
               }`}
             >
               {o}
@@ -74,20 +72,19 @@ function Chart({ series }) {
     return row
   })
   return (
-    <div className="h-[260px]">
-      <ResponsiveContainer width="100%" height="100%">
-        <LineChart data={rows} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
-          <XAxis dataKey="fy" tick={{ fontSize: 11, fill: '#64748b' }} axisLine={false} tickLine={false} interval={0} />
-          <YAxis tick={{ fontSize: 11, fill: '#64748b' }} axisLine={false} tickLine={false} width={44}
-            tickFormatter={(v) => (Math.abs(v) >= 1000 ? `${(v / 1000).toFixed(1)}k` : `${v}`)} />
-          <Tooltip contentStyle={{ borderRadius: 8, border: '1px solid #e5e7eb', fontSize: 12 }} />
-          {series.map((s) => (
-            <Line key={s.name} type="monotone" dataKey={s.name} stroke={s.color} strokeWidth={2}
-              dot={{ r: 3, fill: s.color }} activeDot={{ r: 5 }} connectNulls={false} isAnimationActive={false} />
-          ))}
-        </LineChart>
-      </ResponsiveContainer>
-    </div>
+    <ResponsiveContainer width="100%" height="100%">
+      <LineChart data={rows} margin={{ top: 6, right: 6, left: 0, bottom: 0 }}>
+        <CartesianGrid stroke={GRID} vertical={false} />
+        <XAxis dataKey="fy" tick={AXIS_TICK} axisLine={false} tickLine={false} interval={0} />
+        <YAxis tick={AXIS_TICK} axisLine={false} tickLine={false} width={42}
+          tickFormatter={(v) => (Math.abs(v) >= 1000 ? `${(v / 1000).toFixed(1)}k` : `${v}`)} />
+        <Tooltip contentStyle={{ borderRadius: 12, border: '1px solid #E5EAF0', fontSize: 12, boxShadow: '0 6px 20px rgba(15,23,42,0.08)' }} />
+        {series.map((s) => (
+          <Line key={s.name} type="monotone" dataKey={s.name} stroke={s.color} strokeWidth={2.25}
+            dot={{ r: 2.5, fill: s.color }} activeDot={{ r: 4 }} connectNulls={false} isAnimationActive={false} strokeLinecap="round" />
+        ))}
+      </LineChart>
+    </ResponsiveContainer>
   )
 }
 
@@ -104,76 +101,108 @@ export default function SupportingData({ company }) {
   const [block, setBlock] = useState('Growth')
   const data = company.supportingData[block]
   const series = company.charts[block] || []
-
   const cols = data?.columns || []
-  const gridTemplate = `120px repeat(${cols.length}, minmax(0, 1fr))`
 
   return (
     <section>
-      <h2 className="section-label mb-3">Supporting Data</h2>
+      <div className="section-head">
+        <span className="section-eyebrow">Supporting Data</span>
+        <span className="section-hint">Switch dataset · table left · chart right</span>
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
-        <div className="card p-5 lg:col-span-5">
-          <div className="grid items-start gap-3" style={{ gridTemplateColumns: gridTemplate }}>
-            <Dropdown value={block} options={SUPPORT_BLOCKS} onChange={setBlock} />
-            {cols.map((c) => (
-              <div key={c} className="text-[11px] font-semibold text-slate-600 px-2 py-2 leading-tight">{c}</div>
-            ))}
-          </div>
-
-          {[['FY24', data.fy24, false], ['FY25', data.fy25, true]].map(([label, row, bold]) => (
-            <div key={label} className="grid items-center mt-1" style={{ gridTemplateColumns: gridTemplate }}>
-              <div className="text-[11px] tracking-widest uppercase text-slate-500 py-2">{label}</div>
-              {row.map((v, i) => (
-                <div key={i} className={`px-2 py-2 text-sm ${bold ? 'font-semibold text-slate-900' : 'text-slate-400'}`}>
-                  {fmtCell(v, data.fmt[i])}
-                </div>
-              ))}
+        {/* Left: dropdown + transposed table */}
+        <div className="chart-panel lg:col-span-5">
+          <div className="chart-panel-head">
+            <div className="chart-panel-row1">
+              <div className="min-w-0 flex-1">
+                <div className="chart-panel-title">{block}</div>
+                <div className="chart-panel-sub">{blurb[block]}</div>
+              </div>
+              <div className="w-[180px] shrink-0">
+                <Dropdown value={block} options={SUPPORT_BLOCKS} onChange={setBlock} />
+              </div>
             </div>
-          ))}
-
-          <div className="grid items-center" style={{ gridTemplateColumns: gridTemplate }}>
-            <div className="text-[11px] tracking-widest uppercase text-slate-500 py-2">Change</div>
-            {data.change.map((v, i) => (
-              <div key={i} className={`px-2 py-2 text-sm font-semibold ${
-                v === null ? 'text-slate-400' : v > 0 ? 'text-emerald-600' : v < 0 ? 'text-rose-600' : 'text-slate-500'
-              }`}>
-                {fmtChange(v, data.fmt[i])}
-              </div>
-            ))}
+            <div className="chart-panel-meta">
+              <span>FY24 vs FY25</span>
+              <span>Read · Positive / Neutral / Negative</span>
+            </div>
           </div>
 
-          <div className="grid items-center" style={{ gridTemplateColumns: gridTemplate }}>
-            <div className="text-[11px] tracking-widest uppercase text-slate-500 py-2">Read</div>
-            {data.read.map((r, i) => (
-              <div key={i} className="px-2 py-2">
-                <span className={`pill ${readPill[r] || readPill.Neutral}`}>{r}</span>
-              </div>
-            ))}
+          <div className="chart-panel-body !p-0">
+            <table className="mtbl-transposed">
+              <thead>
+                <tr>
+                  <th className="metric-head">Metric</th>
+                  {cols.map((c) => <th key={c}>{c}</th>)}
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th>FY24</th>
+                  {data.fy24.map((v, i) => (
+                    <td key={i} className="text-[#94A3B8]">{fmtCell(v, data.fmt[i])}</td>
+                  ))}
+                </tr>
+                <tr>
+                  <th>FY25</th>
+                  {data.fy25.map((v, i) => (
+                    <td key={i} className="sel font-semibold">{fmtCell(v, data.fmt[i])}</td>
+                  ))}
+                </tr>
+                <tr>
+                  <th>Change</th>
+                  {data.change.map((v, i) => (
+                    <td key={i} className={`font-semibold ${
+                      v === null ? 'text-[#94A3B8]' : v > 0 ? 'text-[#1F7A45]' : v < 0 ? 'text-[#9F1F2E]' : 'text-[#94A3B8]'
+                    }`}>
+                      {fmtChange(v, data.fmt[i])}
+                    </td>
+                  ))}
+                </tr>
+                <tr>
+                  <th>Read</th>
+                  {data.read.map((r, i) => (
+                    <td key={i}>
+                      <span className={readClass[r] || readClass.Neutral}>{r}</span>
+                    </td>
+                  ))}
+                </tr>
+              </tbody>
+            </table>
+            <div className="mtbl-foot">{company.modelSource}</div>
           </div>
-
-          <p className="mt-5 text-[11px] text-slate-500 leading-relaxed">{company.modelSource}</p>
         </div>
 
-        <div className="card p-5 lg:col-span-7 flex flex-col">
-          <div className="flex items-start justify-between">
-            <div>
-              <div className="font-semibold text-slate-900 text-[15px]">{block}</div>
-              <div className="text-xs text-slate-500 mt-0.5">{blurb[block]}</div>
+        {/* Right: chart panel */}
+        <div className="chart-panel lg:col-span-7">
+          <div className="chart-panel-head">
+            <div className="chart-panel-row1">
+              <div className="min-w-0">
+                <div className="chart-panel-title">{block} — 12-year view</div>
+                <div className="chart-panel-sub">{blurb[block]} · FY16–FY27</div>
+              </div>
+              <span className="bsr-pill">FY25</span>
             </div>
-            <span className="pill pill-neutral text-[11px] normal-case">FY25</span>
+            <div className="chart-panel-meta">
+              <span>Lines = annual values</span>
+              <span>Forecast: FY26–FY27</span>
+            </div>
           </div>
-          <div className="mt-2 flex-1 min-h-0">
-            <Chart series={series} />
+          <div className="chart-panel-body">
+            <div className="chart-canvas">
+              <Chart series={series} />
+            </div>
+            <div className="chart-legend">
+              {series.map((s) => (
+                <span key={s.name} className="flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-sm" style={{ background: s.color }} />
+                  {s.name}
+                </span>
+              ))}
+            </div>
+            <div className="chart-source">{company.modelSource}</div>
           </div>
-          <div className="mt-2 flex flex-wrap gap-x-5 gap-y-1">
-            {series.map((s) => (
-              <span key={s.name} className="flex items-center gap-1.5 text-xs text-slate-600">
-                <span className="w-2.5 h-2.5 rounded-sm" style={{ background: s.color }} />
-                {s.name}
-              </span>
-            ))}
-          </div>
-          <p className="mt-2 text-[11px] text-slate-500">{company.modelSource}</p>
         </div>
       </div>
     </section>
