@@ -16,22 +16,32 @@ export function exportCompanyCsv(company, FY) {
   sections.push([`# Generated ${new Date().toISOString()}`])
   sections.push([''])
 
-  sections.push(['## Buy-side signal'])
-  sections.push(['Rating', company.buySide.rating])
-  sections.push(['Confidence', company.buySide.confidence])
-  sections.push(['Note', company.signalNote])
-  company.buySide.bullets.forEach((b, i) => sections.push([`Bullet ${i + 1}`, b]))
-  sections.push([''])
-
   sections.push(['## KPIs'])
   sections.push(['Label', 'Value', 'Sub', 'Delta'])
   company.kpis.forEach((k) => sections.push([k.label, k.value, k.sub, k.delta]))
   sections.push([''])
 
-  sections.push(['## Top Models'])
-  sections.push(['Model', 'Segment', 'FY25 Units', 'Growth', 'Tag'])
-  company.topModels.forEach((m) =>
-    sections.push([m.name, m.segment, m.units, m.growth, m.tag]),
+  sections.push(['## KPI 10-year series (FY16..FY27)'])
+  sections.push(['KPI', ...FY])
+  company.kpis.forEach((k) => sections.push([k.label, ...(k.series || [])]))
+  sections.push([''])
+
+  if (company.performance) {
+    sections.push(['## Performance — Growth (YoY %)'])
+    sections.push(['', ...FY])
+    sections.push(['OEM', ...company.performance.growth.oem])
+    sections.push(['Industry', ...company.performance.growth.industry])
+    sections.push([''])
+    sections.push(['## Performance — Mix %'])
+    sections.push(['Series', ...FY])
+    company.performance.mix.forEach((s) => sections.push([s.name, ...s.values]))
+    sections.push([''])
+  }
+
+  sections.push(['## Product-Level Drivers'])
+  sections.push(['Name', 'Segment', 'Value', 'Sub', 'Growth', 'Tag'])
+  company.productDrivers.forEach((m) =>
+    sections.push([m.name, m.segment, m.value, m.sub, m.growth, m.tag]),
   )
   sections.push([''])
 
@@ -54,11 +64,7 @@ export function exportCompanyCsv(company, FY) {
     sections.push([''])
   })
 
-  sections.push(['## Governance'])
-  sections.push(['Field', 'Value'])
-  Object.entries(company.governance).forEach(([k, v]) => sections.push([k, v]))
-  sections.push([''])
-  sections.push(['Source', company.governanceSource])
+  sections.push(['Source', company.modelSource])
 
   const csv = rowsToCsv(sections)
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })

@@ -2,15 +2,18 @@ import React, { useMemo, useState } from 'react'
 import { COMPANIES, FY } from './data.js'
 import { exportCompanyCsv } from './export.js'
 import Header from './components/Header.jsx'
+import HeroCard from './components/HeroCard.jsx'
 import KpiCards from './components/KpiCards.jsx'
-import SignalBox from './components/SignalBox.jsx'
-import ModelCards from './components/ModelCards.jsx'
+import PerformanceSection from './components/PerformanceSection.jsx'
+import ProductDrivers from './components/ProductDrivers.jsx'
 import SupportingData from './components/SupportingData.jsx'
-import Governance from './components/Governance.jsx'
+import KpiModal from './components/KpiModal.jsx'
 import Footer from './components/Footer.jsx'
 
 export default function App() {
   const [activeId, setActiveId] = useState('industry')
+  const [modalKpi, setModalKpi] = useState(null)
+
   const company = useMemo(
     () => COMPANIES.find((c) => c.id === activeId) || COMPANIES[0],
     [activeId],
@@ -24,14 +27,15 @@ export default function App() {
         onSelectCompany={setActiveId}
         onExport={() => exportCompanyCsv(company, FY)}
       />
-      <main className="max-w-[1480px] mx-auto px-6 mt-6 space-y-6">
-        <KpiCards kpis={company.kpis} />
-        <SignalBox company={company} />
-        <ModelCards models={company.topModels} />
+      <main className="max-w-[1480px] mx-auto px-6 mt-5 space-y-5">
+        <HeroCard company={company} />
+        <KpiCards kpis={company.kpis} onKpiClick={setModalKpi} />
+        <PerformanceSection company={company} />
+        <ProductDrivers drivers={company.productDrivers} />
         <SupportingData company={company} />
-        <Governance company={company} />
         <Footer />
       </main>
+      <KpiModal open={!!modalKpi} kpi={modalKpi} company={company} onClose={() => setModalKpi(null)} />
     </div>
   )
 }
