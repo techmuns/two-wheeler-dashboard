@@ -36,8 +36,29 @@ npm run dev
 npm run build
 ```
 
-The static output is written to `dist/` and can be hosted on Cloudflare Pages,
-Workers Sites, GitHub Pages, Netlify or any static host.
+The static output is written to `dist/` and can be hosted on any static host.
+
+## Deploy (Cloudflare Workers, static assets)
+
+Hosting matches the PV dashboard pattern (`*.workers.dev`).
+
+One-off, locally:
+
+```bash
+npm install
+npx wrangler login        # first time only
+npm run deploy            # builds + deploys
+```
+
+Automated from CI: pushes to `main` trigger `.github/workflows/deploy.yml`,
+which builds and deploys via `cloudflare/wrangler-action`. Add these repo
+secrets:
+
+- `CLOUDFLARE_API_TOKEN` — token with **Edit Cloudflare Workers** permission.
+- `CLOUDFLARE_ACCOUNT_ID` — your Cloudflare account ID.
+
+The Worker name is set in `wrangler.toml` (`two-wheeler-dashboard`); rename
+there if you want a different `*.workers.dev` subdomain.
 
 ## Data
 
