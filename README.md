@@ -38,27 +38,25 @@ npm run build
 
 The static output is written to `dist/` and can be hosted on any static host.
 
-## Deploy (Cloudflare Workers, static assets)
+## Deploy (Cloudflare Pages — Git integration)
 
-Hosting matches the PV dashboard pattern (`*.workers.dev`).
+Cloudflare watches the GitHub repo and rebuilds on every push to `main`.
+No tokens, no GitHub Actions, no wrangler login needed.
 
-One-off, locally:
+One-time setup in the Cloudflare dashboard:
 
-```bash
-npm install
-npx wrangler login        # first time only
-npm run deploy            # builds + deploys
-```
+1. dash.cloudflare.com → **Workers & Pages** → **Create** → **Pages** tab → **Connect to Git**.
+2. Authorize GitHub if prompted, then select `techmuns/two-wheeler-dashboard`.
+3. Build settings:
+   - Framework preset: **Vite**
+   - Build command: `npm run build`
+   - Build output directory: `dist`
+   - Root directory: *(leave blank)*
+4. **Save and Deploy**.
 
-Automated from CI: pushes to `main` trigger `.github/workflows/deploy.yml`,
-which builds and deploys via `cloudflare/wrangler-action`. Add these repo
-secrets:
-
-- `CLOUDFLARE_API_TOKEN` — token with **Edit Cloudflare Workers** permission.
-- `CLOUDFLARE_ACCOUNT_ID` — your Cloudflare account ID.
-
-The Worker name is set in `wrangler.toml` (`two-wheeler-dashboard`); rename
-there if you want a different `*.workers.dev` subdomain.
+The site goes live at `https://two-wheeler-dashboard.pages.dev` (or a
+similar `*.pages.dev` subdomain — Cloudflare picks one if the name is
+taken; you can rename it later under the project's Settings).
 
 ## Data
 
