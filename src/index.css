@@ -601,7 +601,7 @@ body {
   opacity: 0.06;
   z-index: 0;
   pointer-events: none;
-  background-image: url('/munshot-logo.svg');
+  background-image: url('/munshot-logo.png');
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
