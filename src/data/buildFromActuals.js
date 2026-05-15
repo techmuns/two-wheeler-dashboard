@@ -52,36 +52,36 @@ const buildBlock = (columns, fy24, fy25, fmt) => {
 
 export function buildFromActuals(json, opts = {}) {
   const { id, name, shortName, brandText, brandColor, dotColor, heroOverride, signal: signalOverride } = opts
-  const isEmpty = !json || !json.fyAxis || !json.pl
-  const ax = json.fyAxis || []
+  const isEmpty = !json || !json?.fyAxis || !json?.pl
+  const ax = json?.fyAxis || []
   const fy24Idx = FY.indexOf('FY24')
   const fy25Idx = FY.indexOf('FY25')
 
   // ---- Series aligned to dashboard FY axis (FY16..FY27) ----
-  const revenue       = alignToFY(json.pl?.revenue, ax)
-  const ebitda        = alignToFY(json.pl?.ebitda, ax)
-  const pat           = alignToFY(json.pl?.pat, ax)
-  const totalVolume   = alignToFY(json.ops?.totalVolume, ax)
+  const revenue       = alignToFY(json?.pl?.revenue, ax)
+  const ebitda        = alignToFY(json?.pl?.ebitda, ax)
+  const pat           = alignToFY(json?.pl?.pat, ax)
+  const totalVolume   = alignToFY(json?.ops?.totalVolume, ax)
 
-  const revGrowth     = alignToFY(json.metrics?.revenueGrowth, ax)
-  const volGrowth     = alignToFY(json.metrics?.volumeGrowth, ax)
-  const realGrowth    = alignToFY(json.metrics?.realisationGrowth, ax)
-  const ebitdaMargin  = alignToFY(json.metrics?.ebitdaMargin, ax)
-  const ebitMargin    = alignToFY(json.metrics?.ebitMargin, ax)
-  const patMargin     = alignToFY(json.metrics?.patMargin, ax)
-  const grossMargin   = alignToFY(json.metrics?.grossMargin, ax)
-  const debtEquity    = alignToFY(json.metrics?.debtEquity, ax)
-  const netDebtEquity = alignToFY(json.metrics?.netDebtEquity, ax)
-  const wcDays        = alignToFY(json.metrics?.wcDays, ax)
-  const fcfRev        = alignToFY(json.metrics?.fcfRevenue, ax)
-  const capexRev      = alignToFY(json.metrics?.capexRevenue, ax)
-  const roe           = alignToFY(json.metrics?.roe, ax)
-  const roce          = alignToFY(json.metrics?.roce, ax)
-  const evShare       = alignToFY(json.metrics?.evShare, ax)
+  const revGrowth     = alignToFY(json?.metrics?.revenueGrowth, ax)
+  const volGrowth     = alignToFY(json?.metrics?.volumeGrowth, ax)
+  const realGrowth    = alignToFY(json?.metrics?.realisationGrowth, ax)
+  const ebitdaMargin  = alignToFY(json?.metrics?.ebitdaMargin, ax)
+  const ebitMargin    = alignToFY(json?.metrics?.ebitMargin, ax)
+  const patMargin     = alignToFY(json?.metrics?.patMargin, ax)
+  const grossMargin   = alignToFY(json?.metrics?.grossMargin, ax)
+  const debtEquity    = alignToFY(json?.metrics?.debtEquity, ax)
+  const netDebtEquity = alignToFY(json?.metrics?.netDebtEquity, ax)
+  const wcDays        = alignToFY(json?.metrics?.wcDays, ax)
+  const fcfRev        = alignToFY(json?.metrics?.fcfRevenue, ax)
+  const capexRev      = alignToFY(json?.metrics?.capexRevenue, ax)
+  const roe           = alignToFY(json?.metrics?.roe, ax)
+  const roce          = alignToFY(json?.metrics?.roce, ax)
+  const evShare       = alignToFY(json?.metrics?.evShare, ax)
 
-  const cfo   = alignToFY(json.cf?.cfo, ax)
-  const capex = alignToFY(json.cf?.capex, ax)
-  const fcf   = alignToFY(json.cf?.fcf, ax)
+  const cfo   = alignToFY(json?.cf?.cfo, ax)
+  const capex = alignToFY(json?.cf?.capex, ax)
+  const fcf   = alignToFY(json?.cf?.fcf, ax)
 
   // FY values
   const v25 = (s) => s[fy25Idx]
@@ -114,7 +114,7 @@ export function buildFromActuals(json, opts = {}) {
       tone: toneFromDelta(typeof volGrowthFy25 === 'number' && typeof volGrowthFy24 === 'number' ? volGrowthFy25 - volGrowthFy24 : null),
       fmt: 'pp',
       series: volGrowth,
-      source: json.sources?.primary,
+      source: json?.sources?.primary,
     },
     {
       key: 'revGrowth',
@@ -125,7 +125,7 @@ export function buildFromActuals(json, opts = {}) {
       tone: toneFromDelta(typeof revGrowthFy25 === 'number' && typeof revGrowthFy24 === 'number' ? revGrowthFy25 - revGrowthFy24 : null),
       fmt: 'pp',
       series: revGrowth,
-      source: json.sources?.primary,
+      source: json?.sources?.primary,
     },
     {
       key: 'ebitda',
@@ -136,7 +136,7 @@ export function buildFromActuals(json, opts = {}) {
       tone: toneFromDelta(typeof ebitdaMarginFy25 === 'number' && typeof ebitdaMarginFy24 === 'number' ? ebitdaMarginFy25 - ebitdaMarginFy24 : null),
       fmt: 'pp',
       series: ebitdaMargin,
-      source: json.sources?.primary,
+      source: json?.sources?.primary,
     },
     {
       key: 'evMix',
@@ -169,7 +169,7 @@ export function buildFromActuals(json, opts = {}) {
     // earlier years stay null and render as gaps. We still expose the FY25 split so
     // the chart shows a single solid bar for FY25 rather than going fully blank.
     mix: (() => {
-      const m = json.metrics || {}
+      const m = json?.metrics || {}
       const mc = new Array(FY.length).fill(null)
       const sc = new Array(FY.length).fill(null)
       const mp = new Array(FY.length).fill(null)
@@ -188,7 +188,7 @@ export function buildFromActuals(json, opts = {}) {
   }
 
   // ---- Product-Level Drivers (6 cards, FY25 absolute volumes) ----
-  const ops = json.ops || {}
+  const ops = json?.ops || {}
   const totalVolFy25 = v25(totalVolume)
   const totalVolFy24 = v24(totalVolume)
   const totalYoY = typeof totalVolFy25 === 'number' && typeof totalVolFy24 === 'number' && totalVolFy24
@@ -233,7 +233,7 @@ export function buildFromActuals(json, opts = {}) {
     'Product Mix': buildBlock(
       ['Motorcycles %', 'Scooters %', 'Mopeds %', 'EV %'],
       [null, null, null, null],
-      [json.metrics?.motorcycleMixFy25 ?? null, json.metrics?.scooterMixFy25 ?? null, json.metrics?.mopedMixFy25 ?? null, evShareFy25],
+      [json?.metrics?.motorcycleMixFy25 ?? null, json?.metrics?.scooterMixFy25 ?? null, json?.metrics?.mopedMixFy25 ?? null, evShareFy25],
       ['pp', 'pp', 'pp', 'pp'],
     ),
     'Market Share': buildBlock(
@@ -277,8 +277,8 @@ export function buildFromActuals(json, opts = {}) {
   }
 
   // ---- Updated date ----
-  const updated = json.fetchedAt
-    ? new Date(json.fetchedAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
+  const updated = json?.fetchedAt
+    ? new Date(json?.fetchedAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
     : '—'
 
   return {
