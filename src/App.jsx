@@ -11,7 +11,7 @@ import KpiModal from './components/KpiModal.jsx'
 import Footer from './components/Footer.jsx'
 
 export default function App() {
-  const [activeId, setActiveId] = useState('industry')
+  const [activeId, setActiveId] = useState('tvs')
   const [modalKpi, setModalKpi] = useState(null)
 
   const company = useMemo(

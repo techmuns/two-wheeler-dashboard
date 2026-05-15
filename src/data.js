@@ -1,7 +1,12 @@
 // Two-Wheeler dashboard data. Structure mirrors the PV dashboard sections:
 //   header · hero · key-metrics · performance · product-level drivers · supporting-data
-// Numbers are illustrative, order-of-magnitude aligned with SIAM, company annual
-// reports, and Q4 FY25 investor presentations. Replace cell-by-cell when ready.
+//
+// TVS data is built from a live Screener fetch (see scripts/fetch-screener.mjs
+// and src/data/companies/tvs.json) — every populated cell is sourced.
+// Other companies are still illustrative placeholders pending similar wiring.
+
+import { buildFromScreener } from './data/buildFromScreener.js'
+import tvsRaw from './data/companies/tvs.json'
 
 const FY_AXIS = ['FY16', 'FY17', 'FY18', 'FY19', 'FY20', 'FY21', 'FY22', 'FY23', 'FY24', 'FY25', 'FY26', 'FY27']
 
@@ -150,95 +155,15 @@ const industry = {
 // ============================================================================
 // TVS MOTOR
 // ============================================================================
-const tvs = {
+const tvs = buildFromScreener(tvsRaw, {
   id: 'tvs',
-  name: 'TVS',
+  name: 'TVS Motor Company Ltd',
   shortName: 'TVS',
   brandText: 'TVS',
   brandColor: '#0066B3',
   dotColor: '#0ea5e9',
   signal: 'Positive',
-  updated: '11 May 2026',
-  dataFresh: 'Fresh',
-  hero: { title: 'TVS', subtitle: 'Buy-side snapshot', fy: 'FY25' },
-  kpis: [
-    { key: 'mktShare', label: 'Market Share %', value: '18.6%', sub: 'Domestic 2W FY25', delta: '+0.7pp', tone: 'pos', fmt: 'pp',
-      series: [13.8, 14.2, 14.6, 15.4, 16.0, 16.4, 16.8, 17.5, 17.9, 18.6, 19.0, 19.4] },
-    { key: 'volGrowth', label: 'Volume Growth %', value: '+13.0%', sub: 'FY25 YoY', delta: '+1.5pp', tone: 'pos', fmt: 'pp',
-      series: [3, 8, 18, 12, -12, -1, 9, 14, 11.5, 13, 12, 10] },
-    { key: 'revGrowth', label: 'Revenue Growth %', value: '+15.0%', sub: 'FY25 YoY', delta: '-6.0pp', tone: 'neg', fmt: 'pp',
-      series: [4, 11, 21, 24, -3, 5, 25, 28, 21, 15, 13, 12] },
-    { key: 'ebitda', label: 'EBITDA Margin %', value: '11.8%', sub: 'FY25', delta: '+0.7pp', tone: 'pos', fmt: 'pp',
-      series: [7.3, 7.8, 7.9, 8.6, 8.2, 8.5, 9.4, 10.2, 11.1, 11.8, 12.2, 12.5] },
-    { key: 'evMix', label: 'EV Mix %', value: '4.8%', sub: 'FY25', delta: '+2.2pp', tone: 'pos', fmt: 'pp',
-      series: [0, 0, 0, 0, 0.5, 0.5, 0.6, 1.3, 2.6, 4.8, 6.5, 8.0] },
-    { key: 'exportMix', label: 'Export Mix %', value: '18.6%', sub: 'FY25', delta: '+0.4pp', tone: 'pos', fmt: 'pp',
-      series: [16, 17.9, 15.6, 18.9, 21.2, 24.2, 28.9, 23.1, 18.1, 18.6, 19.2, 20.0] },
-  ],
-  performance: {
-    growth: {
-      oem:      [3, 8, 18, 12, -12, -1, 9, 14, 11.5, 13, 12, 10],
-      industry: [3.0, 6.9, 14.8, 4.9, -17.8, -13.2, -10.6, 16.9, 9.3, 11.0, 8.5, 7.0],
-    },
-    mix: [
-      { name: 'Motorcycles', color: '#1f2937', values: [67, 65, 63, 62, 61.5, 62.5, 61.4, 59.7, 56.9, 53.4, 51.0, 49.0] },
-      { name: 'Scooters',    color: '#3b82f6', values: [33, 35, 37, 38, 38, 37, 38, 39, 40.5, 41.8, 42.5, 43.0] },
-      { name: 'EV 2W',       color: '#f59e0b', values: [0, 0, 0, 0, 0.5, 0.5, 0.6, 1.3, 2.6, 4.8, 6.5, 8.0] },
-    ],
-  },
-  productDrivers: [
-    { name: 'Motorcycles',         segment: 'Apache + Raider',  value: '14.7 L', sub: 'FY25 units', growth: '+14.0%', tag: 'Gain'   },
-    { name: 'Scooters',            segment: 'Jupiter + NTorq',  value: '13.4 L', sub: 'FY25 units', growth: '+8.0%',  tag: 'Gain'   },
-    { name: 'Mopeds',              segment: 'XL100',            value: '6.8 L',  sub: 'FY25 units', growth: '-2.0%',  tag: 'Stable' },
-    { name: 'EV Two-Wheelers',     segment: 'iQube',            value: '2.2 L',  sub: 'FY25 units', growth: '+45.0%', tag: 'Gain'   },
-    { name: 'Premium Motorcycles', segment: 'Apache RR/RTR 200', value: '1.6 L', sub: 'FY25 units', growth: '+18.0%', tag: 'Gain'   },
-    { name: 'Exports',             segment: 'All',              value: '8.6 L',  sub: 'FY25 units', growth: '+16.0%', tag: 'Gain'   },
-  ],
-  supportingData: {
-    Growth: buildBlock(
-      ['Volume Growth %', 'Revenue Growth %', 'Realisation Growth %'],
-      [11.5, 21.0, 8.5],
-      [13.0, 15.0, 1.7],
-      ['pp', 'pp', 'pp'],
-    ),
-    Margins: buildBlock(['Gross Margin %', 'EBITDA Margin %'], [27.4, 11.1], [27.9, 11.8], ['pp', 'pp']),
-    'Balance Sheet': buildBlock(['Net Debt/EBITDA', 'ROCE %', 'Working Capital (days)'], [0.6, 24.0, 14], [0.4, 26.5, 12], ['pp', 'pp', 'abs']),
-    'Cash Flow': buildBlock(['OCF (₹ Cr)', 'FCF (₹ Cr)', 'Capex (₹ Cr)'], [2900, 1950, 950], [3650, 2470, 1180], ['pct', 'pct', 'pct']),
-    'Product Mix': buildBlock(['Motorcycles %', 'Scooters %', 'EV %'], [56.9, 40.5, 2.6], [53.4, 41.8, 4.8], ['pp', 'pp', 'pp']),
-    'Market Share': buildBlock(['Domestic 2W %', 'Scooter %', 'EV 2W %'], [17.9, 22.5, 14.0], [18.6, 23.8, 21.0], ['pp', 'pp', 'pp']),
-  },
-  charts: {
-    Growth: [
-      { name: 'Volume Growth %', color: '#1f2937', values: [3, 8, 18, 12, -12, -1, 9, 14, 11.5, 13, 12, 10] },
-      { name: 'Revenue Growth %', color: '#3b82f6', values: [4, 11, 21, 24, -3, 5, 25, 28, 21, 15, 13, 12] },
-      { name: 'Realisation Growth %', color: '#10b981', values: [1, 3, 3, 12, 9, 6, 16, 14, 8.5, 1.7, 1.0, 1.5] },
-    ],
-    Margins: [
-      { name: 'Gross Margin %', color: '#1f2937', values: [25.0, 25.6, 25.8, 26.0, 25.4, 25.8, 25.4, 26.6, 27.4, 27.9, 28.2, 28.5] },
-      { name: 'EBITDA Margin %', color: '#3b82f6', values: [7.3, 7.8, 7.9, 8.6, 8.2, 8.5, 9.4, 10.2, 11.1, 11.8, 12.2, 12.5] },
-    ],
-    'Balance Sheet': [
-      { name: 'Net Debt/EBITDA', color: '#1f2937', values: [0.9, 0.7, 0.6, 0.7, 0.9, 0.8, 0.7, 0.7, 0.6, 0.4, 0.3, 0.2] },
-      { name: 'ROCE %',          color: '#3b82f6', values: [18, 19, 20, 21, 19, 18, 20, 22, 24, 26.5, 27, 28] },
-    ],
-    'Cash Flow': [
-      { name: 'OCF (₹ Cr)',   color: '#1f2937', values: [1300, 1500, 1700, 1900, 1800, 1600, 1900, 2400, 2900, 3650, 4000, 4300] },
-      { name: 'FCF (₹ Cr)',   color: '#3b82f6', values: [700, 900, 1000, 1200, 1100, 900, 1300, 1600, 1950, 2470, 2700, 2900] },
-      { name: 'Capex (₹ Cr)', color: '#10b981', values: [350, 420, 480, 580, 620, 540, 720, 880, 950, 1180, 1300, 1400] },
-    ],
-    'Product Mix': [
-      { name: 'Motorcycles %', color: '#1f2937', values: [67, 65, 63, 62, 61.5, 62.5, 61.4, 59.7, 56.9, 53.4, 51.0, 49.0] },
-      { name: 'Scooters %',    color: '#3b82f6', values: [33, 35, 37, 38, 38, 37, 38, 39, 40.5, 41.8, 42.5, 43.0] },
-      { name: 'EV %',          color: '#10b981', values: [0, 0, 0, 0, 0.5, 0.5, 0.6, 1.3, 2.6, 4.8, 6.5, 8.0] },
-    ],
-    'Market Share': [
-      { name: 'Domestic 2W %', color: '#1f2937', values: [13.8, 14.2, 14.6, 15.4, 16.0, 16.4, 16.8, 17.5, 17.9, 18.6, 19.0, 19.4] },
-      { name: 'Scooter %',     color: '#3b82f6', values: [16, 17, 19, 20, 21, 22, 22, 22.4, 22.5, 23.8, 24.5, 25.0] },
-      { name: 'EV 2W %',       color: '#10b981', values: [null, null, null, null, null, null, null, 12, 14, 21, 24, 26] },
-    ],
-  },
-  modelSource: 'Source: TVS Motor Annual Reports / Q4 FY25 Investor Presentation; SIAM; TVS monthly sales press releases.',
-}
+})
 
 // ============================================================================
 // BAJAJ AUTO

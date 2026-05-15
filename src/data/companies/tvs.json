@@ -1,0 +1,14 @@
+{
+  "ticker": "TVSMOTOR",
+  "id": "tvs",
+  "name": "TVS Motor Company Ltd",
+  "sources": {
+    "screener": "https://www.screener.in/company/TVSMOTOR/consolidated/"
+  },
+  "fetchedAt": null,
+  "profitLoss":   { "periods": [], "rows": {} },
+  "balanceSheet": { "periods": [], "rows": {} },
+  "cashFlow":     { "periods": [], "rows": {} },
+  "ratios":       { "periods": [], "rows": {} },
+  "quarters":     { "periods": [], "rows": {} }
+}
