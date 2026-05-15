@@ -8,20 +8,26 @@
 
 import { buildFromActuals } from './data/buildFromActuals.js'
 import { buildIndustry } from './data/buildIndustry.js'
+import { TVS_GROUPS } from './data/supportingTvs.js'
 import tvsRaw from './data/companies/tvs.json'
 
 const FY_AXIS = ['FY16', 'FY17', 'FY18', 'FY19', 'FY20', 'FY21', 'FY22', 'FY23', 'FY24', 'FY25', 'FY26', 'FY27']
 
 // ---------- TVS (real, audited) ----------
-const tvs = buildFromActuals(tvsRaw, {
-  id: 'tvs',
-  name: 'TVS Motor Company Ltd',
-  publicName: 'TVS',
-  shortName: 'TVS',
-  brandText: 'TVS',
-  brandColor: '#0066B3',
-  dotColor: '#0ea5e9',
-})
+const tvs = {
+  ...buildFromActuals(tvsRaw, {
+    id: 'tvs',
+    name: 'TVS Motor Company Ltd',
+    publicName: 'TVS',
+    shortName: 'TVS',
+    brandText: 'TVS',
+    brandColor: '#0066B3',
+    dotColor: '#0ea5e9',
+  }),
+  // 8 dropdown groups for the new Supporting Data section. Component checks
+  // `supportingGroups` first; falls back to the legacy supportingData blocks.
+  supportingGroups: TVS_GROUPS,
+}
 
 // ---------- Industry (built from SIAM + Vahan + FADA JSONs) ----------
 const industry = buildIndustry()
