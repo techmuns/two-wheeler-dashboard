@@ -7,6 +7,7 @@
 // — same chrome, no synthetic numbers.
 
 import { buildFromActuals } from './data/buildFromActuals.js'
+import { buildIndustry } from './data/buildIndustry.js'
 import tvsRaw from './data/companies/tvs.json'
 
 const FY_AXIS = ['FY16', 'FY17', 'FY18', 'FY19', 'FY20', 'FY21', 'FY22', 'FY23', 'FY24', 'FY25', 'FY26', 'FY27']
@@ -22,21 +23,8 @@ const tvs = buildFromActuals(tvsRaw, {
   dotColor: '#0ea5e9',
 })
 
-// ---------- Blank companies (no source data yet) ----------
-const industry = buildFromActuals(null, {
-  id: 'industry',
-  name: 'Industry',
-  publicName: 'Industry',
-  shortName: '2W Industry',
-  brandText: '2W INDUSTRY',
-  brandColor: '#6D28D9',
-  dotColor: '#6b7280',
-  heroOverride: {
-    title: 'Indian Two-Wheeler Industry Cockpit',
-    subtitle: 'Pending — segment-wide data pipeline not yet wired',
-    fy: 'FY25',
-  },
-})
+// ---------- Industry (built from SIAM + Vahan + FADA JSONs) ----------
+const industry = buildIndustry()
 
 const bajaj = buildFromActuals(null, {
   id: 'bajaj',
