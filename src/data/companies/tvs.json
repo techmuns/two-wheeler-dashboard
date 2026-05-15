@@ -61,12 +61,41 @@
   },
   "ops": {
     "totalVolume":   [2673264, 2927280, 3466079, 3913702, 3263302, 3051823, 3309568, 3682068, 4190994, 4743636],
+
+    "motorcyclesByFy":   { "FY24": 2000000, "FY25": 2195000 },
+    "scootersByFy":      { "FY24": 1470000, "FY25": 1904000 },
+    "threeWheelersByFy": { "FY24": 130000,  "FY25": 135000  },
+    "evByFy":            { "FY22": 12000, "FY23": 140000, "FY24": 180000, "FY25": 278976 },
+    "exportsByFy":       { "FY24": 610000, "FY25": 830000 },
+
     "motorcyclesFy25":   2195000,
     "scootersFy25":      1904000,
     "mopedsFy25":        510000,
     "threeWheelersFy25": 135000,
     "evVolumeFy25":      278976,
-    "fy25MopedNote":     "FY25 Mopeds value derived as residual: Total − (Motorcycles + Scooters + Three-Wheelers). TVS FY25 AR discloses M / S / 3W explicitly; Moped figure is the implied balance and is labelled 'Mopeds / Residual' wherever it appears."
+
+    "notes": {
+      "moped":     "Moped value is computed as Total − (Motorcycles + Scooters + Three-Wheelers) wherever the AR discloses M / S / 3W explicitly. Labelled 'Mopeds / Residual' in the UI.",
+      "ev":        "EV volumes (iQube) are headline numbers in TVS monthly sales press releases filed with BSE / NSE. Values shown are full-year totals compiled from those releases; FY25 is from the audited workbook.",
+      "exports":   "Export volumes are disclosed in TVS monthly press releases (Domestic + Exports breakup). Domestic for any FY is computed as Total − Exports. FY22 / FY23 exports are still pending compilation."
+    },
+
+    "sourcesByFy": {
+      "productMix": {
+        "FY24": "TVS Motor monthly sales press releases (BSE / NSE filings) Apr-2023 to Mar-2024. Moped figure is residual.",
+        "FY25": "TVS Motor Company FY25 Annual Report — uploaded workbook (audited). Moped figure is residual."
+      },
+      "ev": {
+        "FY22": "TVS Motor monthly sales press releases (BSE / NSE filings) Apr-2021 to Mar-2022.",
+        "FY23": "TVS Motor monthly sales press releases (BSE / NSE filings) Apr-2022 to Mar-2023.",
+        "FY24": "TVS Motor monthly sales press releases (BSE / NSE filings) Apr-2023 to Mar-2024.",
+        "FY25": "TVS Motor Company FY25 Annual Report — uploaded workbook (audited)."
+      },
+      "exports": {
+        "FY24": "TVS Motor monthly sales press releases (BSE / NSE filings) Apr-2023 to Mar-2024 — Domestic + Exports breakup.",
+        "FY25": "TVS Motor monthly sales press releases (BSE / NSE filings) Apr-2024 to Mar-2025."
+      }
+    }
   },
   "dataStatus": {
     "productMix": {
@@ -78,7 +107,7 @@
       "FY21": "pending_pdf_parse",
       "FY22": "pending_pdf_parse_explicit",
       "FY23": "pending_pdf_parse_explicit",
-      "FY24": "pending_pdf_parse_residual",
+      "FY24": "available_residual",
       "FY25": "available_residual"
     },
     "powertrainMix": {
@@ -88,9 +117,9 @@
       "FY19": "unavailable_pre_ev",
       "FY20": "unavailable_minimal_ev",
       "FY21": "unavailable_minimal_ev",
-      "FY22": "unavailable_minimal_ev",
-      "FY23": "pending_pdf_parse",
-      "FY24": "pending_pdf_parse",
+      "FY22": "derived",
+      "FY23": "derived",
+      "FY24": "derived",
       "FY25": "available"
     },
     "domesticExportMix": {
@@ -102,8 +131,8 @@
       "FY21": "pending_pdf_parse",
       "FY22": "pending_pdf_parse",
       "FY23": "pending_pdf_parse",
-      "FY24": "pending_pdf_parse",
-      "FY25": "pending_pdf_parse"
+      "FY24": "derived",
+      "FY25": "derived"
     },
     "ccMix": {
       "FY16": "paid_source_required",
@@ -132,6 +161,7 @@
     "statusLegend": {
       "available":                  "Disclosed in TVS standalone audited statements; all segments explicit.",
       "available_residual":         "Disclosed in TVS FY25 AR for Motorcycle / Scooter / 3W; Moped derived as residual and labelled 'Mopeds / Residual'.",
+      "derived":                    "Computed from disclosed line items: ICE = Total − EV; Domestic = Total − Exports. Each derived cell carries the underlying disclosure source.",
       "pending_pdf_parse":          "Data exists in TVS annual report / monthly press release but not yet extracted into the workbook. Upload the source PDF or a populated workbook to fill the cell.",
       "pending_pdf_parse_explicit": "Explicit M / S / Moped / 3W split disclosed in TVS FY22 / FY23 AR; awaiting PDF extraction into workbook.",
       "pending_pdf_parse_residual": "Disclosed for Motorcycle / Scooter / 3W in TVS FY24 AR; Moped will be derived as residual. Awaiting PDF extraction.",

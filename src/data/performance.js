@@ -51,8 +51,6 @@ export function normalizeMixTo100(segments, total) {
     percent: total > 0 ? (s.volume / total) * 100 : 0,
   }))
   if (remaining > 0.5 && known > 0) {
-    // Only add Unclassified when SOME segments are disclosed — i.e. when it's
-    // a true residual, not a stand-in for the entire year.
     out.push({
       name: 'Unclassified',
       volume: remaining,
@@ -61,8 +59,17 @@ export function normalizeMixTo100(segments, total) {
       isUnclassified: true,
     })
   }
-  // Rounding correction so disclosed bars sum exactly to 100.
+  // Validation: sum must not exceed 100% by more than rounding tolerance.
   const sum = out.reduce((a, b) => a + b.percent, 0)
+  if (sum > 100.5) {
+    // eslint-disable-next-line no-console
+    console.warn(
+      `[normalizeMixTo100] Segments sum to ${sum.toFixed(2)}% — > 100%. Refusing to silently normalize. ` +
+      `Segments: ${out.map((s) => `${s.name}=${s.percent.toFixed(1)}%`).join(', ')}`
+    )
+    return out
+  }
+  // Rounding correction so disclosed bars sum exactly to 100.
   if (sum !== 100 && out.length) {
     out[out.length - 1].percent += (100 - sum)
   }

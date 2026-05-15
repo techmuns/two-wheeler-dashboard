@@ -199,33 +199,63 @@ export function buildFromActuals(json, opts = {}) {
         if (typeof t === 'number') totalByFy[fy] = t
       })
 
+      // Walk per-FY breakouts (motorcyclesByFy / scootersByFy / etc.) and
+      // build a stacked-segment list for every FY where the AR / monthly
+      // press releases disclose at least 3 of (M / S / 3W). Moped is
+      // always residual = Total − (M + S + 3W).
       const productByFy = {}
-      if (typeof ops.motorcyclesFy25 === 'number') {
-        productByFy.FY25 = [
-          { name: 'Motorcycles',         volume: ops.motorcyclesFy25,        color: '#2563EB' },
-          { name: 'Scooters',            volume: ops.scootersFy25 ?? 0,      color: '#0EA5E9' },
-          { name: 'Mopeds / Residual',   volume: ops.mopedsFy25 ?? 0,        color: '#10B981', residual: true },
-          { name: 'Three-Wheelers',      volume: ops.threeWheelersFy25 ?? 0, color: '#F59E0B' },
-        ].filter((s) => typeof s.volume === 'number' && s.volume > 0)
-      }
-
-      const powertrainByFy = {}
-      if (typeof ops.evVolumeFy25 === 'number' && typeof totalByFy.FY25 === 'number') {
-        powertrainByFy.FY25 = [
-          { name: 'ICE', volume: totalByFy.FY25 - ops.evVolumeFy25, color: '#475569' },
-          { name: 'EV',  volume: ops.evVolumeFy25,                  color: '#10B981' },
+      const mByFy  = ops.motorcyclesByFy   || {}
+      const sByFy  = ops.scootersByFy      || {}
+      const twByFy = ops.threeWheelersByFy || {}
+      Object.keys(mByFy).forEach((fy) => {
+        const total = totalByFy[fy]
+        const m  = mByFy[fy]
+        const s  = sByFy[fy]
+        const tw = twByFy[fy]
+        if (typeof total !== 'number' || typeof m !== 'number' || typeof s !== 'number' || typeof tw !== 'number') return
+        const mopedResidual = Math.max(0, total - (m + s + tw))
+        productByFy[fy] = [
+          { name: 'Motorcycles',       volume: m,             color: '#2563EB' },
+          { name: 'Scooters',          volume: s,             color: '#0EA5E9' },
+          { name: 'Mopeds / Residual', volume: mopedResidual, color: '#10B981', residual: true },
+          { name: 'Three-Wheelers',    volume: tw,            color: '#F59E0B' },
         ]
-      }
+      })
+
+      // Powertrain: every FY with a disclosed EV volume gets ICE / EV bars.
+      // ICE is always derived as Total − EV.
+      const powertrainByFy = {}
+      const evByFy = ops.evByFy || {}
+      Object.keys(evByFy).forEach((fy) => {
+        const total = totalByFy[fy]
+        const ev    = evByFy[fy]
+        if (typeof total !== 'number' || typeof ev !== 'number') return
+        powertrainByFy[fy] = [
+          { name: 'ICE', volume: Math.max(0, total - ev), color: '#475569' },
+          { name: 'EV',  volume: ev,                       color: '#10B981' },
+        ]
+      })
+
+      // Geography: every FY with a disclosed Exports volume gets Domestic / Exports bars.
+      const geographyByFy = {}
+      const exportsByFy = ops.exportsByFy || {}
+      Object.keys(exportsByFy).forEach((fy) => {
+        const total = totalByFy[fy]
+        const exp   = exportsByFy[fy]
+        if (typeof total !== 'number' || typeof exp !== 'number') return
+        geographyByFy[fy] = [
+          { name: 'Domestic', volume: Math.max(0, total - exp), color: '#2563EB' },
+          { name: 'Exports',  volume: exp,                       color: '#0EA5E9' },
+        ]
+      })
 
       return {
         totalByFy,
         productByFy,
         powertrainByFy,
-        geographyByFy: {},
-        // Per-FY per-mix-type status. Consumed by PerformanceSection so
-        // empty cells render with the right meaning (pending parse vs
-        // unavailable vs paid source required).
-        dataStatus: json?.dataStatus || null,
+        geographyByFy,
+        dataStatus:   json?.dataStatus || null,
+        sourcesByFy:  ops.sourcesByFy || null,
       }
     })(),
   }

@@ -11,6 +11,7 @@ import {
   yoyForSegment,
   buckedRowsByStatus,
   statusBucket,
+  getStatusReason,
 } from '../data/performance.js'
 
 const AXIS_TICK = { fontSize: 10.5, fill: '#64748B' }
@@ -74,7 +75,7 @@ function GrowthChart({ rows, oemKey }) {
 // ============================================================================
 // RIGHT: Volume Mix (stacked 100% bars with internal toggles)
 // ============================================================================
-function MixChart({ rows, segmentNames, segmentColors, onHoverFy }) {
+function MixChart({ rows, segmentNames, segmentColors, onHoverFy, hoveredStatus, hoveredSourceText }) {
   return (
     <ResponsiveContainer width="100%" height="100%">
       <BarChart
@@ -94,7 +95,7 @@ function MixChart({ rows, segmentNames, segmentColors, onHoverFy }) {
           width={42}
           tickFormatter={(v) => `${Math.round(v * 100)}%`}
         />
-        <Tooltip content={<MixTooltip />} />
+        <Tooltip content={<MixTooltip currentStatus={hoveredStatus} sourceText={hoveredSourceText} />} />
         {segmentNames.map((name, idx) => (
           <Bar
             key={name}
@@ -111,49 +112,147 @@ function MixChart({ rows, segmentNames, segmentColors, onHoverFy }) {
   )
 }
 
-function MixTooltip({ active, payload, label }) {
+// ============================================================================
+// Coverage drawer — per-FY status + source, opens on demand
+// ============================================================================
+function CoverageDrawer({ company, mixType, mixRowsRaw, onClose }) {
+  const sourcesKey = mixType === 'product' ? 'productMix' : mixType === 'powertrain' ? 'ev' : 'exports'
+  const sourceMap = company.performance?.mixRich?.sourcesByFy?.[sourcesKey] || {}
+  const lastUpdated = company.updated || '—'
+
+  const buckets = buckedRowsByStatus(mixRowsRaw)
+
+  return (
+    <div className="border-t border-[#E8EDF3] bg-[#FAFBFE] px-5 py-4">
+      <div className="flex items-center justify-between mb-3">
+        <div>
+          <div className="text-[10.5px] tracking-wider uppercase text-[#6B7280] font-semibold">Data coverage</div>
+          <div className="text-[12.5px] text-[#0F1B2D] font-semibold mt-0.5">
+            {mixType === 'product' && 'Product Mix'}
+            {mixType === 'powertrain' && 'Powertrain Mix'}
+            {mixType === 'geography' && 'Domestic / Export'}
+            <span className="text-[#94A3B8] font-normal"> · last updated {lastUpdated}</span>
+          </div>
+        </div>
+        <button onClick={onClose} className="text-[#6B7280] hover:text-[#0F1B2D] text-lg leading-none p-1">×</button>
+      </div>
+
+      {/* Bucket summary */}
+      <div className="flex flex-wrap gap-1.5 mb-3">
+        {buckets.map(({ status, fys }) => {
+          const b = statusBucket(status)
+          return (
+            <span
+              key={status}
+              className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10.5px] font-semibold"
+              style={{ background: b.tone.bg, color: b.tone.fg, border: `1px solid ${b.tone.border}` }}
+            >
+              {b.label} <span className="font-normal opacity-75">· {fys.length}</span>
+            </span>
+          )
+        })}
+      </div>
+
+      {/* Per-FY table */}
+      <div className="rounded-lg border border-[#E5EAF1] bg-white overflow-hidden">
+        <table className="w-full text-[11.5px]">
+          <thead>
+            <tr className="bg-[#F4F6FA]">
+              <th className="text-left font-semibold uppercase tracking-wider text-[10px] text-[#6B7280] py-2 px-3">FY</th>
+              <th className="text-left font-semibold uppercase tracking-wider text-[10px] text-[#6B7280] py-2 px-3">Status</th>
+              <th className="text-left font-semibold uppercase tracking-wider text-[10px] text-[#6B7280] py-2 px-3">Source</th>
+            </tr>
+          </thead>
+          <tbody>
+            {mixRowsRaw.map((r) => {
+              const b = statusBucket(r.status || 'unavailable')
+              const reason = getStatusReason(company, r.status || 'unavailable')
+              const src = sourceMap[r.fy] || (r.segments.length > 0 ? 'TVS standalone disclosures' : '—')
+              return (
+                <tr key={r.fy} className="border-t border-[#F1F5F9] align-top">
+                  <td className="py-2 px-3 font-semibold text-[#0F1B2D] tabular-nums">{r.fy}</td>
+                  <td className="py-2 px-3">
+                    <span
+                      className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10.5px] font-semibold"
+                      style={{ background: b.tone.bg, color: b.tone.fg, border: `1px solid ${b.tone.border}` }}
+                    >
+                      {b.label}
+                    </span>
+                    {reason && (
+                      <div className="text-[10.5px] text-[#6B7280] mt-1 leading-snug">{reason}</div>
+                    )}
+                  </td>
+                  <td className="py-2 px-3 text-[#475569] leading-snug">{src}</td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  )
+}
+
+const STATUS_LABEL_SHORT = {
+  available:                  'Available',
+  available_residual:         'Available (Mopeds residual)',
+  derived:                    'Derived',
+  pending_pdf_parse:          'Missing (pending source)',
+  pending_pdf_parse_explicit: 'Missing (pending source)',
+  pending_pdf_parse_residual: 'Missing (pending source)',
+  unavailable:                'Unavailable',
+  unavailable_pre_ev:         'N/A (pre-EV)',
+  unavailable_minimal_ev:     'N/A (minimal EV)',
+  paid_source_required:       'Paid source required',
+}
+
+const STATUS_LABEL_FRIENDLY = (s) => STATUS_LABEL_SHORT[s] || 'Unknown'
+
+function MixTooltip({ active, payload, label, currentStatus, sourceText }) {
   if (!active || !payload?.length) return null
   const row = payload[0].payload
   const total = row.__total
-  // Filter to segments that actually have a disclosed value (> 0).
   const disclosed = payload.filter((p) => typeof row[p.dataKey] === 'number' && row[p.dataKey] > 0)
   return (
     <div style={TOOLTIP_STYLE}>
       <div style={{ fontWeight: 600, color: '#0F1B2D', marginBottom: 6 }}>
         {label} <span style={{ color: '#94A3B8', fontWeight: 400 }}>· {fmtUnitsL(total)} total</span>
       </div>
-      {disclosed.length === 0 && (
+      {disclosed.length === 0 ? (
         <div style={{ fontSize: 12, color: '#94A3B8', fontStyle: 'italic' }}>
-          Segment split not disclosed for {label} in the audited workbook.
+          Split not shown for {label} — not verified from source yet.
+        </div>
+      ) : (
+        disclosed.map((p) => {
+          const segName = p.dataKey
+          const vol = row[segName]
+          const pct = total > 0 && typeof vol === 'number' ? (vol / total) * 100 : null
+          const yoy = row.__yoy?.[segName]
+          return (
+            <div key={segName} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, padding: '2px 0' }}>
+              <span style={{ width: 8, height: 8, background: p.color, borderRadius: 2, display: 'inline-block' }} />
+              <span style={{ color: '#475569', minWidth: 130 }}>{segName}</span>
+              <span style={{ color: '#0F1B2D', fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>
+                {fmtUnitsL(vol)}
+              </span>
+              <span style={{ color: '#94A3B8', fontVariantNumeric: 'tabular-nums' }}>{fmtPct(pct)}</span>
+              {typeof yoy === 'number' && (
+                <span style={{ color: yoy >= 0 ? '#1F7A45' : '#9F1F2E', fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>
+                  {fmtPctSigned(yoy)}
+                </span>
+              )}
+            </div>
+          )
+        })
+      )}
+      {currentStatus && (
+        <div style={{ marginTop: 8, paddingTop: 6, borderTop: '1px solid #F1F5F9', fontSize: 11, color: '#475569', display: 'flex', justifyContent: 'space-between', gap: 12 }}>
+          <span>Data status: <span style={{ color: '#0F1B2D', fontWeight: 600 }}>{STATUS_LABEL_FRIENDLY(currentStatus)}</span></span>
         </div>
       )}
-      {disclosed.map((p) => {
-        const segName = p.dataKey
-        const vol = row[segName]
-        const pct = total > 0 && typeof vol === 'number' ? (vol / total) * 100 : null
-        const yoy = row.__yoy?.[segName]
-        return (
-          <div key={segName} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, padding: '2px 0' }}>
-            <span style={{ width: 8, height: 8, background: p.color, borderRadius: 2, display: 'inline-block' }} />
-            <span style={{ color: '#475569', minWidth: 110 }}>{segName}</span>
-            <span style={{ color: '#0F1B2D', fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>
-              {fmtUnitsL(vol)}
-            </span>
-            <span style={{ color: '#94A3B8', fontVariantNumeric: 'tabular-nums' }}>{fmtPct(pct)}</span>
-            {typeof yoy === 'number' && (
-              <span
-                style={{
-                  color: yoy >= 0 ? '#1F7A45' : '#9F1F2E',
-                  fontWeight: 600,
-                  fontVariantNumeric: 'tabular-nums',
-                }}
-              >
-                {fmtPctSigned(yoy)}
-              </span>
-            )}
-          </div>
-        )
-      })}
+      {sourceText && (
+        <div style={{ marginTop: 4, fontSize: 11, color: '#94A3B8', lineHeight: 1.4 }}>{sourceText}</div>
+      )}
     </div>
   )
 }
@@ -167,6 +266,7 @@ export default function PerformanceSection({ company }) {
 
   const [mixType, setMixType] = useState('product')
   const [hoveredFy, setHoveredFy] = useState(null)
+  const [coverageOpen, setCoverageOpen] = useState(false)
 
   const oemKey = company.shortName || company.name
   const industryMeta = getIndustryMeta()
@@ -374,28 +474,20 @@ export default function PerformanceSection({ company }) {
                 <span className="text-[#94A3B8]">{activeMixLabel}</span>
               </span>
             </div>
-            {statusBuckets.length > 0 && (
-              <div className="mt-1.5 flex flex-wrap gap-1.5 text-[10.5px]">
-                {statusBuckets.map(({ status, fys }) => {
-                  const b = statusBucket(status)
-                  return (
-                    <span
-                      key={status}
-                      className="inline-flex items-center gap-1 px-2 py-0.5 rounded font-semibold"
-                      style={{ background: b.tone.bg, color: b.tone.fg, border: `1px solid ${b.tone.border}` }}
-                      title={`${b.label} · ${fys.join(', ')}`}
-                    >
-                      {b.label}
-                      <span className="font-normal opacity-80">{fys.length} FY{fys.length !== 1 ? 's' : ''}</span>
-                    </span>
-                  )
-                })}
+            <div className="flex items-center justify-between gap-2 mt-1.5">
+              <div className="text-[10.5px] text-[#6B7280] leading-snug">
+                Split available for disclosed years. Missing years are not shown unless verified from source.
               </div>
-            )}
-            <div className="text-[10.5px] text-[#6B7280] mt-1.5 leading-snug">
-              {mixType === 'product'    && 'Product split available for recent years; older years pending annual-report parsing. FY24 / FY25 use Total − (M + S + 3W) as Mopeds / Residual; FY22 / FY23 disclose explicit M / S / Moped / 3W and are awaiting PDF extraction.'}
-              {mixType === 'powertrain' && 'iQube launched Jan 2020 (FY20); pre-FY20 powertrain is 100% ICE by virtue of the product not existing. FY23–FY25 disclose EV volumes (FY25 audited from workbook; FY23–FY24 pending PDF parse).'}
-              {mixType === 'geography'  && 'Domestic / Export split is disclosed in TVS annual reports & monthly press releases. Domestic = Total − Export. Awaiting PDF parse across the full FY16–FY25 axis.'}
+              <button
+                type="button"
+                onClick={() => setCoverageOpen((v) => !v)}
+                className="shrink-0 text-[10.5px] font-semibold text-[#6D28D9] hover:text-[#4C1D95] transition-colors flex items-center gap-1 px-2 py-0.5 rounded border border-[#D8CCF7] bg-[#FAF5FF]"
+              >
+                Coverage
+                <svg width="10" height="10" viewBox="0 0 20 20" fill="none" style={{ transform: coverageOpen ? 'rotate(180deg)' : 'none', transition: 'transform 180ms' }}>
+                  <path d="M5 7.5l5 5 5-5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </button>
             </div>
           </div>
           <div className="chart-panel-body">
@@ -405,6 +497,12 @@ export default function PerformanceSection({ company }) {
                 segmentNames={segmentNames}
                 segmentColors={segmentColors}
                 onHoverFy={setHoveredFy}
+                hoveredStatus={mixRowsRaw.find((r) => r.fy === activeFy)?.status}
+                hoveredSourceText={(company.performance?.mixRich?.sourcesByFy?.[
+                  mixType === 'product' ? 'productMix' :
+                  mixType === 'powertrain' ? 'ev' :
+                  'exports'
+                ]?.[activeFy]) || ''}
               />
             </div>
             <div className="chart-legend" style={{ minHeight: 40 }}>
@@ -415,8 +513,20 @@ export default function PerformanceSection({ company }) {
                 </span>
               ))}
             </div>
-            <div className="chart-source">{mixSource}</div>
+            <div className="chart-source">
+              {mixType === 'product'    && 'Product mix: TVS Motor FY25 Annual Report (workbook) + TVS monthly sales press releases on BSE / NSE. Mopeds = Total − (M + S + 3W).'}
+              {mixType === 'powertrain' && 'Powertrain mix: TVS Motor monthly press releases (iQube volume) + workbook total. ICE = Total − EV.'}
+              {mixType === 'geography'  && 'Domestic / Export mix: TVS Motor monthly press releases (Domestic + Exports breakup) + workbook total. Domestic = Total − Exports.'}
+            </div>
           </div>
+          {coverageOpen && (
+            <CoverageDrawer
+              company={company}
+              mixType={mixType}
+              mixRowsRaw={mixRowsRaw}
+              onClose={() => setCoverageOpen(false)}
+            />
+          )}
         </div>
       </div>
     </section>
