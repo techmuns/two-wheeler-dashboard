@@ -3,7 +3,7 @@ import React from 'react'
 export default function HeroCard({ company }) {
   const { hero, name, brandText, brandColor, shortName } = company
   const title = hero?.title || name
-  const subtitle = hero?.subtitle || 'Buy-side snapshot'
+  const subtitle = hero?.subtitle || 'Audited annual snapshot · FY16–FY25 standalone'
   const fy = hero?.fy || 'FY25'
   return (
     <section className="identity-row">

@@ -5,7 +5,7 @@
 // and src/data/companies/tvs.json) — every populated cell is sourced.
 // Other companies are still illustrative placeholders pending similar wiring.
 
-import { buildFromScreener } from './data/buildFromScreener.js'
+import { buildFromActuals } from './data/buildFromActuals.js'
 import tvsRaw from './data/companies/tvs.json'
 
 const FY_AXIS = ['FY16', 'FY17', 'FY18', 'FY19', 'FY20', 'FY21', 'FY22', 'FY23', 'FY24', 'FY25', 'FY26', 'FY27']
@@ -155,14 +155,14 @@ const industry = {
 // ============================================================================
 // TVS MOTOR
 // ============================================================================
-const tvs = buildFromScreener(tvsRaw, {
+const tvs = buildFromActuals(tvsRaw, {
   id: 'tvs',
   name: 'TVS Motor Company Ltd',
+  publicName: 'TVS',
   shortName: 'TVS',
   brandText: 'TVS',
   brandColor: '#0066B3',
   dotColor: '#0ea5e9',
-  signal: 'Positive',
 })
 
 // ============================================================================
@@ -178,7 +178,7 @@ const bajaj = {
   signal: 'Positive',
   updated: '11 May 2026',
   dataFresh: 'Fresh',
-  hero: { title: 'Bajaj Auto', subtitle: 'Buy-side snapshot', fy: 'FY25' },
+  hero: { title: 'Bajaj Auto', subtitle: 'Audited annual snapshot · FY16–FY25 standalone', fy: 'FY25' },
   kpis: [
     { key: 'mktShare', label: 'Market Share %', value: '13.2%', sub: 'Domestic 2W FY25', delta: '+0.4pp', tone: 'pos', fmt: 'pp',
       series: [12.5, 12.0, 11.6, 12.2, 11.2, 11.0, 12.4, 13.0, 12.8, 13.2, 13.5, 13.8] },
@@ -266,7 +266,7 @@ const hero = {
   signal: 'Neutral',
   updated: '11 May 2026',
   dataFresh: 'Fresh',
-  hero: { title: 'Hero MotoCorp', subtitle: 'Buy-side snapshot', fy: 'FY25' },
+  hero: { title: 'Hero MotoCorp', subtitle: 'Audited annual snapshot · FY16–FY25 standalone', fy: 'FY25' },
   kpis: [
     { key: 'mktShare', label: 'Market Share %', value: '28.6%', sub: 'Domestic 2W FY25', delta: '-0.5pp', tone: 'neg', fmt: 'pp',
       series: [37, 36, 35, 35, 33, 31, 30, 29.5, 29.1, 28.6, 28.0, 27.5] },
@@ -354,7 +354,7 @@ const eicher = {
   signal: 'Positive',
   updated: '11 May 2026',
   dataFresh: 'Fresh',
-  hero: { title: 'Eicher / Royal Enfield', subtitle: 'Buy-side snapshot', fy: 'FY25' },
+  hero: { title: 'Eicher / Royal Enfield', subtitle: 'Audited annual snapshot · FY16–FY25 standalone', fy: 'FY25' },
   kpis: [
     { key: 'mktShare', label: 'Market Share %', value: '5.4%', sub: 'Domestic 2W FY25', delta: '+0.5pp', tone: 'pos', fmt: 'pp',
       series: [2.8, 3.2, 4.0, 3.6, 3.4, 3.4, 3.7, 4.5, 4.9, 5.4, 5.8, 6.2] },
@@ -442,7 +442,7 @@ const ola = {
   signal: 'Negative',
   updated: '11 May 2026',
   dataFresh: 'Fresh',
-  hero: { title: 'Ola Electric', subtitle: 'Buy-side snapshot', fy: 'FY25' },
+  hero: { title: 'Ola Electric', subtitle: 'Audited annual snapshot · FY16–FY25 standalone', fy: 'FY25' },
   kpis: [
     { key: 'mktShare', label: 'Market Share %', value: '28.0%', sub: 'India e-2W FY25', delta: '-10.0pp', tone: 'neg', fmt: 'pp',
       series: [null, null, null, null, null, null, null, 25, 38, 28, 26, 25] },
@@ -522,10 +522,10 @@ export const COMPANIES = [industry, tvs, bajaj, hero, eicher, ola]
 export const SUPPORT_BLOCKS = ['Growth', 'Margins', 'Balance Sheet', 'Cash Flow', 'Product Mix', 'Market Share']
 
 export const SECTOR_META = {
-  title: '2W Industry Dashboard',
-  subtitle: 'Buy-side research view · switch segment',
+  title: 'Two-Wheeler Industry Cockpit',
+  subtitle: 'Auto sector research · segment switcher',
   badge: '2W',
   latestFy: 'FY25',
   footer:
-    'Buy-side research view · Sources: NSE / BSE filings · SIAM monthly bulletins · Annual reports · Quarterly results · Investor presentations',
+    'Sources: Company annual reports (standalone audited) · audited Q4 result packages · SIAM monthly bulletins · Vahan registrations dashboard',
 }

@@ -7,6 +7,7 @@ import KpiCards from './components/KpiCards.jsx'
 import PerformanceSection from './components/PerformanceSection.jsx'
 import ProductDrivers from './components/ProductDrivers.jsx'
 import SupportingData from './components/SupportingData.jsx'
+import SourcesPanel from './components/SourcesPanel.jsx'
 import KpiModal from './components/KpiModal.jsx'
 import Footer from './components/Footer.jsx'
 
@@ -34,6 +35,7 @@ export default function App() {
         <PerformanceSection company={company} />
         <ProductDrivers drivers={company.productDrivers} />
         <SupportingData company={company} />
+        <SourcesPanel company={company} />
         <Footer />
       </main>
       <KpiModal open={!!modalKpi} kpi={modalKpi} company={company} onClose={() => setModalKpi(null)} />

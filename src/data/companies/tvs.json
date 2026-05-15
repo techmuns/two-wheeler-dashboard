@@ -2,13 +2,90 @@
   "ticker": "TVSMOTOR",
   "id": "tvs",
   "name": "TVS Motor Company Ltd",
+  "shortName": "TVS",
+  "basis": "Standalone",
+  "currency": "INR",
+  "unit": "Cr",
+  "fyAxis": ["FY16","FY17","FY18","FY19","FY20","FY21","FY22","FY23","FY24","FY25"],
+  "fetchedAt": "2026-05-15T08:00:00Z",
   "sources": {
-    "screener": "https://www.screener.in/company/TVSMOTOR/consolidated/"
+    "primary": "TVS Motor Company Annual Reports FY16–FY25 (standalone audited) + audited Q4 result packages",
+    "notes": "Derived items (EBITDA, EBIT, FCF, ratios, margins) computed from disclosed line items. No estimates used. Consolidated TVS Credit / financial-services figures excluded.",
+    "perFY": {
+      "FY16": "TVS 2017 AR · Standalone comparatives · pp. 74, 79, 81–82",
+      "FY17": "TVS 2017 AR · Standalone financial statements · pp. 78–82",
+      "FY18": "TVS 2019 AR · Standalone comparatives · pp. 92–96",
+      "FY19": "TVS 2019 AR · Standalone financial statements · pp. 92–96",
+      "FY20": "TVS 2021 AR · Standalone comparatives · pp. 104–108 + Q4 FY20 audited statement cross-check",
+      "FY21": "TVS 2021 AR · Standalone financial statements · pp. 104–108",
+      "FY22": "TVS 2022 AR · Standalone financial statements · pp. 116–120",
+      "FY23": "TVS 2023 AR · Standalone financial statements · pp. 68–70 + Q4 FY23 audited statement",
+      "FY24": "TVS 2024 AR · Standalone financial statements · pp. 106 & 108 + FY24 audited result package",
+      "FY25": "TVS 2025 AR · Standalone financial statements · pp. 117 & 119 + FY25 audited result package & presentation"
+    }
   },
-  "fetchedAt": null,
-  "profitLoss":   { "periods": [], "rows": {} },
-  "balanceSheet": { "periods": [], "rows": {} },
-  "cashFlow":     { "periods": [], "rows": {} },
-  "ratios":       { "periods": [], "rows": {} },
-  "quarters":     { "periods": [], "rows": {} }
+  "pl": {
+    "revenue":      [12090.92, 13190.06, 15518.63, 18209.92, 16423.34, 16750.54, 20790.51, 26378.09, 31776.37, 36251.32],
+    "otherIncome":  [103.85, 173.37, 99.03, 7.54, 32.10, 32.97, 18.99, 100.57, 148.53, 58.01],
+    "ebitda":       [913.72, 1030.44, 1273.99, 1440.79, 1345.63, 1461.52, 1950.57, 2775.26, 3662.64, 4512.05],
+    "depreciation": [236.05, 287.81, 338.73, 399.27, 489.03, 493.68, 611.44, 631.23, 700.35, 744.60],
+    "ebit":         [677.67, 742.63, 935.26, 1041.52, 856.60, 967.84, 1339.13, 2144.03, 2962.29, 3767.45],
+    "interest":     [48.73, 43.95, 56.62, 80.56, 102.19, 141.60, 125.92, 140.66, 181.63, 138.66],
+    "pbt":          [628.94, 698.68, 878.64, 960.96, 754.41, 826.24, 1213.21, 2003.37, 2780.66, 3628.79],
+    "pat":          [489.28, 558.08, 662.59, 670.14, 592.25, 612.04, 893.56, 1491.03, 2083.00, 2710.54]
+  },
+  "bs": {
+    "totalAssets":   [4952.18, 5904.67, 7156.24, 8369.36, 9353.32, 10197.45, 11847.73, 13992.39, 16062.24, 19962.89],
+    "netWorth":      [1958.34, 2408.33, 2880.42, 3347.32, 3618.09, 4170.95, 4822.04, 6047.85, 7731.04, 9936.65],
+    "totalDebt":     [758.46, 1085.14, 1036.97, 1377.94, 1974.63, 1035.58, 1600.57, 2244.58, 1513.44, 1734.94],
+    "cashAndInv":    [32.74, 8.51, 10.90, 43.86, 419.17, 929.81, 531.52, 433.88, 694.15, 791.52],
+    "netDebt":       [725.72, 1076.63, 1026.07, 1334.08, 1555.46, 105.77, 1069.05, 1810.70, 819.29, 943.42],
+    "receivables":   [578.03, 723.77, 968.37, 1414.14, 1281.36, 869.98, 950.69, 955.07, 1302.14, 1280.06],
+    "inventory":     [696.33, 966.95, 964.39, 1175.94, 1038.93, 1151.81, 1122.68, 1236.36, 1370.80, 1725.76],
+    "payables":      [1543.71, 1859.36, 2485.96, 2923.90, 2886.39, 3921.60, 3991.44, 4130.56, 5112.17, 6153.66],
+    "workingCapital":[-429.51, -664.19, -1226.30, -886.78, -1272.57, -1138.62, -1824.22, -2341.04, -2388.98, -3367.37]
+  },
+  "cf": {
+    "cfo":     [941.09, 723.93, 1297.32, 1097.78, 1393.62, 2560.88, 1497.57, 1992.86, 3617.29, 4265.67],
+    "capex":   [579.93, 620.02, 817.35, 743.15, 749.45, 558.66, 741.33, 1015.56, 1088.81, 1798.47],
+    "fcf":     [361.16, 103.91, 479.97, 354.63, 644.17, 2002.22, 756.24, 977.30, 2528.48, 2467.20],
+    "cfi":     [-608.16, -748.12, -1131.36, -1002.28, -1288.85, -920.61, -2141.04, -2311.80, -1896.26, -3870.82],
+    "cff":     [-306.05, -72.70, -74.74, 81.13, 270.51, -1195.59, 113.24, 224.54, -1469.55, -587.12]
+  },
+  "ops": {
+    "totalVolume":   [2673264, 2927280, 3466079, 3913702, 3263302, 3051823, 3309568, 3682068, 4190994, 4743636],
+    "motorcyclesFy25":   2195000,
+    "scootersFy25":      1904000,
+    "mopedsFy25":        510000,
+    "threeWheelersFy25": 135000,
+    "evVolumeFy25":      278976
+  },
+  "metrics": {
+    "revenueGrowth":     [null,  9.09, 17.65, 17.34, -9.81, 1.99, 24.12, 26.88, 20.47, 14.08],
+    "volumeGrowth":      [null,  9.50, 18.41, 12.91, -16.62, -6.48, 8.45, 11.26, 13.82, 13.19],
+    "realisationPerUnit":[45229, 45059, 44773, 46529, 50327, 54887, 62819, 71639, 75821, 76421],
+    "realisationGrowth": [null, -0.38, -0.64, 3.92, 8.16, 9.06, 14.45, 14.04, 5.84, 0.79],
+    "ebitdaMargin":      [7.56, 7.81, 8.21, 7.91, 8.19, 8.73, 9.38, 10.52, 11.53, 12.45],
+    "ebitMargin":        [5.60, 5.63, 6.03, 5.72, 5.22, 5.78, 6.44, 8.13, 9.32, 10.39],
+    "pbtMargin":         [5.20, 5.30, 5.66, 5.28, 4.59, 4.93, 5.84, 7.59, 8.75, 10.01],
+    "patMargin":         [4.05, 4.23, 4.27, 3.68, 3.61, 3.65, 4.30, 5.65, 6.56, 7.48],
+    "grossMargin":       [25.85, 24.88, 26.05, 23.99, 26.11, 24.04, 23.96, 24.21, 26.27, 28.94],
+    "debtEquity":        [0.39, 0.45, 0.36, 0.41, 0.55, 0.25, 0.33, 0.37, 0.20, 0.17],
+    "netDebtEquity":     [0.37, 0.45, 0.36, 0.40, 0.43, 0.03, 0.22, 0.30, 0.11, 0.09],
+    "wcDays":            [-12.97, -18.38, -28.84, -17.77, -28.28, -24.81, -32.03, -32.39, -27.44, -33.90],
+    "fcfRevenue":        [2.99, 0.79, 3.09, 1.95, 3.92, 11.95, 3.64, 3.70, 7.96, 6.81],
+    "capexRevenue":      [4.80, 4.70, 5.27, 4.08, 4.56, 3.34, 3.57, 3.85, 3.43, 4.96],
+    "roe":               [null, 25.56, 25.06, 21.52, 17.01, 15.72, 19.87, 27.43, 30.23, 30.68],
+    "roce":              [null, 24.08, 25.31, 24.26, 17.38, 20.48, 26.34, 31.19, 36.11, 38.78],
+    "evShare":           [0, 0, 0, 0, 0, 0, 0, 0, 0, 5.88],
+    "motorcycleMixFy25":   46.27,
+    "scooterMixFy25":      40.14,
+    "mopedMixFy25":        10.75,
+    "threeWheelerMixFy25":  2.85
+  },
+  "na": [
+    "Export Volume %", "Export Revenue %", "Market Share %", "Capacity Utilisation %",
+    "New Model Launches", "Facelift Launches", "Top Selling Model",
+    "Stock Price 31-Mar", "Employees", "Dealers", "CEO", "CFO", "COO", "Credit Rating"
+  ]
 }
