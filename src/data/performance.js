@@ -71,7 +71,9 @@ export function normalizeMixTo100(segments, total) {
 // Resolve the per-FY mix for a given mixType.
 // Returns: { fy, total, segments[], unavailable }
 export function getTvsVolumeMix(company, fy, mixType) {
-  const mix = company.performance?.mix
+  // mixRich is the source-of-truth object; the older .mix field is just the
+  // legacy stacked-series shape used by some charts.
+  const mix = company.performance?.mixRich || company.performance?.mix
   const total = mix?.totalByFy?.[fy] ?? null
   if (!total) return { fy, total: null, segments: [], unavailable: true }
 
