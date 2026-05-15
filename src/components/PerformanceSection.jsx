@@ -9,6 +9,8 @@ import {
   getIndustryMeta,
   getMixSource,
   yoyForSegment,
+  buckedRowsByStatus,
+  statusBucket,
 } from '../data/performance.js'
 
 const AXIS_TICK = { fontSize: 10.5, fill: '#64748B' }
@@ -247,9 +249,9 @@ export default function PerformanceSection({ company }) {
     })
   }, [mixRowsRaw, segmentNames, previousMix])
 
-  // Coverage indicator: how many FYs in the axis have at least one disclosed segment.
-  const disclosedFyCount = mixRowsRaw.filter((r) => r.segments.some((s) => !s.isUnclassified)).length
-  const disclosedFyLabels = mixRowsRaw.filter((r) => r.segments.some((s) => !s.isUnclassified)).map((r) => r.fy)
+  // Coverage breakdown by dataStatus (available / pending PDF / unavailable / paid).
+  const statusBuckets = useMemo(() => buckedRowsByStatus(mixRowsRaw), [mixRowsRaw])
+  const disclosedFyCount = mixRowsRaw.filter((r) => r.segments.length > 0).length
 
   // ---- Selected-FY meta ----
   const activeFy = hoveredFy || 'FY25'
@@ -372,18 +374,29 @@ export default function PerformanceSection({ company }) {
                 <span className="text-[#94A3B8]">{activeMixLabel}</span>
               </span>
             </div>
-            {disclosedFyCount < mixRowsRaw.length && (
-              <div
-                className="text-[11px] mt-1.5 px-2 py-1 rounded"
-                style={{ background: '#FBEFDC', color: '#7C3A07', border: '1px solid #F5C97A' }}
-              >
-                <span className="font-semibold">{disclosedFyCount} of {mixRowsRaw.length} FYs disclosed</span>
-                {disclosedFyCount > 0 && (
-                  <> ({disclosedFyLabels.join(', ')}) — earlier years not broken out in the audited workbook, so they render as empty space.</>
-                )}
-                {disclosedFyCount === 0 && ' — none of the FYs in this axis carry a disclosed split for this mix type.'}
+            {statusBuckets.length > 0 && (
+              <div className="mt-1.5 flex flex-wrap gap-1.5 text-[10.5px]">
+                {statusBuckets.map(({ status, fys }) => {
+                  const b = statusBucket(status)
+                  return (
+                    <span
+                      key={status}
+                      className="inline-flex items-center gap-1 px-2 py-0.5 rounded font-semibold"
+                      style={{ background: b.tone.bg, color: b.tone.fg, border: `1px solid ${b.tone.border}` }}
+                      title={`${b.label} · ${fys.join(', ')}`}
+                    >
+                      {b.label}
+                      <span className="font-normal opacity-80">{fys.length} FY{fys.length !== 1 ? 's' : ''}</span>
+                    </span>
+                  )
+                })}
               </div>
             )}
+            <div className="text-[10.5px] text-[#6B7280] mt-1.5 leading-snug">
+              {mixType === 'product'    && 'Product split available for recent years; older years pending annual-report parsing. FY24 / FY25 use Total − (M + S + 3W) as Mopeds / Residual; FY22 / FY23 disclose explicit M / S / Moped / 3W and are awaiting PDF extraction.'}
+              {mixType === 'powertrain' && 'iQube launched Jan 2020 (FY20); pre-FY20 powertrain is 100% ICE by virtue of the product not existing. FY23–FY25 disclose EV volumes (FY25 audited from workbook; FY23–FY24 pending PDF parse).'}
+              {mixType === 'geography'  && 'Domestic / Export split is disclosed in TVS annual reports & monthly press releases. Domestic = Total − Export. Awaiting PDF parse across the full FY16–FY25 axis.'}
+            </div>
           </div>
           <div className="chart-panel-body">
             <div className="chart-canvas">

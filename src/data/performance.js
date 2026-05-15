@@ -69,14 +69,21 @@ export function normalizeMixTo100(segments, total) {
   return out
 }
 
+// Map dashboard mix-type key → dataStatus block key.
+const MIX_STATUS_KEY = {
+  product:    'productMix',
+  powertrain: 'powertrainMix',
+  geography:  'domesticExportMix',
+}
+
 // Resolve the per-FY mix for a given mixType.
-// Returns: { fy, total, segments[], unavailable }
+// Returns: { fy, total, segments[], status }
 export function getTvsVolumeMix(company, fy, mixType) {
-  // mixRich is the source-of-truth object; the older .mix field is just the
-  // legacy stacked-series shape used by some charts.
   const mix = company.performance?.mixRich || company.performance?.mix
   const total = mix?.totalByFy?.[fy] ?? null
-  if (!total) return { fy, total: null, segments: [], unavailable: true }
+  const status = mix?.dataStatus?.[MIX_STATUS_KEY[mixType]]?.[fy] || null
+
+  if (!total) return { fy, total: null, segments: [], status: status || 'unavailable' }
 
   const key = (
     mixType === 'product'    ? 'productByFy' :
@@ -84,7 +91,48 @@ export function getTvsVolumeMix(company, fy, mixType) {
                                 'geographyByFy'
   )
   const segments = mix?.[key]?.[fy]
-  return { fy, total, segments: normalizeMixTo100(segments, total) }
+  return { fy, total, segments: normalizeMixTo100(segments, total), status }
+}
+
+// Bucket statuses for the coverage banner.
+export const STATUS_BUCKETS = {
+  available:                  { label: 'Available',                   tone: { bg: '#E1F0E2', fg: '#1F5C28', border: '#A8D8AE' } },
+  available_residual:         { label: 'Available (residual)',        tone: { bg: '#E1F0E2', fg: '#1F5C28', border: '#A8D8AE' } },
+  pending_pdf_parse:          { label: 'Pending PDF parse',           tone: { bg: '#FBEFDC', fg: '#7C3A07', border: '#F5C97A' } },
+  pending_pdf_parse_explicit: { label: 'Pending PDF parse (explicit)', tone: { bg: '#FBEFDC', fg: '#7C3A07', border: '#F5C97A' } },
+  pending_pdf_parse_residual: { label: 'Pending PDF parse (residual)', tone: { bg: '#FBEFDC', fg: '#7C3A07', border: '#F5C97A' } },
+  unavailable:                { label: 'Unavailable',                 tone: { bg: '#EEF1F5', fg: '#475569', border: '#CBD5E1' } },
+  unavailable_pre_ev:         { label: 'N/A (pre-EV)',                tone: { bg: '#EEF1F5', fg: '#475569', border: '#CBD5E1' } },
+  unavailable_minimal_ev:     { label: 'N/A (minimal EV)',            tone: { bg: '#EEF1F5', fg: '#475569', border: '#CBD5E1' } },
+  paid_source_required:       { label: 'Paid source required',        tone: { bg: '#EFE9FE', fg: '#5B21B6', border: '#C4B5FD' } },
+}
+
+export function statusBucket(status) {
+  return STATUS_BUCKETS[status] || STATUS_BUCKETS.unavailable
+}
+
+// Roll up rows for the coverage banner: [{status, fys: ['FY25', 'FY24', ...]}, ...]
+export function buckedRowsByStatus(rows) {
+  const map = new Map()
+  rows.forEach((r) => {
+    const s = r.status || 'unavailable'
+    if (!map.has(s)) map.set(s, [])
+    map.get(s).push(r.fy)
+  })
+  // Ordered: available first, then pending, then unavailable, then paid
+  const order = ['available', 'available_residual',
+                 'pending_pdf_parse', 'pending_pdf_parse_explicit', 'pending_pdf_parse_residual',
+                 'unavailable', 'unavailable_pre_ev', 'unavailable_minimal_ev',
+                 'paid_source_required']
+  return order
+    .filter((s) => map.has(s))
+    .map((s) => ({ status: s, fys: map.get(s) }))
+}
+
+// Per-mix-type source legend lookup from the JSON's statusLegend block.
+export function getStatusReason(company, status) {
+  const legend = company.performance?.mixRich?.dataStatus?.statusLegend
+  return legend?.[status] || null
 }
 
 // Per-mix-type source citation.

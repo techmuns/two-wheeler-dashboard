@@ -65,7 +65,81 @@
     "scootersFy25":      1904000,
     "mopedsFy25":        510000,
     "threeWheelersFy25": 135000,
-    "evVolumeFy25":      278976
+    "evVolumeFy25":      278976,
+    "fy25MopedNote":     "FY25 Mopeds value derived as residual: Total − (Motorcycles + Scooters + Three-Wheelers). TVS FY25 AR discloses M / S / 3W explicitly; Moped figure is the implied balance and is labelled 'Mopeds / Residual' wherever it appears."
+  },
+  "dataStatus": {
+    "productMix": {
+      "FY16": "pending_pdf_parse",
+      "FY17": "pending_pdf_parse",
+      "FY18": "pending_pdf_parse",
+      "FY19": "pending_pdf_parse",
+      "FY20": "pending_pdf_parse",
+      "FY21": "pending_pdf_parse",
+      "FY22": "pending_pdf_parse_explicit",
+      "FY23": "pending_pdf_parse_explicit",
+      "FY24": "pending_pdf_parse_residual",
+      "FY25": "available_residual"
+    },
+    "powertrainMix": {
+      "FY16": "unavailable_pre_ev",
+      "FY17": "unavailable_pre_ev",
+      "FY18": "unavailable_pre_ev",
+      "FY19": "unavailable_pre_ev",
+      "FY20": "unavailable_minimal_ev",
+      "FY21": "unavailable_minimal_ev",
+      "FY22": "unavailable_minimal_ev",
+      "FY23": "pending_pdf_parse",
+      "FY24": "pending_pdf_parse",
+      "FY25": "available"
+    },
+    "domesticExportMix": {
+      "FY16": "pending_pdf_parse",
+      "FY17": "pending_pdf_parse",
+      "FY18": "pending_pdf_parse",
+      "FY19": "pending_pdf_parse",
+      "FY20": "pending_pdf_parse",
+      "FY21": "pending_pdf_parse",
+      "FY22": "pending_pdf_parse",
+      "FY23": "pending_pdf_parse",
+      "FY24": "pending_pdf_parse",
+      "FY25": "pending_pdf_parse"
+    },
+    "ccMix": {
+      "FY16": "paid_source_required",
+      "FY17": "paid_source_required",
+      "FY18": "paid_source_required",
+      "FY19": "paid_source_required",
+      "FY20": "paid_source_required",
+      "FY21": "paid_source_required",
+      "FY22": "paid_source_required",
+      "FY23": "paid_source_required",
+      "FY24": "paid_source_required",
+      "FY25": "paid_source_required"
+    },
+    "revenueMix": {
+      "FY16": "unavailable",
+      "FY17": "unavailable",
+      "FY18": "unavailable",
+      "FY19": "unavailable",
+      "FY20": "unavailable",
+      "FY21": "unavailable",
+      "FY22": "unavailable",
+      "FY23": "unavailable",
+      "FY24": "unavailable",
+      "FY25": "unavailable"
+    },
+    "statusLegend": {
+      "available":                  "Disclosed in TVS standalone audited statements; all segments explicit.",
+      "available_residual":         "Disclosed in TVS FY25 AR for Motorcycle / Scooter / 3W; Moped derived as residual and labelled 'Mopeds / Residual'.",
+      "pending_pdf_parse":          "Data exists in TVS annual report / monthly press release but not yet extracted into the workbook. Upload the source PDF or a populated workbook to fill the cell.",
+      "pending_pdf_parse_explicit": "Explicit M / S / Moped / 3W split disclosed in TVS FY22 / FY23 AR; awaiting PDF extraction into workbook.",
+      "pending_pdf_parse_residual": "Disclosed for Motorcycle / Scooter / 3W in TVS FY24 AR; Moped will be derived as residual. Awaiting PDF extraction.",
+      "unavailable":                "Not disclosed by TVS in any public document.",
+      "unavailable_pre_ev":         "iQube (TVS's first EV) launched in Jan 2020 (FY20). Pre-FY20 EV mix is exactly 0 by virtue of the product not existing — shown as ICE 100%.",
+      "unavailable_minimal_ev":     "EV volumes existed but were not broken out separately in audited statements; immaterial vs total. Shown as ICE-dominant with EV combined.",
+      "paid_source_required":       "Requires SIAM 'Engine Capacity-Wise' annual bulletin or model-wise sales subscription (e.g. JATO Dynamics). Cannot be derived from TVS standalone audited statements alone."
+    }
   },
   "metrics": {
     "revenueGrowth":     [null,  9.09, 17.65, 17.34, -9.81, 1.99, 24.12, 26.88, 20.47, 14.08],

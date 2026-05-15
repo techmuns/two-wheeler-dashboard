@@ -202,17 +202,14 @@ export function buildFromActuals(json, opts = {}) {
       const productByFy = {}
       if (typeof ops.motorcyclesFy25 === 'number') {
         productByFy.FY25 = [
-          { name: 'Motorcycles',     volume: ops.motorcyclesFy25,   color: '#2563EB' },
-          { name: 'Scooters',        volume: ops.scootersFy25 ?? 0, color: '#0EA5E9' },
-          { name: 'Mopeds',          volume: ops.mopedsFy25 ?? 0,   color: '#10B981' },
-          { name: 'Three-Wheelers',  volume: ops.threeWheelersFy25 ?? 0, color: '#F59E0B' },
+          { name: 'Motorcycles',         volume: ops.motorcyclesFy25,        color: '#2563EB' },
+          { name: 'Scooters',            volume: ops.scootersFy25 ?? 0,      color: '#0EA5E9' },
+          { name: 'Mopeds / Residual',   volume: ops.mopedsFy25 ?? 0,        color: '#10B981', residual: true },
+          { name: 'Three-Wheelers',      volume: ops.threeWheelersFy25 ?? 0, color: '#F59E0B' },
         ].filter((s) => typeof s.volume === 'number' && s.volume > 0)
       }
 
       const powertrainByFy = {}
-      if (typeof ops.evVolumeFy25 === 'number' && typeof ops.totalVolume === 'undefined') {
-        // fallback path (shouldn't hit)
-      }
       if (typeof ops.evVolumeFy25 === 'number' && typeof totalByFy.FY25 === 'number') {
         powertrainByFy.FY25 = [
           { name: 'ICE', volume: totalByFy.FY25 - ops.evVolumeFy25, color: '#475569' },
@@ -225,6 +222,10 @@ export function buildFromActuals(json, opts = {}) {
         productByFy,
         powertrainByFy,
         geographyByFy: {},
+        // Per-FY per-mix-type status. Consumed by PerformanceSection so
+        // empty cells render with the right meaning (pending parse vs
+        // unavailable vs paid source required).
+        dataStatus: json?.dataStatus || null,
       }
     })(),
   }
