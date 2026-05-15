@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react'
 import {
-  BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, CartesianGrid, Cell, ReferenceLine,
+  BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, CartesianGrid, Cell, ReferenceLine, LabelList,
 } from 'recharts'
 import { FY } from '../data.js'
 import {
@@ -76,13 +76,14 @@ function GrowthChart({ rows, oemKey }) {
 // RIGHT: Volume Mix (stacked 100% bars with internal toggles)
 // ============================================================================
 function MixChart({ rows, segmentNames, segmentColors, onHoverFy, hoveredStatus, hoveredSourceText }) {
+  // Maruti-style: absolute volumes in lakh units, total label on top, 3 bars max.
+  // Stacked but NOT expanded — heights reflect real volumes so YoY growth shows visually.
   return (
     <ResponsiveContainer width="100%" height="100%">
       <BarChart
         data={rows}
-        margin={{ top: 6, right: 6, left: 0, bottom: 0 }}
-        barCategoryGap="20%"
-        stackOffset="expand"
+        margin={{ top: 24, right: 12, left: 0, bottom: 0 }}
+        barCategoryGap="30%"
         onMouseMove={(e) => e?.activeLabel && onHoverFy?.(e.activeLabel)}
         onMouseLeave={() => onHoverFy?.(null)}
       >
@@ -92,21 +93,33 @@ function MixChart({ rows, segmentNames, segmentColors, onHoverFy, hoveredStatus,
           tick={AXIS_TICK}
           axisLine={false}
           tickLine={false}
-          width={42}
-          tickFormatter={(v) => `${Math.round(v * 100)}%`}
+          width={56}
+          tickFormatter={(v) => `${(v / 100000).toFixed(0)} L`}
         />
-        <Tooltip content={<MixTooltip currentStatus={hoveredStatus} sourceText={hoveredSourceText} />} />
-        {segmentNames.map((name, idx) => (
-          <Bar
-            key={name}
-            dataKey={name}
-            stackId="mix"
-            fill={segmentColors[name] || '#CBD5E1'}
-            radius={idx === segmentNames.length - 1 ? [2, 2, 0, 0] : 0}
-            isAnimationActive={true}
-            animationDuration={220}
-          />
-        ))}
+        <Tooltip content={<MixTooltip currentStatus={hoveredStatus} sourceText={hoveredSourceText} />} cursor={{ fill: 'rgba(109, 40, 217, 0.05)' }} />
+        {segmentNames.map((name, idx) => {
+          const isTop = idx === segmentNames.length - 1
+          return (
+            <Bar
+              key={name}
+              dataKey={name}
+              stackId="mix"
+              fill={segmentColors[name] || '#CBD5E1'}
+              radius={isTop ? [4, 4, 0, 0] : 0}
+              isAnimationActive={true}
+              animationDuration={220}
+            >
+              {isTop && (
+                <LabelList
+                  dataKey="__total"
+                  position="top"
+                  formatter={(v) => (typeof v === 'number' ? `${(v / 100000).toFixed(2)} L` : '')}
+                  style={{ fill: '#0F1B2D', fontSize: 11.5, fontWeight: 700 }}
+                />
+              )}
+            </Bar>
+          )
+        })}
       </BarChart>
     </ResponsiveContainer>
   )
@@ -279,17 +292,32 @@ export default function PerformanceSection({ company }) {
   const growthHasOem = growthRows.some((r) => typeof r[oemKey] === 'number')
 
   // ---- Right chart data ----
-  // Always render FY18..FY25 axis to match the left chart. FYs without
-  // segment-level disclosure render as a solid 'Unclassified' grey bar.
-  const mixFyAxis = useMemo(() => {
+  // Full axis FY18..FY25 — used by the Coverage drawer to show every FY's status.
+  const fullMixFyAxis = useMemo(() => {
     const start = FY.indexOf('FY18')
     return FY.slice(start, FY.indexOf('FY25') + 1)
   }, [])
 
-  const mixRowsRaw = useMemo(
-    () => mixFyAxis.map((fy) => getTvsVolumeMix(company, fy, mixType)),
-    [company, mixType, mixFyAxis],
+  const fullMixRowsRaw = useMemo(
+    () => fullMixFyAxis.map((fy) => getTvsVolumeMix(company, fy, mixType)),
+    [company, mixType, fullMixFyAxis],
   )
+
+  // Main chart: show only the latest verified FYs (Maruti style). 3 max.
+  // Verified = the row carries actual disclosed segments (not just an
+  // Unclassified placeholder, not empty).
+  const isVerifiedStatus = (s) =>
+    s === 'available' || s === 'available_residual' || s === 'derived'
+
+  const verifiedRows = useMemo(
+    () => fullMixRowsRaw.filter(
+      (r) => r.segments.length > 0 && isVerifiedStatus(r.status),
+    ),
+    [fullMixRowsRaw],
+  )
+
+  const mixRowsRaw = useMemo(() => verifiedRows.slice(-3), [verifiedRows])
+  const mixFyAxis  = useMemo(() => mixRowsRaw.map((r) => r.fy),  [mixRowsRaw])
 
   // Collect union of segment names across rows so each becomes its own <Bar/>.
   const segmentNames = useMemo(() => {
@@ -354,14 +382,17 @@ export default function PerformanceSection({ company }) {
   const disclosedFyCount = mixRowsRaw.filter((r) => r.segments.length > 0).length
 
   // ---- Selected-FY meta ----
-  const activeFy = hoveredFy || 'FY25'
-  const activeRow = chartRows.find((r) => r.fy === activeFy)
-  const activeTotal = activeRow?.__total
-  const prevTotal = (() => {
-    const i = mixFyAxis.indexOf(activeFy)
-    if (i <= 0) return null
-    return chartRows[i - 1]?.__total
-  })()
+  const lastVerifiedFy = mixRowsRaw.length ? mixRowsRaw[mixRowsRaw.length - 1].fy : 'FY25'
+  const activeFy = hoveredFy || lastVerifiedFy
+
+  // Use the full per-FY map so YoY can reach back to a FY that isn't on the chart.
+  const fullByFy = useMemo(
+    () => Object.fromEntries(fullMixRowsRaw.map((r) => [r.fy, r])),
+    [fullMixRowsRaw],
+  )
+  const activeTotal = fullByFy[activeFy]?.total
+  const prevFyOfActive = FY[FY.indexOf(activeFy) - 1]
+  const prevTotal = fullByFy[prevFyOfActive]?.total
   const activeYoy =
     typeof activeTotal === 'number' && typeof prevTotal === 'number' && prevTotal > 0
       ? ((activeTotal - prevTotal) / prevTotal) * 100
@@ -492,18 +523,27 @@ export default function PerformanceSection({ company }) {
           </div>
           <div className="chart-panel-body">
             <div className="chart-canvas">
-              <MixChart
-                rows={chartRows}
-                segmentNames={segmentNames}
-                segmentColors={segmentColors}
-                onHoverFy={setHoveredFy}
-                hoveredStatus={mixRowsRaw.find((r) => r.fy === activeFy)?.status}
-                hoveredSourceText={(company.performance?.mixRich?.sourcesByFy?.[
-                  mixType === 'product' ? 'productMix' :
-                  mixType === 'powertrain' ? 'ev' :
-                  'exports'
-                ]?.[activeFy]) || ''}
-              />
+              {mixRowsRaw.length > 0 ? (
+                <MixChart
+                  rows={chartRows}
+                  segmentNames={segmentNames}
+                  segmentColors={segmentColors}
+                  onHoverFy={setHoveredFy}
+                  hoveredStatus={mixRowsRaw.find((r) => r.fy === activeFy)?.status}
+                  hoveredSourceText={(company.performance?.mixRich?.sourcesByFy?.[
+                    mixType === 'product' ? 'productMix' :
+                    mixType === 'powertrain' ? 'ev' :
+                    'exports'
+                  ]?.[activeFy]) || ''}
+                />
+              ) : (
+                <div className="flex flex-col items-center justify-center text-center h-full">
+                  <div className="text-[13px] font-semibold text-[#475569]">No verified years yet</div>
+                  <div className="text-[11.5px] text-[#94A3B8] mt-1 max-w-[300px]">
+                    Open the Coverage drawer to see which FYs are pending source verification.
+                  </div>
+                </div>
+              )}
             </div>
             <div className="chart-legend" style={{ minHeight: 40 }}>
               {legendItems.map((s) => (
@@ -523,7 +563,7 @@ export default function PerformanceSection({ company }) {
             <CoverageDrawer
               company={company}
               mixType={mixType}
-              mixRowsRaw={mixRowsRaw}
+              mixRowsRaw={fullMixRowsRaw}
               onClose={() => setCoverageOpen(false)}
             />
           )}

@@ -204,21 +204,26 @@ export function buildFromActuals(json, opts = {}) {
       // press releases disclose at least 3 of (M / S / 3W). Moped is
       // always residual = Total − (M + S + 3W).
       const productByFy = {}
-      const mByFy  = ops.motorcyclesByFy   || {}
-      const sByFy  = ops.scootersByFy      || {}
-      const twByFy = ops.threeWheelersByFy || {}
+      const mByFy   = ops.motorcyclesByFy   || {}
+      const sByFy   = ops.scootersByFy      || {}
+      const moByFy  = ops.mopedsByFy        || {}
+      const twByFy  = ops.threeWheelersByFy || {}
       Object.keys(mByFy).forEach((fy) => {
         const total = totalByFy[fy]
         const m  = mByFy[fy]
         const s  = sByFy[fy]
         const tw = twByFy[fy]
         if (typeof total !== 'number' || typeof m !== 'number' || typeof s !== 'number' || typeof tw !== 'number') return
-        const mopedResidual = Math.max(0, total - (m + s + tw))
+        // Use explicit Moped volume when the AR / PR breaks it out (FY23 case);
+        // otherwise compute as residual and label accordingly (FY24 / FY25).
+        const hasExplicitMoped = typeof moByFy[fy] === 'number'
+        const mopedVolume      = hasExplicitMoped ? moByFy[fy] : Math.max(0, total - (m + s + tw))
+        const mopedName        = hasExplicitMoped ? 'Mopeds' : 'Mopeds / Residual'
         productByFy[fy] = [
-          { name: 'Motorcycles',       volume: m,             color: '#2563EB' },
-          { name: 'Scooters',          volume: s,             color: '#0EA5E9' },
-          { name: 'Mopeds / Residual', volume: mopedResidual, color: '#10B981', residual: true },
-          { name: 'Three-Wheelers',    volume: tw,            color: '#F59E0B' },
+          { name: 'Motorcycles',  volume: m,            color: '#2563EB' },
+          { name: 'Scooters',     volume: s,            color: '#0EA5E9' },
+          { name: mopedName,      volume: mopedVolume,  color: '#10B981', residual: !hasExplicitMoped },
+          { name: 'Three-Wheelers', volume: tw,         color: '#F59E0B' },
         ]
       })
 
