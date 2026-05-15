@@ -38,20 +38,21 @@ export function getTvsGrowthVsIndustry(oemSeries, shortName) {
 }
 
 // Allocate residual share to 'Unclassified' so segments sum to exactly 100%.
+// IMPORTANT: if zero segments are disclosed for a year, return an empty array
+// — the chart then renders no bar for that year, which is honest. A full-
+// height 'Unclassified' bar would look like data when it isn't.
 export function normalizeMixTo100(segments, total) {
-  if (!total) {
-    return [{ name: 'Unclassified', volume: 0, color: UNCLASSIFIED_COLOR, percent: 100, isUnclassified: true }]
-  }
-  if (!segments?.length) {
-    return [{ name: 'Unclassified', volume: total, color: UNCLASSIFIED_COLOR, percent: 100, isUnclassified: true }]
-  }
+  if (!total) return []
+  if (!segments?.length) return []   // nothing disclosed → no bar
   const known = segments.reduce((acc, s) => acc + (typeof s.volume === 'number' ? s.volume : 0), 0)
   const remaining = Math.max(0, total - known)
   const out = segments.map((s) => ({
     ...s,
     percent: total > 0 ? (s.volume / total) * 100 : 0,
   }))
-  if (remaining > 0.5) {
+  if (remaining > 0.5 && known > 0) {
+    // Only add Unclassified when SOME segments are disclosed — i.e. when it's
+    // a true residual, not a stand-in for the entire year.
     out.push({
       name: 'Unclassified',
       volume: remaining,
@@ -60,7 +61,7 @@ export function normalizeMixTo100(segments, total) {
       isUnclassified: true,
     })
   }
-  // Final correction for rounding so it sums to exactly 100.
+  // Rounding correction so disclosed bars sum exactly to 100.
   const sum = out.reduce((a, b) => a + b.percent, 0)
   if (sum !== 100 && out.length) {
     out[out.length - 1].percent += (100 - sum)

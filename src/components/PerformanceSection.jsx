@@ -111,15 +111,21 @@ function MixChart({ rows, segmentNames, segmentColors, onHoverFy }) {
 
 function MixTooltip({ active, payload, label }) {
   if (!active || !payload?.length) return null
-  // payload[0].payload has { fy, total, <segmentName>: rawVolume, __pct: { name: pctValue }, ... }
   const row = payload[0].payload
   const total = row.__total
+  // Filter to segments that actually have a disclosed value (> 0).
+  const disclosed = payload.filter((p) => typeof row[p.dataKey] === 'number' && row[p.dataKey] > 0)
   return (
     <div style={TOOLTIP_STYLE}>
       <div style={{ fontWeight: 600, color: '#0F1B2D', marginBottom: 6 }}>
         {label} <span style={{ color: '#94A3B8', fontWeight: 400 }}>· {fmtUnitsL(total)} total</span>
       </div>
-      {payload.map((p) => {
+      {disclosed.length === 0 && (
+        <div style={{ fontSize: 12, color: '#94A3B8', fontStyle: 'italic' }}>
+          Segment split not disclosed for {label} in the audited workbook.
+        </div>
+      )}
+      {disclosed.map((p) => {
         const segName = p.dataKey
         const vol = row[segName]
         const pct = total > 0 && typeof vol === 'number' ? (vol / total) * 100 : null
@@ -224,9 +230,11 @@ export default function PerformanceSection({ company }) {
   const chartRows = useMemo(() => {
     return mixRowsRaw.map((r, idx) => {
       const row = { fy: r.fy, __total: r.total }
-      segmentNames.forEach((n) => { row[n] = 0 })
+      // Years with no disclosed segments leave all keys absent — Recharts
+      // renders no bar for them, so empty space = honest 'not disclosed'.
+      segmentNames.forEach((n) => { row[n] = null })
       r.segments.forEach((s) => { row[s.name] = s.volume })
-      // YoY change per segment (vs previous FY in this rolling axis)
+      // YoY change per segment (vs previous FY in this rolling axis).
       const prevFy = idx > 0 ? mixRowsRaw[idx - 1].fy : null
       if (prevFy) {
         row.__yoy = {}
@@ -238,6 +246,10 @@ export default function PerformanceSection({ company }) {
       return row
     })
   }, [mixRowsRaw, segmentNames, previousMix])
+
+  // Coverage indicator: how many FYs in the axis have at least one disclosed segment.
+  const disclosedFyCount = mixRowsRaw.filter((r) => r.segments.some((s) => !s.isUnclassified)).length
+  const disclosedFyLabels = mixRowsRaw.filter((r) => r.segments.some((s) => !s.isUnclassified)).map((r) => r.fy)
 
   // ---- Selected-FY meta ----
   const activeFy = hoveredFy || 'FY25'
@@ -345,26 +357,33 @@ export default function PerformanceSection({ company }) {
                 ))}
               </div>
               <span className="text-[11px] text-[#475569] tabular-nums ml-auto">
-                <span className="text-[#94A3B8]">{activeFy}</span>{' '}
-                {' · '}
-                Total <span className="text-[#0F1B2D] font-semibold">{fmtUnitsL(activeTotal)}</span>
-                {' · '}
+                <span className="text-[#94A3B8]">{activeFy}</span>{' · '}
+                Total <span className="text-[#0F1B2D] font-semibold">{fmtUnitsL(activeTotal)}</span>{' · '}
                 YoY{' '}
                 <span
                   className={`font-semibold ${
                     typeof activeYoy === 'number'
-                      ? activeYoy >= 0
-                        ? 'text-[#1F7A45]'
-                        : 'text-[#9F1F2E]'
+                      ? activeYoy >= 0 ? 'text-[#1F7A45]' : 'text-[#9F1F2E]'
                       : 'text-[#94A3B8]'
                   }`}
                 >
                   {fmtPctSigned(activeYoy)}
-                </span>
-                {' · '}
+                </span>{' · '}
                 <span className="text-[#94A3B8]">{activeMixLabel}</span>
               </span>
             </div>
+            {disclosedFyCount < mixRowsRaw.length && (
+              <div
+                className="text-[11px] mt-1.5 px-2 py-1 rounded"
+                style={{ background: '#FBEFDC', color: '#7C3A07', border: '1px solid #F5C97A' }}
+              >
+                <span className="font-semibold">{disclosedFyCount} of {mixRowsRaw.length} FYs disclosed</span>
+                {disclosedFyCount > 0 && (
+                  <> ({disclosedFyLabels.join(', ')}) — earlier years not broken out in the audited workbook, so they render as empty space.</>
+                )}
+                {disclosedFyCount === 0 && ' — none of the FYs in this axis carry a disclosed split for this mix type.'}
+              </div>
+            )}
           </div>
           <div className="chart-panel-body">
             <div className="chart-canvas">
