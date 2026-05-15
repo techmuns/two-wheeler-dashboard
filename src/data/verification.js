@@ -13,6 +13,10 @@ import evShare      from './industry/2w-ev-share.json'
 import exports2W    from './industry/2w-exports.json'
 import marketShare  from './industry/2w-market-share.json'
 import tvsRaw       from './companies/tvs.json'
+import bajajRaw     from './companies/bajaj.json'
+import heroRaw      from './companies/hero.json'
+import eicherRaw    from './companies/eicher.json'
+import olaRaw       from './companies/ola.json'
 
 const RANK = { audited: 3, approximate: 2, pending: 1 }
 
@@ -22,17 +26,20 @@ export const SOURCE_VERIFICATIONS = [
   { key: 'vahan-ev',     label: 'Vahan — EV 2W Share',              file: 'src/data/industry/2w-ev-share.json',               meta: evShare.verification,      source: evShare.source,      sourceUrl: evShare.sourceUrl,      scope: 'Industry' },
   { key: 'siam-exports', label: 'SIAM — 2W Exports',                file: 'src/data/industry/2w-exports.json',                meta: exports2W.verification,    source: exports2W.source,    sourceUrl: exports2W.sourceUrl,    scope: 'Industry' },
   { key: 'siam-share',   label: 'SIAM — OEM Market Share',          file: 'src/data/industry/2w-market-share.json',           meta: marketShare.verification,  source: marketShare.source,  sourceUrl: marketShare.sourceUrl,  scope: 'Industry' },
-  { key: 'tvs-actuals',  label: 'TVS Motor — Standalone Audited FY16–FY25', file: 'src/data/companies/tvs.json',               meta: tvsRaw.verification,       source: tvsRaw.sources?.primary, sourceUrl: null,                   scope: 'TVS' },
+
+  { key: 'tvs-actuals',    label: 'TVS Motor — Standalone Audited FY16–FY25',  file: 'src/data/companies/tvs.json',    meta: tvsRaw.verification,    source: tvsRaw.sources?.primary,    sourceUrl: null, scope: 'tvs' },
+  { key: 'bajaj-actuals',  label: 'Bajaj Auto — Standalone Audited FY16–FY25', file: 'src/data/companies/bajaj.json',  meta: bajajRaw.verification,  source: bajajRaw.sources?.primary,  sourceUrl: null, scope: 'bajaj' },
+  { key: 'hero-actuals',   label: 'Hero MotoCorp — Standalone Audited FY16–FY25', file: 'src/data/companies/hero.json',   meta: heroRaw.verification,   source: heroRaw.sources?.primary,   sourceUrl: null, scope: 'hero' },
+  { key: 'eicher-actuals', label: 'Eicher Motors — Standalone Audited FY16–FY25', file: 'src/data/companies/eicher.json', meta: eicherRaw.verification, source: eicherRaw.sources?.primary, sourceUrl: null, scope: 'eicher' },
+  { key: 'ola-actuals',    label: 'Ola Electric — Standalone Audited FY22–FY25', file: 'src/data/companies/ola.json',    meta: olaRaw.verification,    source: olaRaw.sources?.primary,    sourceUrl: null, scope: 'ola' },
 ]
 
 export function verificationsForCompany(companyId) {
-  if (companyId === 'tvs') {
-    return SOURCE_VERIFICATIONS.filter((v) => v.scope === 'TVS')
-  }
   if (companyId === 'industry') {
     return SOURCE_VERIFICATIONS.filter((v) => v.scope === 'Industry')
   }
-  return []  // companies without their own workbook yet
+  // Per-OEM view shows that OEM's workbook entry.
+  return SOURCE_VERIFICATIONS.filter((v) => v.scope === companyId)
 }
 
 export function rollupStatus(verifications) {

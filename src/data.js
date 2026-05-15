@@ -8,8 +8,12 @@
 
 import { buildFromActuals } from './data/buildFromActuals.js'
 import { buildIndustry } from './data/buildIndustry.js'
-import { TVS_GROUPS } from './data/supportingTvs.js'
-import tvsRaw from './data/companies/tvs.json'
+import { buildSupportingGroups } from './data/supportingBuilder.js'
+import tvsRaw    from './data/companies/tvs.json'
+import bajajRaw  from './data/companies/bajaj.json'
+import heroRaw   from './data/companies/hero.json'
+import eicherRaw from './data/companies/eicher.json'
+import olaRaw    from './data/companies/ola.json'
 
 const FY_AXIS = ['FY16', 'FY17', 'FY18', 'FY19', 'FY20', 'FY21', 'FY22', 'FY23', 'FY24', 'FY25', 'FY26', 'FY27']
 
@@ -24,15 +28,26 @@ const tvs = {
     brandColor: '#0066B3',
     dotColor: '#0ea5e9',
   }),
-  // 8 dropdown groups for the new Supporting Data section. Component checks
-  // `supportingGroups` first; falls back to the legacy supportingData blocks.
-  supportingGroups: TVS_GROUPS,
+  supportingGroups: buildSupportingGroups(tvsRaw, { shortName: 'TVS', publicName: 'TVS', marketShareKey: 'TVS' }),
 }
 
 // ---------- Industry (built from SIAM + Vahan + FADA JSONs) ----------
 const industry = buildIndustry()
 
-const bajaj = buildFromActuals(null, {
+// Per-OEM build helper — each company reads its own JSON. When you replace
+// the skeleton at src/data/companies/<id>.json with a populated workbook,
+// every section (KPIs, Performance, Product-Level Drivers, Supporting Data,
+// Source Citations) auto-populates with verified cells.
+const buildOem = (raw, opts) => ({
+  ...buildFromActuals(raw, opts),
+  supportingGroups: buildSupportingGroups(raw, {
+    shortName: opts.shortName,
+    publicName: opts.publicName,
+    marketShareKey: opts.marketShareKey,
+  }),
+})
+
+const bajaj = buildOem(bajajRaw, {
   id: 'bajaj',
   name: 'Bajaj Auto Ltd',
   publicName: 'Bajaj Auto',
@@ -40,9 +55,10 @@ const bajaj = buildFromActuals(null, {
   brandText: 'BAJAJ',
   brandColor: '#003DA5',
   dotColor: '#1d4ed8',
+  marketShareKey: 'Bajaj Auto',
 })
 
-const hero = buildFromActuals(null, {
+const hero = buildOem(heroRaw, {
   id: 'hero',
   name: 'Hero MotoCorp Ltd',
   publicName: 'Hero MotoCorp',
@@ -50,9 +66,10 @@ const hero = buildFromActuals(null, {
   brandText: 'HERO',
   brandColor: '#E11D48',
   dotColor: '#dc2626',
+  marketShareKey: 'Hero MotoCorp',
 })
 
-const eicher = buildFromActuals(null, {
+const eicher = buildOem(eicherRaw, {
   id: 'eicher',
   name: 'Eicher Motors / Royal Enfield',
   publicName: 'Eicher / Royal Enfield',
@@ -60,9 +77,10 @@ const eicher = buildFromActuals(null, {
   brandText: 'ROYAL ENFIELD',
   brandColor: '#7B3F00',
   dotColor: '#b45309',
+  marketShareKey: 'Royal Enfield',
 })
 
-const ola = buildFromActuals(null, {
+const ola = buildOem(olaRaw, {
   id: 'ola',
   name: 'Ola Electric Mobility Ltd',
   publicName: 'Ola Electric',
@@ -70,6 +88,7 @@ const ola = buildFromActuals(null, {
   brandText: 'OLA',
   brandColor: '#16A34A',
   dotColor: '#16a34a',
+  marketShareKey: 'Ola Electric',
 })
 
 export const FY = FY_AXIS

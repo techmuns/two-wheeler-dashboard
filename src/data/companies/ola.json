@@ -1,0 +1,29 @@
+{
+  "ticker": "OLAELEC",
+  "id": "ola",
+  "name": "Ola Electric Mobility Ltd",
+  "shortName": "Ola",
+  "basis": "Standalone — Ola Electric Mobility (separated from Ola Cabs)",
+  "currency": "INR",
+  "unit": "Cr",
+  "fyAxis": [],
+  "fetchedAt": null,
+  "sources": {
+    "primary": null,
+    "notes": "Awaiting upload of audited annual-report workbook. Match the schema and tab layout of TVS_Motor_Financials_Actuals_FY16_FY25.xlsx, but note Ola Electric's history is shorter — meaningful data starts FY22 (commercial launch). EV mix is 100% by definition. Schema: tabs = Financials / Metrics / Source Notes; standalone basis; FY22 → FY25 columns (FY16–FY21 stay null); line items = Revenue, Other Income, Cost of Materials, Employee Benefits, EBITDA, D&A, EBIT, Interest, PBT, PAT, Total Assets, Net Worth, Total Debt, Cash & Investments, Net Debt, Receivables, Inventory, Payables, Working Capital, CFO, Capex, FCF, CFI, CFF, Total Sales Volume.",
+    "perFY": {}
+  },
+  "verification": {
+    "status": "pending",
+    "confidence": "low",
+    "verifiedAgainstPrimary": false,
+    "method": "No source data uploaded yet for Ola Electric.",
+    "upgradePath": "Provide Ola Electric FY22–FY25 standalone audited workbook (same format as the TVS upload — earlier years stay null since the entity wasn't operational). Replace this file's contents — the dashboard will auto-populate every metric."
+  },
+  "pl":      {},
+  "bs":      {},
+  "cf":      {},
+  "ops":     {},
+  "metrics": {},
+  "na":      []
+}

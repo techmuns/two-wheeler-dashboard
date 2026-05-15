@@ -1,0 +1,29 @@
+{
+  "ticker": "HEROMOTOCO",
+  "id": "hero",
+  "name": "Hero MotoCorp Ltd",
+  "shortName": "Hero",
+  "basis": "Standalone",
+  "currency": "INR",
+  "unit": "Cr",
+  "fyAxis": [],
+  "fetchedAt": null,
+  "sources": {
+    "primary": null,
+    "notes": "Awaiting upload of audited annual-report workbook. Match the schema and tab layout of TVS_Motor_Financials_Actuals_FY16_FY25.xlsx: tabs = Financials / Metrics / Source Notes; standalone basis; FY16 → FY25 columns; line items = Revenue, Other Income, Cost of Materials, Employee Benefits, EBITDA, D&A, EBIT, Interest, PBT, PAT, Total Assets, Net Worth, Total Debt, Cash & Investments, Net Debt, Receivables, Inventory, Payables, Working Capital, CFO, Capex, FCF, CFI, CFF, Total Sales Volume, segment breakouts where disclosed (Motorcycles / Scooters / Mopeds / EV).",
+    "perFY": {}
+  },
+  "verification": {
+    "status": "pending",
+    "confidence": "low",
+    "verifiedAgainstPrimary": false,
+    "method": "No source data uploaded yet for Hero MotoCorp.",
+    "upgradePath": "Provide Hero MotoCorp FY16–FY25 standalone audited workbook (same format as the TVS upload). Replace this file's contents — the dashboard will auto-populate every metric."
+  },
+  "pl":      {},
+  "bs":      {},
+  "cf":      {},
+  "ops":     {},
+  "metrics": {},
+  "na":      []
+}
