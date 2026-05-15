@@ -22,7 +22,7 @@ export default function App() {
 
   return (
     <div className="min-h-full relative">
-      <div className="watermark select-none">2W</div>
+      <div className="watermark" aria-hidden="true" />
       <Header
         company={company}
         companies={COMPANIES}
