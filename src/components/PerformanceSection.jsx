@@ -1,65 +1,107 @@
-import React from 'react'
+import React, { useMemo, useState } from 'react'
 import {
-  BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, CartesianGrid,
+  BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, CartesianGrid, Cell, ReferenceLine,
 } from 'recharts'
 import { FY } from '../data.js'
+import {
+  getTvsGrowthVsIndustry,
+  getTvsVolumeMix,
+  getIndustryMeta,
+  getMixSource,
+  yoyForSegment,
+} from '../data/performance.js'
 
 const AXIS_TICK = { fontSize: 10.5, fill: '#64748B' }
 const GRID = '#F1F5F9'
-
 const TOOLTIP_STYLE = {
   borderRadius: 12,
   border: '1px solid #E5EAF0',
   fontSize: 12,
   boxShadow: '0 6px 20px rgba(15,23,42,0.08)',
+  padding: '10px 12px',
 }
 
-function GrowthChart({ growth, oemName }) {
-  const startIdx = FY.indexOf('FY18')
-  const rows = FY.slice(startIdx).map((fy, idx) => ({
-    fy,
-    [oemName]: growth.oem[startIdx + idx],
-    Industry: growth.industry[startIdx + idx],
-  }))
+const MIX_TYPES = [
+  { key: 'product',    label: 'Product Mix' },
+  { key: 'powertrain', label: 'Powertrain Mix' },
+  { key: 'geography',  label: 'Domestic / Export' },
+]
+
+const fmtUnitsL = (n) =>
+  typeof n === 'number' ? `${(n / 100000).toFixed(2)} L` : '—'
+
+const fmtPct = (v) => (typeof v === 'number' ? `${v.toFixed(1)}%` : '—')
+const fmtPctSigned = (v) =>
+  typeof v === 'number' ? `${v >= 0 ? '+' : ''}${v.toFixed(1)}%` : '—'
+
+// ============================================================================
+// LEFT: Growth vs Industry (grouped bars)
+// ============================================================================
+function GrowthChart({ rows, oemKey }) {
+  const forecastSet = useMemo(
+    () => new Set(rows.filter((r) => r.isForecast).map((r) => r.fy)),
+    [rows],
+  )
   return (
     <ResponsiveContainer width="100%" height="100%">
       <BarChart data={rows} margin={{ top: 6, right: 6, left: 0, bottom: 0 }} barCategoryGap="22%">
         <CartesianGrid stroke={GRID} vertical={false} />
         <XAxis dataKey="fy" tick={AXIS_TICK} axisLine={false} tickLine={false} interval={0} />
         <YAxis tick={AXIS_TICK} axisLine={false} tickLine={false} width={42} tickFormatter={(v) => `${v}%`} />
-        <Tooltip contentStyle={TOOLTIP_STYLE} formatter={(v) => (typeof v === 'number' ? `${v.toFixed(1)}%` : '—')} />
-        <Bar dataKey="Industry" fill="#CBD5E1" radius={[2, 2, 0, 0]} isAnimationActive={false} />
-        <Bar dataKey={oemName} fill="#2563EB" radius={[2, 2, 0, 0]} isAnimationActive={false} />
+        <ReferenceLine y={0} stroke="#CBD5E1" strokeWidth={1} />
+        <Tooltip
+          contentStyle={TOOLTIP_STYLE}
+          formatter={(v, name) => [typeof v === 'number' ? `${v.toFixed(1)}%` : '—', name]}
+          labelFormatter={(label) => (forecastSet.has(label) ? `${label} (forecast)` : label)}
+        />
+        <Bar dataKey="Industry" fill="#CBD5E1" radius={[2, 2, 0, 0]} isAnimationActive={false}>
+          {rows.map((r) => (
+            <Cell key={`ind-${r.fy}`} fill={r.isForecast ? '#E2E8F0' : '#CBD5E1'} fillOpacity={r.isForecast ? 0.7 : 1} />
+          ))}
+        </Bar>
+        <Bar dataKey={oemKey} fill="#2563EB" radius={[2, 2, 0, 0]} isAnimationActive={false}>
+          {rows.map((r) => (
+            <Cell key={`oem-${r.fy}`} fill={r.isForecast ? '#93B4F4' : '#2563EB'} fillOpacity={r.isForecast ? 0.8 : 1} />
+          ))}
+        </Bar>
       </BarChart>
     </ResponsiveContainer>
   )
 }
 
-function MixChart({ mix }) {
-  const startIdx = FY.indexOf('FY18')
-  const rows = FY.slice(startIdx).map((fy, idx) => {
-    const row = { fy }
-    mix.forEach((s) => { row[s.name] = s.values[startIdx + idx] })
-    return row
-  })
+// ============================================================================
+// RIGHT: Volume Mix (stacked 100% bars with internal toggles)
+// ============================================================================
+function MixChart({ rows, segmentNames, segmentColors, onHoverFy }) {
   return (
     <ResponsiveContainer width="100%" height="100%">
-      <BarChart data={rows} margin={{ top: 6, right: 6, left: 0, bottom: 0 }} barCategoryGap="18%">
+      <BarChart
+        data={rows}
+        margin={{ top: 6, right: 6, left: 0, bottom: 0 }}
+        barCategoryGap="20%"
+        stackOffset="expand"
+        onMouseMove={(e) => e?.activeLabel && onHoverFy?.(e.activeLabel)}
+        onMouseLeave={() => onHoverFy?.(null)}
+      >
         <CartesianGrid stroke={GRID} vertical={false} />
         <XAxis dataKey="fy" tick={AXIS_TICK} axisLine={false} tickLine={false} interval={0} />
-        <YAxis tick={AXIS_TICK} axisLine={false} tickLine={false} width={42} tickFormatter={(v) => `${v}%`} />
-        <Tooltip
-          contentStyle={TOOLTIP_STYLE}
-          formatter={(v) => (typeof v === 'number' ? `${v.toFixed(1)}%` : '—')}
+        <YAxis
+          tick={AXIS_TICK}
+          axisLine={false}
+          tickLine={false}
+          width={42}
+          tickFormatter={(v) => `${Math.round(v * 100)}%`}
         />
-        {mix.map((s, i) => (
+        <Tooltip content={<MixTooltip />} />
+        {segmentNames.map((name, idx) => (
           <Bar
-            key={s.name}
-            dataKey={s.name}
+            key={name}
+            dataKey={name}
             stackId="mix"
-            fill={s.color}
-            radius={i === mix.length - 1 ? [2, 2, 0, 0] : 0}
-            isAnimationActive={false}
+            fill={segmentColors[name] || '#CBD5E1'}
+            radius={idx === segmentNames.length - 1 ? [2, 2, 0, 0] : 0}
+            isAnimationActive={true}
+            animationDuration={220}
           />
         ))}
       </BarChart>
@@ -67,16 +109,287 @@ function MixChart({ mix }) {
   )
 }
 
-const Legend = ({ items }) => (
-  <div className="chart-legend">
-    {items.map((s) => (
-      <span key={s.name} className="flex items-center gap-1.5">
-        <span className="w-2 h-2 rounded-sm" style={{ background: s.color }} />
-        {s.name}
-      </span>
-    ))}
-  </div>
-)
+function MixTooltip({ active, payload, label }) {
+  if (!active || !payload?.length) return null
+  // payload[0].payload has { fy, total, <segmentName>: rawVolume, __pct: { name: pctValue }, ... }
+  const row = payload[0].payload
+  const total = row.__total
+  return (
+    <div style={TOOLTIP_STYLE}>
+      <div style={{ fontWeight: 600, color: '#0F1B2D', marginBottom: 6 }}>
+        {label} <span style={{ color: '#94A3B8', fontWeight: 400 }}>· {fmtUnitsL(total)} total</span>
+      </div>
+      {payload.map((p) => {
+        const segName = p.dataKey
+        const vol = row[segName]
+        const pct = total > 0 && typeof vol === 'number' ? (vol / total) * 100 : null
+        const yoy = row.__yoy?.[segName]
+        return (
+          <div key={segName} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, padding: '2px 0' }}>
+            <span style={{ width: 8, height: 8, background: p.color, borderRadius: 2, display: 'inline-block' }} />
+            <span style={{ color: '#475569', minWidth: 110 }}>{segName}</span>
+            <span style={{ color: '#0F1B2D', fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>
+              {fmtUnitsL(vol)}
+            </span>
+            <span style={{ color: '#94A3B8', fontVariantNumeric: 'tabular-nums' }}>{fmtPct(pct)}</span>
+            {typeof yoy === 'number' && (
+              <span
+                style={{
+                  color: yoy >= 0 ? '#1F7A45' : '#9F1F2E',
+                  fontWeight: 600,
+                  fontVariantNumeric: 'tabular-nums',
+                }}
+              >
+                {fmtPctSigned(yoy)}
+              </span>
+            )}
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+
+// ============================================================================
+// SECTION
+// ============================================================================
+export default function PerformanceSection({ company }) {
+  const performance = company.performance
+  if (!performance) return null
+
+  const [mixType, setMixType] = useState('product')
+  const [hoveredFy, setHoveredFy] = useState(null)
+
+  const oemKey = company.shortName || company.name
+  const industryMeta = getIndustryMeta()
+
+  // ---- Left chart data ----
+  const growthRows = useMemo(
+    () => getTvsGrowthVsIndustry(performance.growth?.oem, oemKey),
+    [performance.growth?.oem, oemKey],
+  )
+  const growthHasOem = growthRows.some((r) => typeof r[oemKey] === 'number')
+
+  // ---- Right chart data ----
+  // Always render FY18..FY25 axis to match the left chart. FYs without
+  // segment-level disclosure render as a solid 'Unclassified' grey bar.
+  const mixFyAxis = useMemo(() => {
+    const start = FY.indexOf('FY18')
+    return FY.slice(start, FY.indexOf('FY25') + 1)
+  }, [])
+
+  const mixRowsRaw = useMemo(
+    () => mixFyAxis.map((fy) => getTvsVolumeMix(company, fy, mixType)),
+    [company, mixType, mixFyAxis],
+  )
+
+  // Collect union of segment names across rows so each becomes its own <Bar/>.
+  const segmentNames = useMemo(() => {
+    const names = []
+    mixRowsRaw.forEach((r) => {
+      r.segments.forEach((s) => {
+        if (!names.includes(s.name)) names.push(s.name)
+      })
+    })
+    // Push 'Unclassified' to the end so it stacks on top.
+    const u = names.indexOf('Unclassified')
+    if (u > -1) {
+      names.splice(u, 1)
+      names.push('Unclassified')
+    }
+    return names
+  }, [mixRowsRaw])
+
+  const segmentColors = useMemo(() => {
+    const colors = {}
+    mixRowsRaw.forEach((r) =>
+      r.segments.forEach((s) => {
+        if (!colors[s.name]) colors[s.name] = s.color
+      }),
+    )
+    return colors
+  }, [mixRowsRaw])
+
+  // Build chart rows: one per FY, keys = segmentNames mapped to raw volume.
+  // Plus __total and __yoy for the tooltip.
+  const previousMix = useMemo(() => {
+    const byMixType = (
+      mixType === 'product' ? company.performance?.mixRich?.productByFy :
+      mixType === 'powertrain' ? company.performance?.mixRich?.powertrainByFy :
+      company.performance?.mixRich?.geographyByFy
+    ) || {}
+    return byMixType
+  }, [company.performance?.mixRich, mixType])
+
+  const chartRows = useMemo(() => {
+    return mixRowsRaw.map((r, idx) => {
+      const row = { fy: r.fy, __total: r.total }
+      segmentNames.forEach((n) => { row[n] = 0 })
+      r.segments.forEach((s) => { row[s.name] = s.volume })
+      // YoY change per segment (vs previous FY in this rolling axis)
+      const prevFy = idx > 0 ? mixRowsRaw[idx - 1].fy : null
+      if (prevFy) {
+        row.__yoy = {}
+        segmentNames.forEach((n) => {
+          const yoy = yoyForSegment(previousMix, r.fy, prevFy, n)
+          if (typeof yoy === 'number') row.__yoy[n] = yoy
+        })
+      }
+      return row
+    })
+  }, [mixRowsRaw, segmentNames, previousMix])
+
+  // ---- Selected-FY meta ----
+  const activeFy = hoveredFy || 'FY25'
+  const activeRow = chartRows.find((r) => r.fy === activeFy)
+  const activeTotal = activeRow?.__total
+  const prevTotal = (() => {
+    const i = mixFyAxis.indexOf(activeFy)
+    if (i <= 0) return null
+    return chartRows[i - 1]?.__total
+  })()
+  const activeYoy =
+    typeof activeTotal === 'number' && typeof prevTotal === 'number' && prevTotal > 0
+      ? ((activeTotal - prevTotal) / prevTotal) * 100
+      : null
+
+  const activeMixLabel = MIX_TYPES.find((m) => m.key === mixType)?.label || ''
+
+  // ---- Legend items for right chart (unique colors) ----
+  const legendItems = segmentNames.map((n) => ({ name: n, color: segmentColors[n] || '#CBD5E1' }))
+
+  // ---- Source footnotes ----
+  const mixSource = getMixSource(company, mixType)
+
+  return (
+    <section>
+      <div className="section-head">
+        <span className="section-eyebrow">Performance</span>
+        <span className="section-hint">Growth · Mix · Composition</span>
+      </div>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        {/* ===== Left — Growth vs Industry ===== */}
+        <div className="chart-panel">
+          <div className="chart-panel-head">
+            <div className="chart-panel-row1">
+              <div className="min-w-0">
+                <div className="chart-panel-title">{oemKey} growth vs 2W industry</div>
+                <div className="chart-panel-sub">Volume Growth % · FY18–FY27 · forecast lighter</div>
+              </div>
+              <span className="bsr-pill">%</span>
+            </div>
+            <div className="chart-panel-meta">
+              <span className="flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-sm" style={{ background: '#2563EB' }} />
+                {oemKey}
+              </span>
+              <span className="flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-sm" style={{ background: '#CBD5E1' }} />
+                2W Industry
+              </span>
+            </div>
+          </div>
+          <div className="chart-panel-body">
+            <div className="chart-canvas">
+              {growthHasOem ? (
+                <GrowthChart rows={growthRows} oemKey={oemKey} />
+              ) : (
+                <PendingShell note={`Volume growth not available for ${oemKey}.`} />
+              )}
+            </div>
+            <div className="chart-legend">
+              <span className="flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-sm" style={{ background: '#2563EB' }} />
+                {oemKey} volume growth %
+              </span>
+              <span className="flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-sm" style={{ background: '#CBD5E1' }} />
+                2W industry domestic volume growth %
+              </span>
+            </div>
+            <div className="chart-source">
+              {oemKey} growth from audited annual reports.{' '}
+              {industryMeta.hasData
+                ? `Industry growth: ${industryMeta.source}.`
+                : `Industry growth: ${industryMeta.source} — series pending upload (gaps show null, not zero).`}
+              {' '}FY26–FY27 styled lighter as forecast.
+            </div>
+          </div>
+        </div>
+
+        {/* ===== Right — Volume composition with toggles ===== */}
+        <div className="chart-panel">
+          <div className="chart-panel-head">
+            <div className="chart-panel-row1">
+              <div className="min-w-0">
+                <div className="chart-panel-title">Where {oemKey}'s volume is coming from</div>
+                <div className="chart-panel-sub">Total sales volume by selected mix</div>
+              </div>
+              <span className="bsr-pill">Mix %</span>
+            </div>
+            <div className="chart-panel-meta items-center" style={{ minHeight: 32 }}>
+              <div className="flex gap-1 bg-[#F4F6FA] rounded-md p-0.5 border border-[#E5EAF1]">
+                {MIX_TYPES.map((m) => (
+                  <button
+                    key={m.key}
+                    type="button"
+                    onClick={() => setMixType(m.key)}
+                    className={`text-[11px] font-semibold px-2.5 py-1 rounded transition-colors ${
+                      mixType === m.key
+                        ? 'bg-white text-[#6D28D9] shadow-[0_1px_2px_rgba(15,23,42,0.06)]'
+                        : 'text-[#475569] hover:text-[#0F1B2D]'
+                    }`}
+                  >
+                    {m.label}
+                  </button>
+                ))}
+              </div>
+              <span className="text-[11px] text-[#475569] tabular-nums ml-auto">
+                <span className="text-[#94A3B8]">{activeFy}</span>{' '}
+                {' · '}
+                Total <span className="text-[#0F1B2D] font-semibold">{fmtUnitsL(activeTotal)}</span>
+                {' · '}
+                YoY{' '}
+                <span
+                  className={`font-semibold ${
+                    typeof activeYoy === 'number'
+                      ? activeYoy >= 0
+                        ? 'text-[#1F7A45]'
+                        : 'text-[#9F1F2E]'
+                      : 'text-[#94A3B8]'
+                  }`}
+                >
+                  {fmtPctSigned(activeYoy)}
+                </span>
+                {' · '}
+                <span className="text-[#94A3B8]">{activeMixLabel}</span>
+              </span>
+            </div>
+          </div>
+          <div className="chart-panel-body">
+            <div className="chart-canvas">
+              <MixChart
+                rows={chartRows}
+                segmentNames={segmentNames}
+                segmentColors={segmentColors}
+                onHoverFy={setHoveredFy}
+              />
+            </div>
+            <div className="chart-legend" style={{ minHeight: 40 }}>
+              {legendItems.map((s) => (
+                <span key={s.name} className="flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-sm" style={{ background: s.color }} />
+                  {s.name}
+                </span>
+              ))}
+            </div>
+            <div className="chart-source">{mixSource}</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
 
 function PendingShell({ note }) {
   return (
@@ -92,101 +405,5 @@ function PendingShell({ note }) {
         {note || 'Upload source data to populate this chart.'}
       </div>
     </div>
-  )
-}
-
-const totalForFy = (mix, idx) => {
-  let total = 0
-  let any = false
-  mix.forEach((s) => {
-    const v = s.values[idx]
-    if (typeof v === 'number') { total += v; any = true }
-  })
-  return any ? total : null
-}
-
-export default function PerformanceSection({ company }) {
-  const { performance, name, shortName } = company
-  if (!performance) return null
-  const oemLabel = name === 'Industry' ? '2W industry' : (shortName || name)
-  const otherLabel = name === 'Industry' ? '2W industry' : '2W industry'
-  const oemKey = oemLabel
-
-  // Volume totals for the right card meta strip — use mix sum (already in %)
-  // Substitute with absolute headline if you have it; here we surface YoY pct.
-  const fy24Idx = FY.indexOf('FY24')
-  const fy25Idx = FY.indexOf('FY25')
-  const growthFy25 = typeof performance.growth?.oem?.[fy25Idx] === 'number'
-    ? performance.growth.oem[fy25Idx]
-    : null
-
-  const growthHasData = (performance.growth?.oem || []).some((v) => typeof v === 'number')
-  const mixHasData = (performance.mix || []).some((s) => s.values.some((v) => typeof v === 'number'))
-
-  return (
-    <section>
-      <div className="section-head">
-        <span className="section-eyebrow">Performance</span>
-        <span className="section-hint">Growth · Mix · Composition</span>
-      </div>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {/* Left — Growth vs Industry */}
-        <div className="chart-panel">
-          <div className="chart-panel-head">
-            <div className="chart-panel-row1">
-              <div className="min-w-0">
-                <div className="chart-panel-title">{name === 'Industry' ? '2W industry growth' : `${oemLabel} growth vs ${otherLabel}`}</div>
-                <div className="chart-panel-sub">Volume Growth % · FY18–FY27</div>
-              </div>
-              <span className="bsr-pill">%</span>
-            </div>
-            <div className="chart-panel-meta">
-              <span>OEM</span>
-              <span>Industry benchmark</span>
-            </div>
-          </div>
-          <div className="chart-panel-body">
-            <div className="chart-canvas">
-              {growthHasData ? (
-                <GrowthChart growth={performance.growth} oemName={oemKey} />
-              ) : (
-                <PendingShell />
-              )}
-            </div>
-            <Legend items={[
-              { name: oemLabel, color: '#2563EB' },
-              { name: 'Industry', color: '#CBD5E1' },
-            ]} />
-            <div className="chart-source">
-              FY26–FY27 are forecast. Industry benchmark is total domestic 2W volume growth from SIAM monthly bulletins.
-            </div>
-          </div>
-        </div>
-
-        {/* Right — Volume composition */}
-        <div className="chart-panel">
-          <div className="chart-panel-head">
-            <div className="chart-panel-row1">
-              <div className="min-w-0">
-                <div className="chart-panel-title">Where {oemLabel}{name === 'Industry' ? '' : "'s"} volume is coming from</div>
-                <div className="chart-panel-sub">Total sales volume by selected mix</div>
-              </div>
-              <span className="bsr-pill">Mix %</span>
-            </div>
-            <div className="chart-panel-meta">
-              <span>FY25</span>
-              <span>YoY vs FY24 {growthFy25 !== null ? <span className={`${growthFy25 >= 0 ? 'text-[#1F7A45]' : 'text-[#9F1F2E]'} font-semibold`}>{growthFy25 >= 0 ? '+' : ''}{growthFy25.toFixed(1)}%</span> : '—'}</span>
-            </div>
-          </div>
-          <div className="chart-panel-body">
-            <div className="chart-canvas">
-              {mixHasData ? <MixChart mix={performance.mix} /> : <PendingShell />}
-            </div>
-            <Legend items={performance.mix} />
-            <div className="chart-source">Stacked share by category, FY18–FY27. Source: SIAM · Vahan dashboard · OEM disclosures.</div>
-          </div>
-        </div>
-      </div>
-    </section>
   )
 }

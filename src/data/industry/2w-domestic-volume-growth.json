@@ -1,0 +1,22 @@
+{
+  "metric": "Two-Wheeler Domestic Volume Growth (% YoY)",
+  "source": "SIAM — Society of Indian Automobile Manufacturers, annual statistics",
+  "sourceUrl": "https://www.siam.in/statistics.aspx?mpgid=8&pgidtrail=14",
+  "notes": "Total domestic two-wheeler sales (motorcycles + scooters + mopeds), all OEMs, India. FY26 / FY27 are reserved for industry forecasts. Replace nulls with verified SIAM figures.",
+  "lastUpdated": null,
+  "forecastYears": ["FY26", "FY27"],
+  "series": {
+    "FY16": null,
+    "FY17": null,
+    "FY18": null,
+    "FY19": null,
+    "FY20": null,
+    "FY21": null,
+    "FY22": null,
+    "FY23": null,
+    "FY24": null,
+    "FY25": null,
+    "FY26": null,
+    "FY27": null
+  }
+}

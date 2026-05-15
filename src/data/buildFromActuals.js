@@ -8,6 +8,7 @@
 //  - Every populated cell carries a source citation back to the annual report.
 
 import { FY } from './_fy.js'
+import { getIndustryGrowthSeries } from './performance.js'
 
 // Align a series indexed by the source's fyAxis (e.g. ['FY16'..'FY25']) onto
 // our shared FY axis ('FY16'..'FY27'). Forward years stay null.
@@ -163,7 +164,7 @@ export function buildFromActuals(json, opts = {}) {
   const performance = {
     growth: {
       oem:      volGrowth,
-      industry: new Array(FY.length).fill(null),
+      industry: getIndustryGrowthSeries(),
     },
     // Right chart: stacked product mix. Only FY25 has a real mix in the audited data;
     // earlier years stay null and render as gaps. We still expose the FY25 split so
@@ -184,6 +185,47 @@ export function buildFromActuals(json, opts = {}) {
         { name: 'Mopeds',        color: '#10B981', values: mp },
         { name: 'Three-Wheelers', color: '#F59E0B', values: tw },
       ]
+    })(),
+    // Rich per-FY volume mix consumed by PerformanceSection. Only FYs with
+    // disclosed segment splits appear in productByFy / powertrainByFy.
+    // geographyByFy is empty — TVS does not disclose domestic/export split
+    // in its standalone audited statements.
+    mixRich: (() => {
+      const ops = json?.ops || {}
+      const m = json?.metrics || {}
+      const totalByFy = {}
+      FY.forEach((fy, idx) => {
+        const t = totalVolume[idx]
+        if (typeof t === 'number') totalByFy[fy] = t
+      })
+
+      const productByFy = {}
+      if (typeof ops.motorcyclesFy25 === 'number') {
+        productByFy.FY25 = [
+          { name: 'Motorcycles',     volume: ops.motorcyclesFy25,   color: '#2563EB' },
+          { name: 'Scooters',        volume: ops.scootersFy25 ?? 0, color: '#0EA5E9' },
+          { name: 'Mopeds',          volume: ops.mopedsFy25 ?? 0,   color: '#10B981' },
+          { name: 'Three-Wheelers',  volume: ops.threeWheelersFy25 ?? 0, color: '#F59E0B' },
+        ].filter((s) => typeof s.volume === 'number' && s.volume > 0)
+      }
+
+      const powertrainByFy = {}
+      if (typeof ops.evVolumeFy25 === 'number' && typeof ops.totalVolume === 'undefined') {
+        // fallback path (shouldn't hit)
+      }
+      if (typeof ops.evVolumeFy25 === 'number' && typeof totalByFy.FY25 === 'number') {
+        powertrainByFy.FY25 = [
+          { name: 'ICE', volume: totalByFy.FY25 - ops.evVolumeFy25, color: '#475569' },
+          { name: 'EV',  volume: ops.evVolumeFy25,                  color: '#10B981' },
+        ]
+      }
+
+      return {
+        totalByFy,
+        productByFy,
+        powertrainByFy,
+        geographyByFy: {},
+      }
     })(),
   }
 
