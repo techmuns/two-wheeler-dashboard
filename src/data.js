@@ -34,6 +34,9 @@ const buildBlock = (columns, fy24, fy25, fmt) => {
 const industry = {
   id: 'industry',
   name: 'Industry',
+  shortName: 'Industry',
+  brandText: '2W INDUSTRY',
+  brandColor: '#6D28D9',
   dotColor: '#6b7280',
   signal: 'Neutral',
   updated: '11 May 2026',
@@ -149,12 +152,15 @@ const industry = {
 // ============================================================================
 const tvs = {
   id: 'tvs',
-  name: 'TVS Motor',
+  name: 'TVS',
+  shortName: 'TVS',
+  brandText: 'TVS',
+  brandColor: '#0066B3',
   dotColor: '#0ea5e9',
   signal: 'Positive',
   updated: '11 May 2026',
   dataFresh: 'Fresh',
-  hero: { title: 'TVS Motor Cockpit', subtitle: 'Demand · mix · competitive shifts across OEMs', fy: 'FY25' },
+  hero: { title: 'TVS', subtitle: 'Buy-side snapshot', fy: 'FY25' },
   kpis: [
     { key: 'mktShare', label: 'Market Share %', value: '18.6%', sub: 'Domestic 2W FY25', delta: '+0.7pp', tone: 'pos', fmt: 'pp',
       series: [13.8, 14.2, 14.6, 15.4, 16.0, 16.4, 16.8, 17.5, 17.9, 18.6, 19.0, 19.4] },
@@ -240,11 +246,14 @@ const tvs = {
 const bajaj = {
   id: 'bajaj',
   name: 'Bajaj Auto',
+  shortName: 'Bajaj',
+  brandText: 'BAJAJ',
+  brandColor: '#003DA5',
   dotColor: '#1d4ed8',
   signal: 'Positive',
   updated: '11 May 2026',
   dataFresh: 'Fresh',
-  hero: { title: 'Bajaj Auto Cockpit', subtitle: 'Demand · mix · competitive shifts across OEMs', fy: 'FY25' },
+  hero: { title: 'Bajaj Auto', subtitle: 'Buy-side snapshot', fy: 'FY25' },
   kpis: [
     { key: 'mktShare', label: 'Market Share %', value: '13.2%', sub: 'Domestic 2W FY25', delta: '+0.4pp', tone: 'pos', fmt: 'pp',
       series: [12.5, 12.0, 11.6, 12.2, 11.2, 11.0, 12.4, 13.0, 12.8, 13.2, 13.5, 13.8] },
@@ -325,11 +334,14 @@ const bajaj = {
 const hero = {
   id: 'hero',
   name: 'Hero MotoCorp',
+  shortName: 'Hero',
+  brandText: 'HERO',
+  brandColor: '#E11D48',
   dotColor: '#dc2626',
   signal: 'Neutral',
   updated: '11 May 2026',
   dataFresh: 'Fresh',
-  hero: { title: 'Hero MotoCorp Cockpit', subtitle: 'Demand · mix · competitive shifts across OEMs', fy: 'FY25' },
+  hero: { title: 'Hero MotoCorp', subtitle: 'Buy-side snapshot', fy: 'FY25' },
   kpis: [
     { key: 'mktShare', label: 'Market Share %', value: '28.6%', sub: 'Domestic 2W FY25', delta: '-0.5pp', tone: 'neg', fmt: 'pp',
       series: [37, 36, 35, 35, 33, 31, 30, 29.5, 29.1, 28.6, 28.0, 27.5] },
@@ -410,11 +422,14 @@ const hero = {
 const eicher = {
   id: 'eicher',
   name: 'Eicher / Royal Enfield',
+  shortName: 'Royal Enfield',
+  brandText: 'ROYAL ENFIELD',
+  brandColor: '#7B3F00',
   dotColor: '#b45309',
   signal: 'Positive',
   updated: '11 May 2026',
   dataFresh: 'Fresh',
-  hero: { title: 'Eicher / Royal Enfield Cockpit', subtitle: 'Demand · mix · competitive shifts across OEMs', fy: 'FY25' },
+  hero: { title: 'Eicher / Royal Enfield', subtitle: 'Buy-side snapshot', fy: 'FY25' },
   kpis: [
     { key: 'mktShare', label: 'Market Share %', value: '5.4%', sub: 'Domestic 2W FY25', delta: '+0.5pp', tone: 'pos', fmt: 'pp',
       series: [2.8, 3.2, 4.0, 3.6, 3.4, 3.4, 3.7, 4.5, 4.9, 5.4, 5.8, 6.2] },
@@ -495,11 +510,14 @@ const eicher = {
 const ola = {
   id: 'ola',
   name: 'Ola Electric',
+  shortName: 'Ola',
+  brandText: 'OLA',
+  brandColor: '#16A34A',
   dotColor: '#16a34a',
   signal: 'Negative',
   updated: '11 May 2026',
   dataFresh: 'Fresh',
-  hero: { title: 'Ola Electric Cockpit', subtitle: 'Demand · mix · competitive shifts across OEMs', fy: 'FY25' },
+  hero: { title: 'Ola Electric', subtitle: 'Buy-side snapshot', fy: 'FY25' },
   kpis: [
     { key: 'mktShare', label: 'Market Share %', value: '28.0%', sub: 'India e-2W FY25', delta: '-10.0pp', tone: 'neg', fmt: 'pp',
       series: [null, null, null, null, null, null, null, 25, 38, 28, 26, 25] },
