@@ -51,7 +51,8 @@ const buildBlock = (columns, fy24, fy25, fmt) => {
 }
 
 export function buildFromActuals(json, opts = {}) {
-  const { id, name, shortName, brandText, brandColor, dotColor } = opts
+  const { id, name, shortName, brandText, brandColor, dotColor, heroOverride, signal: signalOverride } = opts
+  const isEmpty = !json || !json.fyAxis || !json.pl
   const ax = json.fyAxis || []
   const fy24Idx = FY.indexOf('FY24')
   const fy25Idx = FY.indexOf('FY25')
@@ -282,12 +283,14 @@ export function buildFromActuals(json, opts = {}) {
 
   return {
     id, name: opts.publicName || name, shortName, brandText, brandColor, dotColor,
-    signal: 'Positive',
-    updated,
-    dataFresh: 'Audited',
-    hero: {
+    signal: signalOverride || (isEmpty ? 'Neutral' : 'Positive'),
+    updated: isEmpty ? '—' : updated,
+    dataFresh: isEmpty ? 'Pending' : 'Audited',
+    hero: heroOverride || {
       title: shortName || name,
-      subtitle: 'Audited annual snapshot · FY16–FY25 standalone',
+      subtitle: isEmpty
+        ? 'Pending — annual-report workbook not yet uploaded'
+        : 'Audited annual snapshot · FY16–FY25 standalone',
       fy: 'FY25',
     },
     kpis,
@@ -295,7 +298,9 @@ export function buildFromActuals(json, opts = {}) {
     productDrivers: drivers,
     supportingData: supporting,
     charts,
-    modelSource: `Source: TVS Motor Annual Reports FY16–FY25 (standalone audited) + audited Q4 result packages. Derived items computed from disclosed line items; no estimates.`,
-    sourceCitations: json.sources?.perFY || {},
+    modelSource: isEmpty
+      ? 'No source data uploaded yet for this company. Provide an audited financials workbook to populate.'
+      : `Source: ${opts.publicName || name} Annual Reports FY16–FY25 (standalone audited) + audited Q4 result packages. Derived items computed from disclosed line items; no estimates.`,
+    sourceCitations: json?.sources?.perFY || {},
   }
 }
