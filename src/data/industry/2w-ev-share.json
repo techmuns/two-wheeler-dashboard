@@ -4,6 +4,13 @@
   "sourceUrl": "https://analytics.parivahan.gov.in/analytics/vahanpublicreport",
   "notes": "Registrations basis (not dispatches). Pre-FY20 EV 2W registrations were a rounding error. FY22 onwards reflects FAME-II + Ola/TVS/Bajaj/Ather ramp.",
   "lastUpdated": "2026-05-15",
+  "verification": {
+    "status": "approximate",
+    "confidence": "medium-high",
+    "verifiedAgainstPrimary": false,
+    "method": "Training-data estimate of Vahan-reported EV 2W share. FY22–FY25 widely reported by ICRA / CRISIL / analyst notes; confidence is higher for those years and lower for FY18–FY21.",
+    "upgradePath": "Vahan analytics extract (Vehicle Class 2WN/2WIC/2WT + Fuel: Electric (BOV)) or a working Vahan scraper in CI."
+  },
   "series": {
     "FY16": 0.0,
     "FY17": 0.0,

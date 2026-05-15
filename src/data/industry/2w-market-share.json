@@ -4,6 +4,13 @@
   "sourceUrl": "https://www.siam.in/statistics.aspx?mpgid=8&pgidtrail=14",
   "notes": "Market share computed on domestic dispatches (SIAM) — same denominator as the segment-mix series. EV-only OEMs (Ola Electric, Ather) show up from FY22.",
   "lastUpdated": "2026-05-15",
+  "verification": {
+    "status": "approximate",
+    "confidence": "medium",
+    "verifiedAgainstPrimary": false,
+    "method": "Training-data estimate of SIAM domestic dispatch shares. Trend directions (Hero declining, TVS rising, RE accelerating) are reliable; exact %s may differ from the latest bulletin by 1–2pp per cell.",
+    "upgradePath": "Upload SIAM 'Domestic Sales' annual breakdown by OEM (or Vahan registrations cross-checked with company press releases)."
+  },
   "series": {
     "Hero MotoCorp": {
       "FY16": 38.7, "FY17": 36.2, "FY18": 35.3, "FY19": 35.1, "FY20": 36.7,

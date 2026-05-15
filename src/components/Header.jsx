@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { SECTOR_META } from '../data.js'
+import { verificationsForCompany, rollupStatus, statusLabel } from '../data/verification.js'
 
 const SignalClass = {
   Positive: 'signal-pos',
@@ -9,6 +10,12 @@ const SignalClass = {
   Stale: 'signal-warn',
   Pending: 'signal-warn',
   Missing: 'signal-neu',
+}
+
+const DATA_STATUS_CLASS = {
+  audited:     'signal-pos',
+  approximate: 'signal-warn',
+  pending:     'signal-neu',
 }
 
 const Label = ({ children }) => (
@@ -116,11 +123,17 @@ export default function Header({ company, companies, onSelectCompany, onExport }
             <Label>Updated</Label>
             <span className="text-xs font-semibold px-2.5 py-0.5 rounded-md bg-white/15 text-white">{company.updated}</span>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2" title="Data verification rollup — see the Data Quality panel for per-source breakdown.">
             <Label>Data</Label>
-            <span className={`text-xs font-semibold px-2.5 py-0.5 rounded-full ${SignalClass[company.dataFresh] || 'signal-neu'}`}>
-              {company.dataFresh}
-            </span>
+            {(() => {
+              const verifs = verificationsForCompany(company.id)
+              const rollup = rollupStatus(verifs)
+              return (
+                <span className={`text-xs font-semibold px-2.5 py-0.5 rounded-full ${DATA_STATUS_CLASS[rollup.status] || 'signal-neu'}`}>
+                  {statusLabel(rollup.status)}
+                </span>
+              )
+            })()}
           </div>
         </div>
 

@@ -15,6 +15,13 @@
     "FY25": 19605000
   },
   "lastUpdated": "2026-05-15",
+  "verification": {
+    "status": "approximate",
+    "confidence": "medium-high",
+    "verifiedAgainstPrimary": false,
+    "method": "Widely-cited SIAM annual-flash-report figures from analyst training data. Not freshly fetched from siam.in during this build. FY25 in particular may differ by ±1pp from the latest published bulletin.",
+    "upgradePath": "Upload SIAM annual statistical bulletin (PDF / Excel) and overwrite cells, or wire a working SIAM scraper to the refresh workflow."
+  },
   "forecastYears": ["FY26", "FY27"],
   "series": {
     "FY16": null,

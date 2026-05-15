@@ -4,6 +4,13 @@
   "sourceUrl": "https://www.siam.in/statistics.aspx?mpgid=8&pgidtrail=14",
   "notes": "Aggregate 2W exports by all India OEMs. Africa + LatAm dominate; weakness in FY23/FY24 reflects forex stress in key markets.",
   "lastUpdated": "2026-05-15",
+  "verification": {
+    "status": "approximate",
+    "confidence": "medium",
+    "verifiedAgainstPrimary": false,
+    "method": "Training-data estimate of SIAM annual export totals. Volumes and growth %s are illustrative within ±5%; FY22 spike and FY23/24 decline directions are reliable.",
+    "upgradePath": "Upload SIAM annual export flash report; overwrite both volume and growth series."
+  },
   "underlyingVolumesUnits": {
     "FY17": 2340277,
     "FY18": 2815016,

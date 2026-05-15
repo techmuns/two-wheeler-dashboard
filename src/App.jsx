@@ -3,6 +3,7 @@ import { COMPANIES, FY } from './data.js'
 import { exportCompanyCsv } from './export.js'
 import Header from './components/Header.jsx'
 import HeroCard from './components/HeroCard.jsx'
+import DataQualityPanel from './components/DataQualityPanel.jsx'
 import KpiCards from './components/KpiCards.jsx'
 import PerformanceSection from './components/PerformanceSection.jsx'
 import ProductDrivers from './components/ProductDrivers.jsx'
@@ -31,6 +32,7 @@ export default function App() {
       />
       <main className="max-w-[1400px] mx-auto px-6 py-7 space-y-7 relative">
         <HeroCard company={company} />
+        <DataQualityPanel company={company} />
         <KpiCards kpis={company.kpis} onKpiClick={setModalKpi} />
         <PerformanceSection company={company} />
         <ProductDrivers drivers={company.productDrivers} />

@@ -4,6 +4,13 @@
   "sourceUrl": "https://www.siam.in/statistics.aspx?mpgid=8&pgidtrail=14",
   "notes": "Values are widely-cited SIAM annual figures. Mopeds includes TVS XL100 family. Three-wheeler share excluded from total — the four-segment row sums to ~100% with small rounding.",
   "lastUpdated": "2026-05-15",
+  "verification": {
+    "status": "approximate",
+    "confidence": "medium",
+    "verifiedAgainstPrimary": false,
+    "method": "Estimated from training-data knowledge of SIAM annual body-type splits. Exact %s may differ from the SIAM statistical bulletin by 1–2 percentage points.",
+    "upgradePath": "Upload SIAM annual statistical bulletin segment-wise table; overwrite each row."
+  },
   "series": {
     "Motorcycles": {
       "FY16": 68.1, "FY17": 67.2, "FY18": 66.4, "FY19": 64.8, "FY20": 65.6,
