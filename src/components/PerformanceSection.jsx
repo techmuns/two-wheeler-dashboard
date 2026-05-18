@@ -3,6 +3,7 @@ import {
   BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, CartesianGrid, Cell, ReferenceLine, LabelList,
 } from 'recharts'
 import { FY } from '../data.js'
+import { MixTooltip as SharedMixTooltip, LineTooltip, TOOLTIP_WRAPPER_STYLE } from './ChartTooltip.jsx'
 import {
   getTvsGrowthVsIndustry,
   getTvsVolumeMix,
@@ -16,13 +17,6 @@ import {
 
 const AXIS_TICK = { fontSize: 10.5, fill: '#64748B' }
 const GRID = '#F1F5F9'
-const TOOLTIP_STYLE = {
-  borderRadius: 12,
-  border: '1px solid #E5EAF0',
-  fontSize: 12,
-  boxShadow: '0 6px 20px rgba(15,23,42,0.08)',
-  padding: '10px 12px',
-}
 
 const MIX_TYPES = [
   { key: 'product',    label: 'Product Mix' },
@@ -53,9 +47,11 @@ function GrowthChart({ rows, oemKey }) {
         <YAxis tick={AXIS_TICK} axisLine={false} tickLine={false} width={42} tickFormatter={(v) => `${v}%`} />
         <ReferenceLine y={0} stroke="#CBD5E1" strokeWidth={1} />
         <Tooltip
-          contentStyle={TOOLTIP_STYLE}
-          formatter={(v, name) => [typeof v === 'number' ? `${v.toFixed(1)}%` : '—', name]}
-          labelFormatter={(label) => (forecastSet.has(label) ? `${label} (forecast)` : label)}
+          content={<LineTooltip unit="%" />}
+          wrapperStyle={TOOLTIP_WRAPPER_STYLE}
+          allowEscapeViewBox={{ x: false, y: false }}
+          offset={14}
+          cursor={{ fill: 'rgba(109, 40, 217, 0.05)' }}
         />
         <Bar dataKey="Industry" fill="#CBD5E1" radius={[2, 2, 0, 0]} isAnimationActive={false}>
           {rows.map((r) => (
@@ -75,7 +71,7 @@ function GrowthChart({ rows, oemKey }) {
 // ============================================================================
 // RIGHT: Volume Mix (stacked 100% bars with internal toggles)
 // ============================================================================
-function MixChart({ rows, segmentNames, segmentColors, onHoverFy, hoveredStatus }) {
+function MixChart({ rows, segmentNames, segmentColors, onHoverFy }) {
   // Maruti-style: absolute volumes in lakh units, total label on top, 3 bars max.
   // Stacked but NOT expanded — heights reflect real volumes so YoY growth shows visually.
   return (
@@ -97,9 +93,9 @@ function MixChart({ rows, segmentNames, segmentColors, onHoverFy, hoveredStatus 
           tickFormatter={(v) => `${(v / 100000).toFixed(0)} L`}
         />
         <Tooltip
-          content={<MixTooltip currentStatus={hoveredStatus} />}
+          content={<SharedMixTooltip />}
           cursor={{ fill: 'rgba(109, 40, 217, 0.05)' }}
-          wrapperStyle={{ zIndex: 20, pointerEvents: 'none' }}
+          wrapperStyle={TOOLTIP_WRAPPER_STYLE}
           allowEscapeViewBox={{ x: false, y: false }}
           offset={14}
         />
@@ -212,106 +208,6 @@ function CoverageDrawer({ company, mixType, mixRowsRaw, onClose }) {
   )
 }
 
-// Friendly status label used by the tooltip footer.
-const STATUS_LABEL_SHORT = {
-  available:                  'Available',
-  available_residual:         'Available · Mopeds residual',
-  derived:                    'Derived',
-  pending_pdf_parse:          'Missing · pending source',
-  pending_pdf_parse_explicit: 'Missing · pending source',
-  pending_pdf_parse_residual: 'Missing · pending source',
-  unavailable:                'Unavailable',
-  unavailable_pre_ev:         'N/A · pre-EV',
-  unavailable_minimal_ev:     'N/A · minimal EV',
-  paid_source_required:       'Paid source required',
-}
-const STATUS_LABEL_FRIENDLY = (s) => STATUS_LABEL_SHORT[s] || 'Unknown'
-
-// ============================================================================
-// Tooltip — Maruti style: compact card, dotted rows, single short status line.
-// Source text deliberately stays in the chart footer, NOT inside the tooltip.
-// ============================================================================
-const TOOLTIP_CARD = {
-  background: '#FFFFFF',
-  border: '1px solid #E5EAF0',
-  borderRadius: 12,
-  boxShadow: '0 6px 20px rgba(15,23,42,0.10), 0 1px 3px rgba(15,23,42,0.04)',
-  padding: '12px 14px',
-  minWidth: 240,
-  maxWidth: 340,
-  fontSize: 12,
-  color: '#0F1B2D',
-  pointerEvents: 'none',
-}
-
-const ROW_STYLE = {
-  display: 'grid',
-  gridTemplateColumns: '12px 1fr auto auto',
-  alignItems: 'center',
-  columnGap: 10,
-  padding: '3px 0',
-}
-
-function MixTooltip({ active, payload, label, currentStatus }) {
-  if (!active || !payload?.length) return null
-  const row = payload[0].payload
-  const total = row.__total
-  const disclosed = payload.filter((p) => typeof row[p.dataKey] === 'number' && row[p.dataKey] > 0)
-
-  return (
-    <div style={TOOLTIP_CARD}>
-      <div style={{ fontWeight: 700, color: '#0F1B2D', fontSize: 13, marginBottom: 2 }}>{label}</div>
-      <div style={{
-        fontSize: 11.5, color: '#475569',
-        display: 'flex', justifyContent: 'space-between', gap: 12,
-        paddingBottom: 8, marginBottom: 6, borderBottom: '1px solid #F1F5F9',
-      }}>
-        <span>Total sales volume</span>
-        <span style={{ color: '#0F1B2D', fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>
-          {fmtUnitsL(total)?.replace(' L', ' lakh units') || '—'}
-        </span>
-      </div>
-
-      {disclosed.length === 0 ? (
-        <div style={{ fontSize: 11.5, color: '#94A3B8', fontStyle: 'italic' }}>
-          Split not shown — not verified from source yet.
-        </div>
-      ) : (
-        disclosed.map((p) => {
-          const segName = p.dataKey
-          const vol = row[segName]
-          const pct = total > 0 && typeof vol === 'number' ? (vol / total) * 100 : null
-          return (
-            <div key={segName} style={ROW_STYLE}>
-              <span style={{ width: 8, height: 8, background: p.color, borderRadius: 2 }} />
-              <span style={{ color: '#475569' }}>{segName}</span>
-              <span style={{ color: '#0F1B2D', fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>
-                {typeof vol === 'number' ? `${(vol / 100000).toFixed(2)} L` : '—'}
-              </span>
-              <span style={{ color: '#94A3B8', fontVariantNumeric: 'tabular-nums' }}>
-                {typeof pct === 'number' ? `(${pct.toFixed(1)}%)` : ''}
-              </span>
-            </div>
-          )
-        })
-      )}
-
-      {currentStatus && (
-        <div style={{
-          marginTop: 8, paddingTop: 6,
-          borderTop: '1px solid #F1F5F9',
-          fontSize: 11, color: '#6B7280',
-          display: 'flex', justifyContent: 'space-between', gap: 12,
-        }}>
-          <span>Data status</span>
-          <span style={{ color: '#0F1B2D', fontWeight: 600 }}>
-            {STATUS_LABEL_FRIENDLY(currentStatus)}
-          </span>
-        </div>
-      )}
-    </div>
-  )
-}
 
 // ============================================================================
 // SECTION
@@ -572,7 +468,6 @@ export default function PerformanceSection({ company }) {
                   segmentNames={segmentNames}
                   segmentColors={segmentColors}
                   onHoverFy={setHoveredFy}
-                  hoveredStatus={mixRowsRaw.find((r) => r.fy === activeFy)?.status}
                 />
               ) : (
                 <div className="flex flex-col items-center justify-center text-center h-full">

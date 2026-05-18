@@ -5,15 +5,10 @@ import {
 } from 'recharts'
 import { FY, SUPPORT_BLOCKS } from '../data.js'
 import { getSupportingData, getSupportingChartData } from '../data/supportingTvs.js'
+import { LineTooltip, TOOLTIP_WRAPPER_STYLE } from './ChartTooltip.jsx'
 
 const AXIS_TICK = { fontSize: 10.5, fill: '#64748B' }
 const GRID = '#F1F5F9'
-const TOOLTIP_STYLE = {
-  borderRadius: 12,
-  border: '1px solid #E5EAF0',
-  fontSize: 12,
-  boxShadow: '0 6px 20px rgba(15,23,42,0.08)',
-}
 
 const fmtCell = (v, fmt) => {
   if (typeof v !== 'number') return v ?? '—'
@@ -96,8 +91,10 @@ function LineChartPanel({ series, fmt }) {
         <YAxis tick={AXIS_TICK} axisLine={false} tickLine={false} width={48}
           tickFormatter={(v) => (Math.abs(v) >= 1000 ? `${(v / 1000).toFixed(1)}k` : `${v}`)} />
         <Tooltip
-          contentStyle={TOOLTIP_STYLE}
-          formatter={(v, n, ctx) => (typeof v === 'number' ? `${v.toFixed(1)}${ctx?.payload && (series.find((s) => s.name === n)?.fmt === 'pp') ? '%' : ''}` : '—')}
+          content={<LineTooltip />}
+          wrapperStyle={TOOLTIP_WRAPPER_STYLE}
+          allowEscapeViewBox={{ x: false, y: false }}
+          offset={14}
         />
         {series.map((s) => (
           <Line

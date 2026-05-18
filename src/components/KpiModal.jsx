@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Tooltip, ReferenceLine, CartesianGrid } from 'recharts'
 import { FY } from '../data.js'
+import { LineTooltip, TOOLTIP_WRAPPER_STYLE } from './ChartTooltip.jsx'
 
 const AXIS_TICK = { fontSize: 10.5, fill: '#64748B' }
 const GRID = '#F1F5F9'
@@ -110,8 +111,10 @@ export default function KpiModal({ open, kpi, company, onClose }) {
                   <YAxis tick={AXIS_TICK} axisLine={false} tickLine={false} width={48}
                     tickFormatter={(v) => (kpi.fmt === 'pp' ? `${v}%` : `${v}`)} />
                   <Tooltip
-                    contentStyle={{ borderRadius: 12, border: '1px solid #E5EAF0', fontSize: 12, boxShadow: '0 6px 20px rgba(15,23,42,0.08)' }}
-                    formatter={(v) => fmtVal(v, kpi.fmt)}
+                    content={<LineTooltip unit={kpi.fmt === 'pp' ? '%' : undefined} />}
+                    wrapperStyle={TOOLTIP_WRAPPER_STYLE}
+                    allowEscapeViewBox={{ x: false, y: false }}
+                    offset={14}
                   />
                   <ReferenceLine x="FY25" stroke="#CBD5E1" strokeDasharray="3 3" />
                   <Line
