@@ -203,48 +203,10 @@ export function buildSupportingGroups(raw, opts = {}) {
       sourceFootnote: NA_REASONS.launches,
     },
 
-    {
-      name: 'Company Profile',
-      chartType: 'profile',
-      metrics: [
-        NA('Stock Price as on 31-Mar', 'abs',  NA_REASONS.profile, 'stockPrice'),
-        profileMetric('No. of Employees (Permanent)', 'abs',  'employees',
-          prof?.employees?.permanent ? prof.employees.permanent.toLocaleString('en-IN') : null,
-          prof?.employees?.permanentNote || prof?.source),
-        profileMetric('No. of Dealers',               'text', 'dealers',
-          prof?.dealers?.total || null,
-          prof?.dealers?.totalNote || prof?.source),
-        profileMetric('EV Dealerships (iQube)',       'abs',  'evDealers',
-          typeof prof?.dealers?.evDealerships === 'number' ? prof.dealers.evDealerships.toLocaleString('en-IN') : null,
-          prof?.dealers?.evDealershipsNote || prof?.source),
-        profileMetric('Chairman',                     'text', 'chairman',
-          prof?.kmp?.chairman || null, prof?.source),
-        profileMetric('Managing Director',            'text', 'md',
-          prof?.kmp?.managingDirector || null, prof?.source),
-        profileMetric('Director & CEO',               'text', 'ceo',
-          prof?.kmp?.ceo || null, prof?.source),
-        profileMetric('CFO',                          'text', 'cfo',
-          prof?.kmp?.cfo || null, prof?.source),
-        profileMetric('COO',                          'text', 'coo',
-          prof?.kmp?.coo || null, prof?.kmp?.cooNote || 'Not separately disclosed.'),
-        profileMetric('Credit Rating (Long-term)',    'text', 'creditRatingLong',
-          prof?.creditRating?.longTerm
-            ? `${prof.creditRating.longTerm} — ${prof.creditRating.longTermScope}`
-            : null,
-          prof?.creditRating?.source || prof?.source),
-        profileMetric('Credit Rating (Short-term)',   'text', 'creditRatingShort',
-          prof?.creditRating?.shortTerm
-            ? `${prof.creditRating.shortTerm} — ${prof.creditRating.shortTermScope}`
-            : null,
-          prof?.creditRating?.source || prof?.source),
-        profileMetric('Manufacturing Facilities (India)', 'text', 'mfgIndia',
-          prof?.manufacturing?.facilities?.length
-            ? prof.manufacturing.facilities.join(' · ')
-            : null,
-          prof?.manufacturing?.note || prof?.source),
-      ],
-      sourceFootnote: prof?.source || NA_REASONS.profile,
-    },
+    // NOTE: 'Company Profile' group intentionally removed from this dropdown.
+    // KMP / dealers / employees / credit rating / manufacturing all live on
+    // the Governance & Network card directly on the main page now, so
+    // duplicating them inside Supporting Data was pure clutter.
   ]
 
   return groups
