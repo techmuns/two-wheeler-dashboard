@@ -26,8 +26,8 @@ jobs:
           node-version: '20'
           cache: 'npm'
 
-      - name: Install dependencies
-        run: npm ci
+      - name: Install dependencies (incl. optional cheerio for scrapers)
+        run: npm ci --include=optional
 
       - name: Fetch FADA monthly retail
         run: node scripts/fetch-fada.mjs || echo "FADA fetch failed — JSON marked as 'error', continuing"
