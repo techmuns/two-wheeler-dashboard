@@ -8,6 +8,7 @@ import KpiCards from './components/KpiCards.jsx'
 import PerformanceSection from './components/PerformanceSection.jsx'
 import ProductDrivers from './components/ProductDrivers.jsx'
 import SupportingData from './components/SupportingData.jsx'
+import GovernanceNetwork from './components/GovernanceNetwork.jsx'
 import SourcesPanel from './components/SourcesPanel.jsx'
 import KpiModal from './components/KpiModal.jsx'
 import Footer from './components/Footer.jsx'
@@ -37,6 +38,7 @@ export default function App() {
         <PerformanceSection company={company} />
         <ProductDrivers drivers={company.productDrivers} />
         <SupportingData company={company} />
+        <GovernanceNetwork company={company} />
         <SourcesPanel company={company} />
         <Footer />
       </main>
