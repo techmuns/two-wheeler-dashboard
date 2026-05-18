@@ -75,7 +75,7 @@ function GrowthChart({ rows, oemKey }) {
 // ============================================================================
 // RIGHT: Volume Mix (stacked 100% bars with internal toggles)
 // ============================================================================
-function MixChart({ rows, segmentNames, segmentColors, onHoverFy, hoveredStatus, hoveredSourceText }) {
+function MixChart({ rows, segmentNames, segmentColors, onHoverFy, hoveredStatus }) {
   // Maruti-style: absolute volumes in lakh units, total label on top, 3 bars max.
   // Stacked but NOT expanded — heights reflect real volumes so YoY growth shows visually.
   return (
@@ -96,7 +96,13 @@ function MixChart({ rows, segmentNames, segmentColors, onHoverFy, hoveredStatus,
           width={56}
           tickFormatter={(v) => `${(v / 100000).toFixed(0)} L`}
         />
-        <Tooltip content={<MixTooltip currentStatus={hoveredStatus} sourceText={hoveredSourceText} />} cursor={{ fill: 'rgba(109, 40, 217, 0.05)' }} />
+        <Tooltip
+          content={<MixTooltip currentStatus={hoveredStatus} />}
+          cursor={{ fill: 'rgba(109, 40, 217, 0.05)' }}
+          wrapperStyle={{ zIndex: 20, pointerEvents: 'none' }}
+          allowEscapeViewBox={{ x: false, y: false }}
+          offset={14}
+        />
         {segmentNames.map((name, idx) => {
           const isTop = idx === segmentNames.length - 1
           return (
@@ -206,65 +212,102 @@ function CoverageDrawer({ company, mixType, mixRowsRaw, onClose }) {
   )
 }
 
+// Friendly status label used by the tooltip footer.
 const STATUS_LABEL_SHORT = {
   available:                  'Available',
-  available_residual:         'Available (Mopeds residual)',
+  available_residual:         'Available · Mopeds residual',
   derived:                    'Derived',
-  pending_pdf_parse:          'Missing (pending source)',
-  pending_pdf_parse_explicit: 'Missing (pending source)',
-  pending_pdf_parse_residual: 'Missing (pending source)',
+  pending_pdf_parse:          'Missing · pending source',
+  pending_pdf_parse_explicit: 'Missing · pending source',
+  pending_pdf_parse_residual: 'Missing · pending source',
   unavailable:                'Unavailable',
-  unavailable_pre_ev:         'N/A (pre-EV)',
-  unavailable_minimal_ev:     'N/A (minimal EV)',
+  unavailable_pre_ev:         'N/A · pre-EV',
+  unavailable_minimal_ev:     'N/A · minimal EV',
   paid_source_required:       'Paid source required',
 }
-
 const STATUS_LABEL_FRIENDLY = (s) => STATUS_LABEL_SHORT[s] || 'Unknown'
 
-function MixTooltip({ active, payload, label, currentStatus, sourceText }) {
+// ============================================================================
+// Tooltip — Maruti style: compact card, dotted rows, single short status line.
+// Source text deliberately stays in the chart footer, NOT inside the tooltip.
+// ============================================================================
+const TOOLTIP_CARD = {
+  background: '#FFFFFF',
+  border: '1px solid #E5EAF0',
+  borderRadius: 12,
+  boxShadow: '0 6px 20px rgba(15,23,42,0.10), 0 1px 3px rgba(15,23,42,0.04)',
+  padding: '12px 14px',
+  minWidth: 240,
+  maxWidth: 340,
+  fontSize: 12,
+  color: '#0F1B2D',
+  pointerEvents: 'none',
+}
+
+const ROW_STYLE = {
+  display: 'grid',
+  gridTemplateColumns: '12px 1fr auto auto',
+  alignItems: 'center',
+  columnGap: 10,
+  padding: '3px 0',
+}
+
+function MixTooltip({ active, payload, label, currentStatus }) {
   if (!active || !payload?.length) return null
   const row = payload[0].payload
   const total = row.__total
   const disclosed = payload.filter((p) => typeof row[p.dataKey] === 'number' && row[p.dataKey] > 0)
+
   return (
-    <div style={TOOLTIP_STYLE}>
-      <div style={{ fontWeight: 600, color: '#0F1B2D', marginBottom: 6 }}>
-        {label} <span style={{ color: '#94A3B8', fontWeight: 400 }}>· {fmtUnitsL(total)} total</span>
+    <div style={TOOLTIP_CARD}>
+      <div style={{ fontWeight: 700, color: '#0F1B2D', fontSize: 13, marginBottom: 2 }}>{label}</div>
+      <div style={{
+        fontSize: 11.5, color: '#475569',
+        display: 'flex', justifyContent: 'space-between', gap: 12,
+        paddingBottom: 8, marginBottom: 6, borderBottom: '1px solid #F1F5F9',
+      }}>
+        <span>Total sales volume</span>
+        <span style={{ color: '#0F1B2D', fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>
+          {fmtUnitsL(total)?.replace(' L', ' lakh units') || '—'}
+        </span>
       </div>
+
       {disclosed.length === 0 ? (
-        <div style={{ fontSize: 12, color: '#94A3B8', fontStyle: 'italic' }}>
-          Split not shown for {label} — not verified from source yet.
+        <div style={{ fontSize: 11.5, color: '#94A3B8', fontStyle: 'italic' }}>
+          Split not shown — not verified from source yet.
         </div>
       ) : (
         disclosed.map((p) => {
           const segName = p.dataKey
           const vol = row[segName]
           const pct = total > 0 && typeof vol === 'number' ? (vol / total) * 100 : null
-          const yoy = row.__yoy?.[segName]
           return (
-            <div key={segName} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, padding: '2px 0' }}>
-              <span style={{ width: 8, height: 8, background: p.color, borderRadius: 2, display: 'inline-block' }} />
-              <span style={{ color: '#475569', minWidth: 130 }}>{segName}</span>
+            <div key={segName} style={ROW_STYLE}>
+              <span style={{ width: 8, height: 8, background: p.color, borderRadius: 2 }} />
+              <span style={{ color: '#475569' }}>{segName}</span>
               <span style={{ color: '#0F1B2D', fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>
-                {fmtUnitsL(vol)}
+                {typeof vol === 'number' ? `${(vol / 100000).toFixed(2)} L` : '—'}
               </span>
-              <span style={{ color: '#94A3B8', fontVariantNumeric: 'tabular-nums' }}>{fmtPct(pct)}</span>
-              {typeof yoy === 'number' && (
-                <span style={{ color: yoy >= 0 ? '#1F7A45' : '#9F1F2E', fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>
-                  {fmtPctSigned(yoy)}
-                </span>
-              )}
+              <span style={{ color: '#94A3B8', fontVariantNumeric: 'tabular-nums' }}>
+                {typeof pct === 'number' ? `(${pct.toFixed(1)}%)` : ''}
+              </span>
             </div>
           )
         })
       )}
+
       {currentStatus && (
-        <div style={{ marginTop: 8, paddingTop: 6, borderTop: '1px solid #F1F5F9', fontSize: 11, color: '#475569', display: 'flex', justifyContent: 'space-between', gap: 12 }}>
-          <span>Data status: <span style={{ color: '#0F1B2D', fontWeight: 600 }}>{STATUS_LABEL_FRIENDLY(currentStatus)}</span></span>
+        <div style={{
+          marginTop: 8, paddingTop: 6,
+          borderTop: '1px solid #F1F5F9',
+          fontSize: 11, color: '#6B7280',
+          display: 'flex', justifyContent: 'space-between', gap: 12,
+        }}>
+          <span>Data status</span>
+          <span style={{ color: '#0F1B2D', fontWeight: 600 }}>
+            {STATUS_LABEL_FRIENDLY(currentStatus)}
+          </span>
         </div>
-      )}
-      {sourceText && (
-        <div style={{ marginTop: 4, fontSize: 11, color: '#94A3B8', lineHeight: 1.4 }}>{sourceText}</div>
       )}
     </div>
   )
@@ -530,11 +573,6 @@ export default function PerformanceSection({ company }) {
                   segmentColors={segmentColors}
                   onHoverFy={setHoveredFy}
                   hoveredStatus={mixRowsRaw.find((r) => r.fy === activeFy)?.status}
-                  hoveredSourceText={(company.performance?.mixRich?.sourcesByFy?.[
-                    mixType === 'product' ? 'productMix' :
-                    mixType === 'powertrain' ? 'ev' :
-                    'exports'
-                  ]?.[activeFy]) || ''}
                 />
               ) : (
                 <div className="flex flex-col items-center justify-center text-center h-full">
