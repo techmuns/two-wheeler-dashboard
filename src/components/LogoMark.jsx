@@ -14,24 +14,38 @@ import React, { useEffect, useState } from 'react'
  * Sourcing: the upstream press-kit URL is recorded in tvs.json -> logo.*
  * but never fetched from JS. The PNG must be committed to public/ manually.
  */
-export default function LogoMark({ src, fallbackText, fallbackColor, alt }) {
-  const [loaded, setLoaded] = useState(false)
-  const [errored, setErrored] = useState(false)
+export default function LogoMark({ src, fallbackSrc, fallbackText, fallbackColor, alt }) {
+  // Build the candidate-source list. We try src first, then fallbackSrc
+  // (e.g. SVG primary -> PNG backup) before giving up to the text wordmark.
+  const candidates = [src, fallbackSrc].filter(Boolean)
+
+  const [resolvedSrc, setResolvedSrc] = useState(null)
+  const [exhausted, setExhausted] = useState(candidates.length === 0)
 
   useEffect(() => {
-    if (!src) { setErrored(true); return }
+    if (candidates.length === 0) { setExhausted(true); return }
     let cancelled = false
-    const img = new window.Image()
-    img.onload  = () => { if (!cancelled) setLoaded(true) }
-    img.onerror = () => { if (!cancelled) setErrored(true) }
-    img.src = src
+    setResolvedSrc(null)
+    setExhausted(false)
+    let i = 0
+    const tryNext = () => {
+      if (cancelled) return
+      if (i >= candidates.length) { setExhausted(true); return }
+      const url = candidates[i++]
+      const img = new window.Image()
+      img.onload  = () => { if (!cancelled) setResolvedSrc(url) }
+      img.onerror = () => { if (!cancelled) tryNext() }
+      img.src = url
+    }
+    tryNext()
     return () => { cancelled = true }
-  }, [src])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [src, fallbackSrc])
 
-  if (src && loaded && !errored) {
+  if (resolvedSrc && !exhausted) {
     return (
       <img
-        src={src}
+        src={resolvedSrc}
         alt={alt || fallbackText}
         className="max-w-full max-h-full object-contain"
         draggable={false}

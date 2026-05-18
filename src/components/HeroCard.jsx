@@ -11,6 +11,7 @@ export default function HeroCard({ company }) {
       <div className="logo-mark-header">
         <LogoMark
           src={logo?.path}
+          fallbackSrc={logo?.fallbackPath}
           fallbackText={brandText || shortName || name}
           fallbackColor={brandColor}
           alt={`${shortName || name} logo`}
