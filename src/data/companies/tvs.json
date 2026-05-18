@@ -95,7 +95,7 @@
       "FY20":  174000, "FY21":  124000, "FY22":  172000, "FY23":  169000,
       "FY24":  146000, "FY25":  135000
     },
-    "evByFy":            { "FY22":   12000, "FY23": 140000, "FY24": 180000, "FY25": 278976 },
+    "evByFy":            { "FY22":   12000, "FY23":  80000, "FY24": 180000, "FY25": 278976 },
     "exportsByFy": {
       "FY16":  359000,
       "FY17":  368000,
@@ -252,8 +252,46 @@
     "threeWheelerMixFy25":  2.85
   },
   "na": [
-    "Export Volume %", "Export Revenue %", "Market Share %", "Capacity Utilisation %",
+    "Export Revenue %", "Capacity Utilisation %",
     "New Model Launches", "Facelift Launches", "Top Selling Model",
-    "Stock Price 31-Mar", "Employees", "Dealers", "CEO", "CFO", "COO", "Credit Rating"
-  ]
+    "Stock Price 31-Mar"
+  ],
+  "profile": {
+    "asOfFy": "FY25",
+    "source": "TVS Motor Company 33rd Annual Report (FY25) — Board section / BRSR section / Corporate Governance Report.",
+    "kmp": {
+      "chairman": "Prof. Sir Ralf Dieter Speth",
+      "chairmanEmeritus": "Venu Srinivasan",
+      "managingDirector": "Sudarshan Venu",
+      "ceo": "K N Radhakrishnan",
+      "ceoTitle": "Director & Chief Executive Officer",
+      "cfo": "K Gopala Desikan",
+      "cfoTitle": "Chief Financial Officer",
+      "coo": null,
+      "cooNote": "TVS does not maintain a separate COO position; manufacturing / operations leadership rolls up to MD."
+    },
+    "employees": {
+      "permanent": 6522,
+      "permanentNote": "BRSR section, FY25 33rd AR — 'permanent employees on the rolls of company: 6522'.",
+      "workersPermanent": 1803
+    },
+    "dealers": {
+      "total": "Over 8,000",
+      "totalNote": "FY25 AR Chairman's Communiqué — 'network of over 8,000 dealers'.",
+      "evDealerships": 1074,
+      "evDealershipsNote": "FY25 AR — iQube availability expanded to 1,074 dealerships."
+    },
+    "creditRating": {
+      "longTerm": "CARE AA+",
+      "longTermScope": "Long-term borrowings + Non-Convertible Debentures",
+      "shortTerm": "CARE A1+",
+      "shortTermScope": "Short-term borrowings + Commercial Papers",
+      "source": "FY25 AR Corporate Governance Report Section 12.15 'List of Credit Rating'."
+    },
+    "manufacturing": {
+      "facilities": ["Hosur, Tamil Nadu", "Mysuru, Karnataka", "Nalagarh, Himachal Pradesh"],
+      "facilitiesInternational": ["PT TVS Indonesia", "Norton Motorcycles (UK)"],
+      "note": "Installed annual capacity not explicitly disclosed in FY25 AR; treat as Pending."
+    }
+  }
 }

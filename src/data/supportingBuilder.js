@@ -57,12 +57,19 @@ const resolve = (key, label, fmt, series, verification, source, opts = {}) => {
   return OK(key, label, fmt, series, verification, source, opts.note)
 }
 
+// Build a 'profile' metric — uses the AR-sourced value when available, else NA.
+const profileMetric = (label, fmt, key, value, source) =>
+  (value === null || value === undefined || value === '')
+    ? NA(label, fmt, source || 'Not disclosed in the uploaded annual report.', key)
+    : { key, label, fmt, series: new Array(FY.length).fill(null), fy25: value, verification: 'available', source, unavailable: false }
+
 export function buildSupportingGroups(raw, opts = {}) {
   const {
     shortName,
     publicName,
     marketShareKey,
   } = opts
+  const prof = raw?.profile || null
 
   const isPopulated = !!(raw?.fyAxis?.length && raw?.pl && Object.keys(raw.pl).length > 0)
   const auditedSrc  = raw?.sources?.primary || null
@@ -201,14 +208,42 @@ export function buildSupportingGroups(raw, opts = {}) {
       chartType: 'profile',
       metrics: [
         NA('Stock Price as on 31-Mar', 'abs',  NA_REASONS.profile, 'stockPrice'),
-        NA('No. of Employees',         'abs',  NA_REASONS.profile, 'employees'),
-        NA('No. of Dealers',           'abs',  NA_REASONS.profile, 'dealers'),
-        NA('CEO',                      'text', NA_REASONS.profile, 'ceo'),
-        NA('CFO',                      'text', NA_REASONS.profile, 'cfo'),
-        NA('COO',                      'text', NA_REASONS.profile, 'coo'),
-        NA('Credit Rating',            'text', NA_REASONS.profile, 'creditRating'),
+        profileMetric('No. of Employees (Permanent)', 'abs',  'employees',
+          prof?.employees?.permanent ? prof.employees.permanent.toLocaleString('en-IN') : null,
+          prof?.employees?.permanentNote || prof?.source),
+        profileMetric('No. of Dealers',               'text', 'dealers',
+          prof?.dealers?.total || null,
+          prof?.dealers?.totalNote || prof?.source),
+        profileMetric('EV Dealerships (iQube)',       'abs',  'evDealers',
+          typeof prof?.dealers?.evDealerships === 'number' ? prof.dealers.evDealerships.toLocaleString('en-IN') : null,
+          prof?.dealers?.evDealershipsNote || prof?.source),
+        profileMetric('Chairman',                     'text', 'chairman',
+          prof?.kmp?.chairman || null, prof?.source),
+        profileMetric('Managing Director',            'text', 'md',
+          prof?.kmp?.managingDirector || null, prof?.source),
+        profileMetric('Director & CEO',               'text', 'ceo',
+          prof?.kmp?.ceo || null, prof?.source),
+        profileMetric('CFO',                          'text', 'cfo',
+          prof?.kmp?.cfo || null, prof?.source),
+        profileMetric('COO',                          'text', 'coo',
+          prof?.kmp?.coo || null, prof?.kmp?.cooNote || 'Not separately disclosed.'),
+        profileMetric('Credit Rating (Long-term)',    'text', 'creditRatingLong',
+          prof?.creditRating?.longTerm
+            ? `${prof.creditRating.longTerm} — ${prof.creditRating.longTermScope}`
+            : null,
+          prof?.creditRating?.source || prof?.source),
+        profileMetric('Credit Rating (Short-term)',   'text', 'creditRatingShort',
+          prof?.creditRating?.shortTerm
+            ? `${prof.creditRating.shortTerm} — ${prof.creditRating.shortTermScope}`
+            : null,
+          prof?.creditRating?.source || prof?.source),
+        profileMetric('Manufacturing Facilities (India)', 'text', 'mfgIndia',
+          prof?.manufacturing?.facilities?.length
+            ? prof.manufacturing.facilities.join(' · ')
+            : null,
+          prof?.manufacturing?.note || prof?.source),
       ],
-      sourceFootnote: NA_REASONS.profile,
+      sourceFootnote: prof?.source || NA_REASONS.profile,
     },
   ]
 

@@ -384,5 +384,9 @@ export function buildFromActuals(json, opts = {}) {
     // asset from public/<path>; on 404 or decode error it gracefully falls
     // back to the text wordmark. Never fetches from sourceUrl directly.
     logo: json?.logo || null,
+    // KMP / employees / dealers / credit rating / manufacturing block.
+    // Sourced from the latest annual report. Used by the Company Profile
+    // group in the Supporting Data dropdown.
+    profile: json?.profile || null,
   }
 }
