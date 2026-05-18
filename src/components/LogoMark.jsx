@@ -14,7 +14,7 @@ import React, { useEffect, useState } from 'react'
  * Sourcing: the upstream press-kit URL is recorded in tvs.json -> logo.*
  * but never fetched from JS. The PNG must be committed to public/ manually.
  */
-export default function LogoMark({ src, fallbackSrc, fallbackText, fallbackColor, alt }) {
+export default function LogoMark({ src, fallbackSrc, fallbackText, fallbackColor, alt, imgClassName }) {
   // Build the candidate-source list. We try src first, then fallbackSrc
   // (e.g. SVG primary -> PNG backup) before giving up to the text wordmark.
   const candidates = [src, fallbackSrc].filter(Boolean)
@@ -47,7 +47,7 @@ export default function LogoMark({ src, fallbackSrc, fallbackText, fallbackColor
       <img
         src={resolvedSrc}
         alt={alt || fallbackText}
-        className="max-w-full max-h-full object-contain"
+        className={`max-w-full max-h-full object-contain ${imgClassName || ''}`.trim()}
         draggable={false}
       />
     )

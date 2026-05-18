@@ -15,6 +15,7 @@ export default function HeroCard({ company }) {
           fallbackText={brandText || shortName || name}
           fallbackColor={brandColor}
           alt={`${shortName || name} logo`}
+          imgClassName={logo?.imgClassName}
         />
         <span className="logo-text-short hidden">{(shortName || name || '').slice(0, 3).toUpperCase()}</span>
       </div>

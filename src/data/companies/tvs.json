@@ -14,6 +14,7 @@
     "//5": "To activate: download the SVG (preferred) or PNG and commit as public/tvs-logo.svg (or .png). Update 'path' below if extension differs.",
     "path": "/tvs-logo.png",
     "fallbackPath": "/tvs-logo.svg",
+    "imgClassName": "logo-mark-img--tvs",
     "sourceName": "TVS Motor official website header logo",
     "sourceUrl": "https://www.tvsmotor.com/-/media/Feature/Header/TVS-Logo.svg/",
     "backupSourceUrl": "https://www.tvsmotor.com/media/press-kit",

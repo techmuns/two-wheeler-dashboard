@@ -120,6 +120,16 @@ body {
   max-height: 100%;
   object-fit: contain;
 }
+
+/* TVS official logo ships as a JPEG-like flat PNG -- even after the
+   white background is alpha-keyed server-side, faint anti-aliased
+   edges can carry a residual white halo against the lavender frame.
+   mix-blend-mode: multiply makes white pixels disappear into any
+   non-white surface (lavender / tint / etc.) so the wordmark sits
+   on the frame the same way the Maruti logo does in the reference. */
+.logo-mark-img--tvs {
+  mix-blend-mode: multiply;
+}
 @media (max-width: 640px) {
   .logo-mark-header { width: 64px; padding: 4px; }
   .logo-mark-header .logo-text-full { display: none; }
