@@ -105,11 +105,23 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 8px 18px;
+  /* Tight padding so the official OEM logo (already trimmed of white
+     margins server-side) fills the box near edge-to-edge, matching the
+     Maruti reference. Text wordmark fallback keeps a comfortable
+     padding via .logo-text-full's own typography. */
+  padding: 4px 8px;
   flex-shrink: 0;
 }
+.logo-mark-header img {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
 @media (max-width: 640px) {
-  .logo-mark-header { width: 64px; padding: 8px; }
+  .logo-mark-header { width: 64px; padding: 4px; }
   .logo-mark-header .logo-text-full { display: none; }
 }
 .logo-text-full {
