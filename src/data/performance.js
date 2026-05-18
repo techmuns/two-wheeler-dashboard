@@ -105,6 +105,7 @@ export function getTvsVolumeMix(company, fy, mixType) {
 export const STATUS_BUCKETS = {
   available:                  { label: 'Available',                   tone: { bg: '#E1F0E2', fg: '#1F5C28', border: '#A8D8AE' } },
   available_residual:         { label: 'Available (residual)',        tone: { bg: '#E1F0E2', fg: '#1F5C28', border: '#A8D8AE' } },
+  derived:                    { label: 'Derived',                     tone: { bg: '#DBEAFE', fg: '#1E40AF', border: '#93B4F4' } },
   pending_pdf_parse:          { label: 'Pending PDF parse',           tone: { bg: '#FBEFDC', fg: '#7C3A07', border: '#F5C97A' } },
   pending_pdf_parse_explicit: { label: 'Pending PDF parse (explicit)', tone: { bg: '#FBEFDC', fg: '#7C3A07', border: '#F5C97A' } },
   pending_pdf_parse_residual: { label: 'Pending PDF parse (residual)', tone: { bg: '#FBEFDC', fg: '#7C3A07', border: '#F5C97A' } },
@@ -127,7 +128,7 @@ export function buckedRowsByStatus(rows) {
     map.get(s).push(r.fy)
   })
   // Ordered: available first, then pending, then unavailable, then paid
-  const order = ['available', 'available_residual',
+  const order = ['available', 'available_residual', 'derived',
                  'pending_pdf_parse', 'pending_pdf_parse_explicit', 'pending_pdf_parse_residual',
                  'unavailable', 'unavailable_pre_ev', 'unavailable_minimal_ev',
                  'paid_source_required']
