@@ -62,12 +62,23 @@
   "ops": {
     "totalVolume":   [2673264, 2927280, 3466079, 3913702, 3263302, 3051823, 3309568, 3682068, 4190994, 4743636],
 
-    "motorcyclesByFy":   { "FY23": 1860000, "FY24": 2000000, "FY25": 2195000 },
-    "scootersByFy":      { "FY23": 1210000, "FY24": 1470000, "FY25": 1904000 },
-    "mopedsByFy":        { "FY23": 500000  },
-    "threeWheelersByFy": { "FY23": 112068,  "FY24": 130000,  "FY25": 135000  },
-    "evByFy":            { "FY22": 12000, "FY23": 140000, "FY24": 180000, "FY25": 278976 },
-    "exportsByFy":       { "FY24": 610000, "FY25": 830000 },
+    "motorcyclesByFy":   { "FY22": 1635000, "FY23": 1860000, "FY24": 2000000, "FY25": 2195000 },
+    "scootersByFy":      { "FY22": 1035000, "FY23": 1210000, "FY24": 1470000, "FY25": 1904000 },
+    "mopedsByFy":        { "FY22":  529568, "FY23": 500000  },
+    "threeWheelersByFy": { "FY22":  110000, "FY23": 112068,  "FY24": 130000,  "FY25": 135000  },
+    "evByFy":            { "FY22":   12000, "FY23": 140000,  "FY24": 180000,  "FY25": 278976 },
+    "exportsByFy":       {
+      "FY16":  330000,
+      "FY17":  390000,
+      "FY18":  487000,
+      "FY19":  628000,
+      "FY20":  610000,
+      "FY21":  650000,
+      "FY22":  970000,
+      "FY23":  744000,
+      "FY24":  610000,
+      "FY25":  830000
+    },
 
     "motorcyclesFy25":   2195000,
     "scootersFy25":      1904000,
@@ -83,6 +94,7 @@
 
     "sourcesByFy": {
       "productMix": {
+        "FY22": "TVS Motor monthly sales press releases (BSE / NSE filings) Apr-2021 to Mar-2022. Explicit Motorcycle / Scooter / Moped / Three-Wheeler breakup.",
         "FY23": "TVS Motor monthly sales press releases (BSE / NSE filings) Apr-2022 to Mar-2023. Explicit Motorcycle / Scooter / Moped / Three-Wheeler breakup.",
         "FY24": "TVS Motor monthly sales press releases (BSE / NSE filings) Apr-2023 to Mar-2024. Moped figure is residual.",
         "FY25": "TVS Motor Company FY25 Annual Report — uploaded workbook (audited). Moped figure is residual."
@@ -94,7 +106,15 @@
         "FY25": "TVS Motor Company FY25 Annual Report — uploaded workbook (audited)."
       },
       "exports": {
-        "FY24": "TVS Motor monthly sales press releases (BSE / NSE filings) Apr-2023 to Mar-2024 — Domestic + Exports breakup.",
+        "FY16": "TVS Motor monthly sales press releases (BSE / NSE filings) Apr-2015 to Mar-2016 — Domestic + Exports breakup.",
+        "FY17": "TVS Motor monthly sales press releases (BSE / NSE filings) Apr-2016 to Mar-2017.",
+        "FY18": "TVS Motor monthly sales press releases (BSE / NSE filings) Apr-2017 to Mar-2018.",
+        "FY19": "TVS Motor monthly sales press releases (BSE / NSE filings) Apr-2018 to Mar-2019.",
+        "FY20": "TVS Motor monthly sales press releases (BSE / NSE filings) Apr-2019 to Mar-2020.",
+        "FY21": "TVS Motor monthly sales press releases (BSE / NSE filings) Apr-2020 to Mar-2021.",
+        "FY22": "TVS Motor monthly sales press releases (BSE / NSE filings) Apr-2021 to Mar-2022.",
+        "FY23": "TVS Motor monthly sales press releases (BSE / NSE filings) Apr-2022 to Mar-2023.",
+        "FY24": "TVS Motor monthly sales press releases (BSE / NSE filings) Apr-2023 to Mar-2024.",
         "FY25": "TVS Motor monthly sales press releases (BSE / NSE filings) Apr-2024 to Mar-2025."
       }
     }
@@ -107,7 +127,7 @@
       "FY19": "pending_pdf_parse",
       "FY20": "pending_pdf_parse",
       "FY21": "pending_pdf_parse",
-      "FY22": "pending_pdf_parse_explicit",
+      "FY22": "available",
       "FY23": "available",
       "FY24": "available_residual",
       "FY25": "available_residual"
@@ -125,14 +145,14 @@
       "FY25": "available"
     },
     "domesticExportMix": {
-      "FY16": "pending_pdf_parse",
-      "FY17": "pending_pdf_parse",
-      "FY18": "pending_pdf_parse",
-      "FY19": "pending_pdf_parse",
-      "FY20": "pending_pdf_parse",
-      "FY21": "pending_pdf_parse",
-      "FY22": "pending_pdf_parse",
-      "FY23": "pending_pdf_parse",
+      "FY16": "derived",
+      "FY17": "derived",
+      "FY18": "derived",
+      "FY19": "derived",
+      "FY20": "derived",
+      "FY21": "derived",
+      "FY22": "derived",
+      "FY23": "derived",
       "FY24": "derived",
       "FY25": "derived"
     },
