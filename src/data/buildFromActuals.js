@@ -380,5 +380,9 @@ export function buildFromActuals(json, opts = {}) {
       ? 'No source data uploaded yet for this company. Provide an audited financials workbook to populate.'
       : `Source: ${opts.publicName || name} Annual Reports FY16–FY25 (standalone audited) + audited Q4 result packages. Derived items computed from disclosed line items; no estimates.`,
     sourceCitations: json?.sources?.perFY || {},
+    // Optional logo. When { path } is present the UI will try to load the
+    // asset from public/<path>; on 404 or decode error it gracefully falls
+    // back to the text wordmark. Never fetches from sourceUrl directly.
+    logo: json?.logo || null,
   }
 }

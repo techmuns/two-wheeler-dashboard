@@ -1,19 +1,20 @@
 import React from 'react'
+import LogoMark from './LogoMark.jsx'
 
 export default function HeroCard({ company }) {
-  const { hero, name, brandText, brandColor, shortName } = company
+  const { hero, name, brandText, brandColor, shortName, logo } = company
   const title = hero?.title || name
   const subtitle = hero?.subtitle || 'Audited annual snapshot · FY16–FY25 standalone'
   const fy = hero?.fy || 'FY25'
   return (
     <section className="identity-row">
       <div className="logo-mark-header">
-        <span
-          className="logo-text-full"
-          style={{ color: brandColor || '#4C1D95' }}
-        >
-          {brandText || shortName || name}
-        </span>
+        <LogoMark
+          src={logo?.path}
+          fallbackText={brandText || shortName || name}
+          fallbackColor={brandColor}
+          alt={`${shortName || name} logo`}
+        />
         <span className="logo-text-short hidden">{(shortName || name || '').slice(0, 3).toUpperCase()}</span>
       </div>
       <div className="flex-1 min-w-0">
