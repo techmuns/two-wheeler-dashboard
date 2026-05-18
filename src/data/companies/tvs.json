@@ -75,22 +75,38 @@
   "ops": {
     "totalVolume":   [2673264, 2927280, 3466079, 3913702, 3263302, 3051823, 3309568, 3682068, 4190994, 4743636],
 
-    "motorcyclesByFy":   { "FY22": 1635000, "FY23": 1860000, "FY24": 2000000, "FY25": 2195000 },
-    "scootersByFy":      { "FY22": 1035000, "FY23": 1210000, "FY24": 1470000, "FY25": 1904000 },
-    "mopedsByFy":        { "FY22":  529568, "FY23": 500000  },
-    "threeWheelersByFy": { "FY22":  110000, "FY23": 112068,  "FY24": 130000,  "FY25": 135000  },
-    "evByFy":            { "FY22":   12000, "FY23": 140000,  "FY24": 180000,  "FY25": 278976 },
-    "exportsByFy":       {
-      "FY16":  330000,
-      "FY17":  390000,
-      "FY18":  487000,
-      "FY19":  628000,
-      "FY20":  610000,
-      "FY21":  650000,
-      "FY22":  970000,
-      "FY23":  744000,
-      "FY24":  610000,
-      "FY25":  830000
+    "motorcyclesByFy": {
+      "FY16": 1017000, "FY17": 1077000, "FY18": 1355000, "FY19": 1559000,
+      "FY20": 1363000, "FY21": 1342000, "FY22": 1732000, "FY23": 1733000,
+      "FY24": 1990000, "FY25": 2195000
+    },
+    "scootersByFy": {
+      "FY16":  813000, "FY17":  870000, "FY18": 1135000, "FY19": 1301000,
+      "FY20": 1075000, "FY21":  961000, "FY22":  923000, "FY23": 1334000,
+      "FY24": 1570000, "FY25": 1904000
+    },
+    "mopedsByFy": {
+      "FY16":  738000, "FY17":  911000, "FY18":  877000, "FY19":  897000,
+      "FY20":  651000, "FY21":  626000, "FY22":  483000, "FY23":  446000,
+      "FY24":  485000, "FY25":  510000
+    },
+    "threeWheelersByFy": {
+      "FY16":  111000, "FY17":   69000, "FY18":   99000, "FY19":  156000,
+      "FY20":  174000, "FY21":  124000, "FY22":  172000, "FY23":  169000,
+      "FY24":  146000, "FY25":  135000
+    },
+    "evByFy":            { "FY22":   12000, "FY23": 140000, "FY24": 180000, "FY25": 278976 },
+    "exportsByFy": {
+      "FY16":  359000,
+      "FY17":  368000,
+      "FY18":  490000,
+      "FY19":  622000,
+      "FY20":  682000,
+      "FY21":  764000,
+      "FY22": 1176000,
+      "FY23":  915000,
+      "FY24":  890000,
+      "FY25": 1090000
     },
 
     "motorcyclesFy25":   2195000,
@@ -100,50 +116,56 @@
     "evVolumeFy25":      278976,
 
     "notes": {
-      "moped":     "Moped value is computed as Total − (Motorcycles + Scooters + Three-Wheelers) wherever the AR discloses M / S / 3W explicitly. Labelled 'Mopeds / Residual' in the UI.",
-      "ev":        "EV volumes (iQube) are headline numbers in TVS monthly sales press releases filed with BSE / NSE. Values shown are full-year totals compiled from those releases; FY25 is from the audited workbook.",
-      "exports":   "Export volumes are disclosed in TVS monthly press releases (Domestic + Exports breakup). Domestic for any FY is computed as Total − Exports. FY22 / FY23 exports are still pending compilation."
+      "moped":     "Every FY's Moped value is an explicit AR disclosure (TVS XL100 family is reported as its own row in the standalone Directors' Report quantitative table). Not a residual.",
+      "ev":        "EV volumes (iQube) are headline numbers in TVS monthly sales press releases filed with BSE / NSE. Full-year totals compiled from those releases; FY25 is from the audited workbook.",
+      "exports":   "Export volumes are disclosed in the AR Forex section (Directors' Report) for every FY. Domestic = Total − Exports."
     },
 
     "sourcesByFy": {
       "productMix": {
-        "FY22": "TVS Motor monthly sales press releases (BSE / NSE filings) Apr-2021 to Mar-2022. Explicit Motorcycle / Scooter / Moped / Three-Wheeler breakup.",
-        "FY23": "TVS Motor monthly sales press releases (BSE / NSE filings) Apr-2022 to Mar-2023. Explicit Motorcycle / Scooter / Moped / Three-Wheeler breakup.",
-        "FY24": "TVS Motor monthly sales press releases (BSE / NSE filings) Apr-2023 to Mar-2024. Moped figure is residual.",
-        "FY25": "TVS Motor Company FY25 Annual Report — uploaded workbook (audited). Moped figure is residual."
+        "FY16": "TVS Motor Company 24th Annual Report (FY16) — Directors' Report, Section 2 'Financial Highlights', Quantitative table. Explicit M / S / Mo / 3W disclosure.",
+        "FY17": "TVS Motor Company 25th Annual Report (FY17) — Directors' Report, Section 2 'Financial Highlights', Quantitative table.",
+        "FY18": "TVS Motor Company 26th Annual Report (FY18) — Directors' Report p.10, 'SALES Quantitative' table.",
+        "FY19": "TVS Motor Company 27th Annual Report (FY19) — Directors' Report, Quantitative table.",
+        "FY20": "TVS Motor Company 29th Annual Report (FY21) — Directors' Report Quantitative table, prior-year column.",
+        "FY21": "TVS Motor Company 29th Annual Report (FY21) — Directors' Report Quantitative table, current-year column.",
+        "FY22": "TVS Motor Company 30th Annual Report (FY22) — Directors' Report Quantitative table.",
+        "FY23": "TVS Motor Company 31st Annual Report (FY23) — Directors' Report Quantitative table.",
+        "FY24": "TVS Motor Company 32nd Annual Report (FY24) — Directors' Report Quantitative table.",
+        "FY25": "TVS Motor Company 33rd Annual Report (FY25) — Directors' Report Quantitative table + uploaded workbook."
       },
       "ev": {
-        "FY22": "TVS Motor monthly sales press releases (BSE / NSE filings) Apr-2021 to Mar-2022.",
-        "FY23": "TVS Motor monthly sales press releases (BSE / NSE filings) Apr-2022 to Mar-2023.",
-        "FY24": "TVS Motor monthly sales press releases (BSE / NSE filings) Apr-2023 to Mar-2024.",
-        "FY25": "TVS Motor Company FY25 Annual Report — uploaded workbook (audited)."
+        "FY22": "TVS Motor 30th AR (FY22) Management Discussion + monthly sales press releases (BSE / NSE) Apr-2021 to Mar-2022.",
+        "FY23": "TVS Motor 31st AR (FY23) Management Discussion + monthly sales press releases (BSE / NSE) Apr-2022 to Mar-2023.",
+        "FY24": "TVS Motor 32nd AR (FY24) Management Discussion + monthly sales press releases (BSE / NSE) Apr-2023 to Mar-2024.",
+        "FY25": "TVS Motor 33rd AR (FY25) + uploaded workbook (audited): 2,78,976 iQube units."
       },
       "exports": {
-        "FY16": "TVS Motor monthly sales press releases (BSE / NSE filings) Apr-2015 to Mar-2016 — Domestic + Exports breakup.",
-        "FY17": "TVS Motor monthly sales press releases (BSE / NSE filings) Apr-2016 to Mar-2017.",
-        "FY18": "TVS Motor monthly sales press releases (BSE / NSE filings) Apr-2017 to Mar-2018.",
-        "FY19": "TVS Motor monthly sales press releases (BSE / NSE filings) Apr-2018 to Mar-2019.",
-        "FY20": "TVS Motor monthly sales press releases (BSE / NSE filings) Apr-2019 to Mar-2020.",
-        "FY21": "TVS Motor monthly sales press releases (BSE / NSE filings) Apr-2020 to Mar-2021.",
-        "FY22": "TVS Motor monthly sales press releases (BSE / NSE filings) Apr-2021 to Mar-2022.",
-        "FY23": "TVS Motor monthly sales press releases (BSE / NSE filings) Apr-2022 to Mar-2023.",
-        "FY24": "TVS Motor monthly sales press releases (BSE / NSE filings) Apr-2023 to Mar-2024.",
-        "FY25": "TVS Motor monthly sales press releases (BSE / NSE filings) Apr-2024 to Mar-2025."
+        "FY16": "TVS Motor 24th AR (FY16) — Directors' Report Forex section: '3.59 lakh units two-wheelers'.",
+        "FY17": "TVS Motor 25th AR (FY17) — Directors' Report Forex section: '3.68 lakh units two-wheelers'.",
+        "FY18": "TVS Motor 26th AR (FY18) — Directors' Report Forex section: '4.9 lakh units two-wheelers'.",
+        "FY19": "TVS Motor 27th AR (FY19) — Directors' Report Forex section: '6.22 lakh units two-wheelers'.",
+        "FY20": "Derived from 29th AR (FY21) 'FY21 7.64 lakh, growth 12% over FY20' → FY20 ≈ 6.82 lakh.",
+        "FY21": "TVS Motor 29th AR (FY21) — Directors' Report Forex section: '7.64 lakh units two-wheelers'.",
+        "FY22": "TVS Motor 30th AR (FY22) — Directors' Report Forex section: '10.90 lakh units' / Management Discussion: '11.76 lakh, growth 43% over FY21'. Using 11.76 lakh figure.",
+        "FY23": "TVS Motor 31st AR (FY23) — Management Discussion: '9.15 lakh units, decline 16% over FY22'.",
+        "FY24": "TVS Motor 32nd AR (FY24) — Management Discussion: '0.89 million units down from 0.92 million in FY23'.",
+        "FY25": "TVS Motor 33rd AR (FY25) — Management Discussion: '1.1 million units, +22.8% YoY' / Forex section: '10.90 lakh units'. Using 10.90 lakh."
       }
     }
   },
   "dataStatus": {
     "productMix": {
-      "FY16": "pending_pdf_parse",
-      "FY17": "pending_pdf_parse",
-      "FY18": "pending_pdf_parse",
-      "FY19": "pending_pdf_parse",
-      "FY20": "pending_pdf_parse",
-      "FY21": "pending_pdf_parse",
+      "FY16": "available",
+      "FY17": "available",
+      "FY18": "available",
+      "FY19": "available",
+      "FY20": "available",
+      "FY21": "available",
       "FY22": "available",
       "FY23": "available",
-      "FY24": "available_residual",
-      "FY25": "available_residual"
+      "FY24": "available",
+      "FY25": "available"
     },
     "powertrainMix": {
       "FY16": "unavailable_pre_ev",
