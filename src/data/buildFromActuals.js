@@ -265,22 +265,92 @@ export function buildFromActuals(json, opts = {}) {
     })(),
   }
 
-  // ---- Product-Level Drivers (6 cards, FY25 absolute volumes) ----
+  // ---- Product-Level Drivers (6 cards) ----
+  // Six driver categories per spec: Motorcycles · Scooters · Mopeds ·
+  // EV / iQube · Domestic 2W · Exports 2W. Each carries a 3-year volume
+  // series (FY23-FY25) so the Maruti-style detail modal can render a
+  // trend chart. 'Total 2W' here excludes 3W so domestic + exports add up.
   const ops = json?.ops || {}
-  const totalVolFy25 = v25(totalVolume)
-  const totalVolFy24 = v24(totalVolume)
-  const totalYoY = typeof totalVolFy25 === 'number' && typeof totalVolFy24 === 'number' && totalVolFy24
-    ? Number(((totalVolFy25 - totalVolFy24) / totalVolFy24 * 100).toFixed(1))
-    : null
+
+  const seriesFromByFy = (byFy) => {
+    if (!byFy) return []
+    return ['FY23', 'FY24', 'FY25'].map((fy) => ({
+      fy,
+      value: typeof byFy[fy] === 'number' ? byFy[fy] : null,
+    }))
+  }
+
+  const yoyOf = (series) => {
+    const v25 = series.find((p) => p.fy === 'FY25')?.value
+    const v24 = series.find((p) => p.fy === 'FY24')?.value
+    if (typeof v25 !== 'number' || typeof v24 !== 'number' || v24 === 0) return null
+    return Number((((v25 - v24) / v24) * 100).toFixed(1))
+  }
+
+  const signalFromYoY = (yoy) => {
+    if (typeof yoy !== 'number') return 'Pending'
+    if (yoy > 3) return 'Gain'
+    if (yoy < -3) return 'Loss'
+    return 'Stable'
+  }
+
+  // Total 2W (motorcycles + scooters + mopeds, excludes 3W) per FY,
+  // used as denominator for Mix %.
+  const total2WByFy = {}
+  ;['FY23', 'FY24', 'FY25'].forEach((fy) => {
+    const m  = ops.motorcyclesByFy?.[fy]
+    const s  = ops.scootersByFy?.[fy]
+    const mo = ops.mopedsByFy?.[fy]
+    if (typeof m === 'number' && typeof s === 'number' && typeof mo === 'number') {
+      total2WByFy[fy] = m + s + mo
+    }
+  })
+  const domestic2WByFy = {}
+  ;['FY23', 'FY24', 'FY25'].forEach((fy) => {
+    const t = total2WByFy[fy]
+    const e = ops.exportsByFy?.[fy]
+    if (typeof t === 'number' && typeof e === 'number') {
+      domestic2WByFy[fy] = t - e
+    }
+  })
+
+  const sourceAR = 'TVS Motor Annual Reports FY16–FY25 + monthly sales press releases (BSE / NSE)'
+
+  const buildDriver = (key, name, category, byFy, sourceText = sourceAR) => {
+    const series = seriesFromByFy(byFy)
+    const fy25 = series.find((p) => p.fy === 'FY25')?.value ?? null
+    const yoy = yoyOf(series)
+    const t2w25 = total2WByFy.FY25
+    const mix = typeof fy25 === 'number' && typeof t2w25 === 'number' && t2w25 > 0
+      ? Number(((fy25 / t2w25) * 100).toFixed(1))
+      : null
+    return {
+      key, name, category,
+      series,
+      fy25Raw: fy25,
+      yoyPct: yoy,
+      mixOfTotal2WPct: mix,
+      signal: signalFromYoY(yoy),
+      source: sourceText,
+      // legacy fields for the card UI
+      segment: category,
+      value: typeof fy25 === 'number' ? `${(fy25 / 100000).toFixed(2)} L` : '—',
+      sub: 'FY25 units',
+      growth: typeof yoy === 'number' ? `${yoy >= 0 ? '+' : ''}${yoy.toFixed(1)}%` : '',
+      tag: signalFromYoY(yoy),
+    }
+  }
 
   const drivers = [
-    { name: 'Motorcycles',     segment: 'Apache + Raider + Star City',  value: fmtUnitsL(ops.motorcyclesFy25),     sub: 'FY25 units', growth: '', tag: 'Gain' },
-    { name: 'Scooters',        segment: 'Jupiter + NTorq + iQube',       value: fmtUnitsL(ops.scootersFy25),        sub: 'FY25 units', growth: '', tag: 'Gain' },
-    { name: 'Mopeds',          segment: 'XL100',                          value: fmtUnitsL(ops.mopedsFy25),          sub: 'FY25 units', growth: '', tag: 'Stable' },
-    { name: 'Three-Wheelers',  segment: 'King series',                    value: fmtUnitsL(ops.threeWheelersFy25),   sub: 'FY25 units', growth: '', tag: 'Stable' },
-    { name: 'EV Two-Wheelers', segment: 'iQube',                          value: fmtUnitsL(ops.evVolumeFy25),        sub: 'FY25 units', growth: '', tag: 'Gain' },
-    { name: 'Total Volume',    segment: 'All segments',                   value: fmtUnitsL(totalVolFy25),            sub: 'FY25 units', growth: totalYoY === null ? '' : `${totalYoY >= 0 ? '+' : ''}${totalYoY.toFixed(1)}%`, tag: totalYoY > 0 ? 'Gain' : 'Stable' },
-  ].map((d) => (d.value === null ? { ...d, value: '—', tag: 'Pending' } : d))
+    buildDriver('motorcycles', 'Motorcycles', 'ICE 2W',              ops.motorcyclesByFy),
+    buildDriver('scooters',    'Scooters',    'Domestic 2W',          ops.scootersByFy),
+    buildDriver('mopeds',      'Mopeds',      'XL100 / sub-100cc',    ops.mopedsByFy),
+    buildDriver('ev',          'EV / iQube',  'Electric scooter',     ops.evByFy,
+      'TVS Motor monthly sales press releases + 33rd AR Management Discussion'),
+    buildDriver('domestic2w',  'Domestic 2W', 'M + S + Moped (India)', domestic2WByFy),
+    buildDriver('exports2w',   'Exports 2W',  'All 2W segments',       ops.exportsByFy,
+      'TVS Motor Annual Reports — Forex section + monthly press releases'),
+  ].map((d) => (d.value === '—' ? { ...d, tag: 'Pending', signal: 'Pending' } : d))
 
   // ---- Supporting Data (table blocks) ----
   const supporting = {

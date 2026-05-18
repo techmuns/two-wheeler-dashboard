@@ -7,6 +7,7 @@ import DataQualityPanel from './components/DataQualityPanel.jsx'
 import KpiCards from './components/KpiCards.jsx'
 import PerformanceSection from './components/PerformanceSection.jsx'
 import ProductDrivers from './components/ProductDrivers.jsx'
+import ProductDriverModal from './components/ProductDriverModal.jsx'
 import SupportingData from './components/SupportingData.jsx'
 import GovernanceNetwork from './components/GovernanceNetwork.jsx'
 import SourcesPanel from './components/SourcesPanel.jsx'
@@ -16,6 +17,7 @@ import Footer from './components/Footer.jsx'
 export default function App() {
   const [activeId, setActiveId] = useState('tvs')
   const [modalKpi, setModalKpi] = useState(null)
+  const [modalDriver, setModalDriver] = useState(null)
 
   const company = useMemo(
     () => COMPANIES.find((c) => c.id === activeId) || COMPANIES[0],
@@ -36,13 +38,20 @@ export default function App() {
         <DataQualityPanel company={company} />
         <KpiCards kpis={company.kpis} onKpiClick={setModalKpi} />
         <PerformanceSection company={company} />
-        <ProductDrivers drivers={company.productDrivers} />
+        <ProductDrivers drivers={company.productDrivers} onCardClick={setModalDriver} />
         <SupportingData company={company} />
         <GovernanceNetwork company={company} />
         <SourcesPanel company={company} />
         <Footer />
       </main>
       <KpiModal open={!!modalKpi} kpi={modalKpi} company={company} onClose={() => setModalKpi(null)} />
+      <ProductDriverModal
+        open={!!modalDriver}
+        driver={modalDriver}
+        allDrivers={company.productDrivers}
+        company={company}
+        onClose={() => setModalDriver(null)}
+      />
     </div>
   )
 }
