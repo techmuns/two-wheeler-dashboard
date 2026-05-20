@@ -121,6 +121,28 @@ export function buildSupportingGroups(raw, opts = {}) {
   if (allNull(s.mopedMix))      s.mopedMix      = buildSinglePoint(raw?.metrics?.mopedMixFy25)
   if (allNull(s.threeWheelerMix)) s.threeWheelerMix = buildSinglePoint(raw?.metrics?.threeWheelerMixFy25)
 
+  // ---------- AR-extracted product / launches / share-price series ----------
+  // Each cell maps back to a specific page citation captured in tvs.json under
+  // products / stockPriceByFy. Values stay null for any FY where the AR is
+  // missing (e.g. TVS FY20 — the FY20 AR PDF was not in the uploaded dataset).
+  const launchesSeries = FY.map((fy) => {
+    const cnt = raw?.products?.launchesByFy?.[fy]?.count
+    return typeof cnt === 'number' ? cnt : null
+  })
+  const stockPriceSeries = FY.map((fy) => {
+    const sp = raw?.stockPriceByFy?.[fy]
+    if (!sp || typeof sp.bseHigh !== 'number' || typeof sp.bseLow !== 'number') return null
+    return Number(((sp.bseHigh + sp.bseLow) / 2).toFixed(2))
+  })
+  const topModelFy25 = raw?.products?.topSellingByFy?.FY25?.value || null
+  const topModelSource = raw?.products?.topSellingByFy?.FY25?.source || null
+  const launchesFy25Source = raw?.products?.launchesByFy?.FY25?.source || null
+  const stockPriceFy25Source = raw?.stockPriceByFy?.FY25?.source || null
+
+  // Capacity disclosure status — string explanation populated by the workbook
+  // when capacity is genuinely not reported (industry-wide Schedule III change).
+  const capacityNote = raw?.profile?.manufacturing?.note || NA_REASONS.profile
+
   // ---------- market share from industry file ----------
   const msKey = marketShareKey
   const mktShareRow = msKey ? marketShareJson.series?.[msKey] : null
@@ -159,12 +181,12 @@ export function buildSupportingGroups(raw, opts = {}) {
       name: 'Capacity & Capex',
       chartType: 'line',
       metrics: [
-        NA('Capacity',               'abs', NA_REASONS.profile, 'capacity'),
-        NA('Capacity Utilisation %', 'pp',  NA_REASONS.profile, 'capacityUtilisation'),
+        NA('Installed Capacity (units / annum)', 'abs', capacityNote, 'capacity'),
+        NA('Capacity Utilisation %',             'pp',  capacityNote, 'capacityUtilisation'),
         resolve('capex', 'Capex (₹ Cr)', 'abs', s.capex, 'audited', auditedSrc, { naReason: pendingReason }),
       ],
       sourceFootnote: isPopulated
-        ? `Capex from ${auditedSrc}. Capacity + utilisation %: ${NA_REASONS.profile}`
+        ? `Capex from ${auditedSrc}. Capacity + utilisation %: ${capacityNote}`
         : pendingReason,
     },
 
@@ -221,13 +243,37 @@ export function buildSupportingGroups(raw, opts = {}) {
 
     {
       name: 'Product / Launches',
-      chartType: 'profile',
+      chartType: 'line',
       metrics: [
-        NA('New Model Launches (Nos.)', 'abs',  NA_REASONS.launches, 'newLaunches'),
-        NA('Facelift Launches (Nos.)',  'abs',  NA_REASONS.launches, 'faceliftLaunches'),
-        NA('Top Selling Model',         'text', NA_REASONS.launches, 'topSellingModel'),
+        resolve('newLaunches', 'New Model Launches (Nos.)', 'abs', launchesSeries, 'audited',
+          launchesFy25Source || `Directors’ Report MD&A — 'New Product Launches and Initiatives' sub-section, every AR FY16–FY25.`,
+          { naReason: NA_REASONS.launches, note: 'Each FY count = number of distinct entries in the AR’s “New Product Launches and Initiatives” list (new models + variants combined — TVS does not split facelifts separately).' }),
+        NA('Facelift Launches (Nos.)', 'abs',
+          raw?.products?.faceliftPolicy || NA_REASONS.launches, 'faceliftLaunches'),
+        (topModelFy25
+          ? { key: 'topSellingModel', label: 'Top Selling Model', fmt: 'text',
+              series: new Array(FY.length).fill(null), fy25: topModelFy25,
+              verification: 'audited', source: topModelSource,
+              note: 'Disclosed in Directors’ Report MD&A — Domestic Performance Snapshot. TVS Jupiter has been the primary growth driver for Scooters in 9 of 10 years; TVS Raider led FY22; TVS Apache Series leads the Motorcycle segment FY24–FY25.',
+              unavailable: false }
+          : NA('Top Selling Model', 'text', NA_REASONS.launches, 'topSellingModel')),
       ],
-      sourceFootnote: NA_REASONS.launches,
+      sourceFootnote: isPopulated
+        ? `New launch counts and Top Selling Model extracted from the Directors' Report MD&A 'New Product Launches and Initiatives' sub-section of every TVS AR FY16-FY25 (FY20 AR missing from uploaded set). Facelift counts: ${raw?.products?.faceliftPolicy || NA_REASONS.launches}`
+        : NA_REASONS.launches,
+    },
+
+    {
+      name: 'Share Price',
+      chartType: 'line',
+      metrics: [
+        resolve('stockPrice31Mar', 'Stock Price (BSE Mar midpoint, ₹)', 'abs', stockPriceSeries, 'audited',
+          stockPriceFy25Source || `Annual Report Corporate Governance Report — Table 12.5 'Market Price Data', March row of each FY.`,
+          { naReason: NA_REASONS.profile, note: 'Midpoint of BSE March high/low (AR Market Price Data table 12.5). 31-Mar close not in the AR table; midpoint used as a 1:1 AR-sourced proxy. FY20 absent — the 2019-20 AR PDF is missing from the uploaded set.' }),
+      ],
+      sourceFootnote: isPopulated
+        ? `BSE / NSE monthly High and Low for March of each FY are disclosed in the AR Corporate Governance Report (Table 12.5 'Market Price Data'). The 31-March close is not in that table, so the chart shows the BSE March midpoint as the closest AR-sourced approximation. FY20 is null — the FY20 AR PDF is missing from the uploaded dataset.`
+        : NA_REASONS.profile,
     },
 
     // NOTE: 'Company Profile' group intentionally removed from this dropdown.

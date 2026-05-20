@@ -193,11 +193,15 @@ export function getMetricRead(curr, prev, fmt) {
 
 export function getSupportingData(group) {
   // Returns the table rows for the left panel: { metric, fy24, fy25, change, read, ... }
+  // Honours an explicit m.fy25 / m.fy24 override on the metric — used by
+  // profile-style cells (e.g. 'Top Selling Model') whose value is text and
+  // therefore cannot live in a numeric series.
   return group.metrics.map((m) => {
-    const fy24 = m.series?.[fy24Idx]
-    const fy25 = m.series?.[fy25Idx]
-    const change = (typeof fy24 === 'number' && typeof fy25 === 'number') ? Number((fy25 - fy24).toFixed(2)) : null
-    const read = m.unavailable ? 'Neutral' : getMetricRead(fy25, fy24, m.fmt)
+    const fy24 = (m.fy24 !== undefined && m.fy24 !== null) ? m.fy24 : m.series?.[fy24Idx]
+    const fy25 = (m.fy25 !== undefined && m.fy25 !== null) ? m.fy25 : m.series?.[fy25Idx]
+    const bothNumeric = typeof fy24 === 'number' && typeof fy25 === 'number'
+    const change = bothNumeric ? Number((fy25 - fy24).toFixed(2)) : null
+    const read = m.unavailable ? 'Neutral' : (bothNumeric ? getMetricRead(fy25, fy24, m.fmt) : 'Neutral')
     return { ...m, fy24, fy25, change, read }
   })
 }

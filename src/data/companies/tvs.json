@@ -253,10 +253,55 @@
     "threeWheelerMixFy25":  2.85
   },
   "na": [
-    "Export Revenue %", "Capacity Utilisation %",
-    "New Model Launches", "Facelift Launches", "Top Selling Model",
-    "Stock Price 31-Mar"
+    "Export Revenue %", "Capacity Utilisation %", "Installed Capacity",
+    "Facelift Launches"
   ],
+  "products": {
+    "topSellingByFy": {
+      "FY16": { "value": "TVS Jupiter",  "source": "TVS FY16 AR pp.16-17 — Directors' Report MD&A: 'Jupiter, the most awarded scooter… no.2 scooter brand in India, crossed one million customer base, fastest ever in the scooter category'." },
+      "FY17": { "value": "TVS Jupiter",  "source": "TVS FY17 AR p.11 — Directors' Report MD&A: 'TVS Jupiter is the No.2 Scooter brand in India… clocking a growth rate of 14%'." },
+      "FY18": { "value": "TVS Jupiter",  "source": "TVS FY18 AR p.11 — Directors' Report MD&A: 'TVS Jupiter maintained the momentum with a 32% growth over last year… scooter has now reached the 2.3 million mark in sales'." },
+      "FY19": { "value": "TVS Jupiter",  "source": "TVS FY19 AR p.13 — Directors' Report MD&A: 'Launched in 2013, TVS Jupiter has now reached the 3 million+ mark'." },
+      "FY20": null,
+      "FY21": { "value": "TVS Jupiter",  "source": "TVS FY21 AR p.17 — Directors' Report MD&A: 'TVS Jupiter reached 4 Mn+ happy customers during FY 20-21'." },
+      "FY22": { "value": "TVS Raider",   "source": "TVS FY22 AR pp.10, 16 — Chairman's Letter + MD&A: 'TVS RAIDER… highest selling product within just six months of its launch in South Asia and Latin America… most awarded commuter motorcycle of the year'." },
+      "FY23": { "value": "TVS Jupiter",  "source": "TVS FY23 AR p.16 — Directors' Report MD&A: 'TVS Jupiter clocked the Fastest Five Million milestone… consistently one of the top 10 [2W brands]'." },
+      "FY24": { "value": "TVS Jupiter",  "source": "TVS FY24 AR p.66 — 'Domestic Performance Snapshot': 'Primary Growth Driver: Jupiter' (Domestic Scooter Sales 1.45 Mn, +16.5% YoY)." },
+      "FY25": { "value": "TVS Jupiter",  "source": "TVS FY25 AR pp.96-97 — 'Domestic Performance Snapshot': 'SCOOTERS 1.54 Mn… Primary Growth Driver: Jupiter' (+22.1% YoY)." }
+    },
+    "launchesByFy": {
+      "FY16": { "count": 6, "names": ["TVS Victor (new-gen relaunch)", "TVS Apache RTR 200", "TVS Jupiter ZX", "TVS Wego refresh", "TVS Scooty Zest 110 Special Edition", "TVS XL 100"], "source": "TVS FY16 AR pp.16-17 — Directors' Report MD&A 'New Product Launches and Initiatives'." },
+      "FY17": { "count": 4, "names": ["TVS Jupiter Million R / Mystic Gold / Jade Green editions", "TVS Scooty Zest 110 (Himalayan Limited Edition)", "TVS StaR City+ (Chocolate Brown Gold / Spotlight White)", "TVS Sport (Black Silver / Volcano Red)"], "source": "TVS FY17 AR p.11 — Directors' Report MD&A 'New Product Launches and Initiatives'." },
+      "FY18": { "count": 5, "names": ["TVS Apache RR 310", "TVS Apache RTR 160 4V", "TVS NTORQ 125 (first Bluetooth scooter)", "TVS Jupiter Classic", "TVS XL100 HD"], "source": "TVS FY18 AR p.11 — Directors' Report MD&A 'New Product Launches and Initiatives'." },
+      "FY19": { "count": 4, "names": ["TVS Jupiter Grande", "TVS Radeon", "TVS XL100 HD i-Touchstart", "TVS King Duramax 225 LC"], "source": "TVS FY19 AR pp.13-14 — Directors' Report MD&A 'New Product Launches and Initiatives'." },
+      "FY20": null,
+      "FY21": { "count": 5, "names": ["TVS Jupiter ZX Disc intelliGO", "TVS Apache RTR 200 4V (ride modes)", "TVS Apache RTR 160 4V (17.63 PS upgrade)", "TVS XL100 HD i-Touch Start Win Edition", "TVS NTORQ Super Squad Edition (Marvel)"], "source": "TVS FY21 AR pp.17-18 — Directors' Report MD&A 'New Product Launches and Initiatives'." },
+      "FY22": { "count": 7, "names": ["TVS Raider", "TVS Apache RTR 160 4V (3 ride modes + SmartXonnect)", "TVS Apache RTR 160 4V Special Edition (Matte Black)", "TVS Jupiter 125", "TVS Jupiter ZX SmartXonnect", "TVS XL100 Win Edition / Coral Silk", "TVS NTORQ 125 Race XP + SuperSquad variants"], "source": "TVS FY22 AR pp.16-18 — Directors' Report MD&A 'New Product Launches and Initiatives'." },
+      "FY23": { "count": 9, "names": ["TVS Ronin", "TVS Apache RTR 160/180 (2022 refresh)", "TVS Apache RTR 160 4V Special Edition", "TVS Raider SmartXonnect", "TVS Raider Disc Uniseat", "TVS NTORQ 125 XT / Race Edition (Marine Blue)", "TVS Jupiter Classic 5 Mn milestone edition", "TVS Radeon Digi Cluster / Sport ELS", "TVS iQube / iQube S / iQube ST (3-variant expansion)"], "source": "TVS FY23 AR pp.19-20 — Directors' Report MD&A 'New Product Launches and Initiatives'." },
+      "FY24": { "count": 9, "names": ["TVS X (flagship electric 2W)", "TVS Apache RTR 310", "TVS Ronin Special Edition", "TVS Raider Super Squad Edition", "TVS Jupiter 125 SmartXonnect (TFT)", "TVS iQube (31L storage, voice assist)", "TVS HLX 150F (international)", "TVS NEO AMI 125 (Bebek for Africa)", "TVS Apache RTE (electric racing)"], "source": "TVS FY24 AR pp.68-71 — '3.2 New Product Launches and Initiatives in FY 2023-24'." },
+      "FY25": { "count": 7, "names": ["All-new TVS Jupiter 110", "New TVS Apache RR310 (quick shifter, winglets, TPMS, Cruise Control)", "TVS Apache RTR 160 Racing Edition", "TVS Apache RTR 160 4V (USD + Traction Control)", "TVS NTORQ Midnight Blue Edition / Race XP refresh", "TVS iQube 2.2 kWh + Celebration Edition", "TVS King EV Max (first electric 3-wheeler)"], "source": "TVS FY25 AR pp.92, 98-100 — '4.4 New Product Launches and Initiatives in FY 2024-25'." }
+    },
+    "faceliftPolicy": "TVS Annual Reports list every new product, variant and refresh under a single 'New Product Launches and Initiatives' sub-section of the Directors' Report — there is no separate facelift / refresh count disclosed. Splitting the merged list post-hoc would be fabrication, so Facelift Launches stays blank."
+  },
+  "stockPriceByFy": {
+    "basis": "BSE high / low for March of the FY (NSE figures available in source but BSE used for series). Monthly close not disclosed in AR; midpoint of monthly high/low used as the displayed 31-Mar approximation.",
+    "FY16": { "bseHigh": 326.10, "bseLow": 266.50, "nseHigh": 326.35, "nseLow": 266.60, "source": "TVS FY16 AR p.62 — Table 11.5 'Market Price Data', March 2016 row. Re.1 face value." },
+    "FY17": { "bseHigh": 444.80, "bseLow": 414.00, "nseHigh": 445.65, "nseLow": 414.00, "source": "TVS FY17 AR p.60 — Table 12.5 'Market Price Data', March 2017 row." },
+    "FY18": { "bseHigh": 687.30, "bseLow": 588.45, "nseHigh": 686.85, "nseLow": 545.40, "source": "TVS FY18 AR p.69 — Table 12.5 'Market Price Data', March 2018 row." },
+    "FY19": { "bseHigh": 511.00, "bseLow": 456.00, "nseHigh": 511.00, "nseLow": 456.00, "source": "TVS FY19 AR p.67 — Table 12.5 'Market Price Data', March 2019 row." },
+    "FY20": null,
+    "FY21": { "bseHigh": 636.00, "bseLow": 541.00, "nseHigh": 636.00, "nseLow": 541.00, "source": "TVS FY21 AR p.86 — Table 12.5 'Market Price Data', March 2021 row." },
+    "FY22": { "bseHigh": 628.00, "bseLow": 513.00, "nseHigh": 628.00, "nseLow": 513.00, "source": "TVS FY22 AR p.91 — Table 12.5 'Market Price Data', March 2022 row." },
+    "FY23": { "bseHigh": 1113.00, "bseLow": 1019.90, "nseHigh": 1113.00, "nseLow": 1005.00, "source": "TVS FY23 AR p.119 — Table 12.5 'Market Price Data', March 2023 row." },
+    "FY24": { "bseHigh": 2313.90, "bseLow": 2006.45, "nseHigh": 2313.45, "nseLow": 2005.80, "source": "TVS FY24 AR p.177 — Table 12.5 'Market Price Data', March 2024 row." },
+    "FY25": { "bseHigh": 2477.95, "bseLow": 2225.70, "nseHigh": 2468.00, "nseLow": 2218.80, "source": "TVS FY25 AR p.201 — Table 12.5 'Market Price Data', March 2025 row." }
+  },
+  "dealerCountByFy": {
+    "FY22": { "value": "iQube network: 33 cities, 74 dealers", "iqubeDealers": 74, "iqubeCities": 33, "source": "TVS FY22 AR p.18 — Directors' Report MD&A 'ELECTRIC - TVS iQUBE'. Aggregate dealer count not disclosed for FY22." },
+    "FY23": { "value": "iQube network: 130+ towns, 230+ dealers", "iqubeDealers": 230, "iqubeCities": 130, "source": "TVS FY23 AR p.20 — Directors' Report MD&A 'ELECTRIC - TVS iQUBE'. Aggregate dealer count not disclosed for FY23." },
+    "FY24": { "value": "Service network in 3,800+ cities; iQube in 712 dealerships", "iqubeDealers": 712, "iqubeCities": 3800, "source": "TVS FY24 AR p.10 (Company Overview) + p.69 (MD&A). Aggregate dealer count not disclosed for FY24." },
+    "FY25": { "value": "Over 8,000 dealers across 3,800+ Indian cities and 4,000 global cities; iQube in 1,074 dealerships", "totalDealers": 8000, "totalCitiesIndia": 3800, "totalCitiesGlobal": 4000, "iqubeDealers": 1074, "source": "TVS FY25 AR p.29 (Chairman's Communiqué 'Far-reaching Global Impact') + p.97 (MD&A)." }
+  },
   "profile": {
     "asOfFy": "FY25",
     "source": "TVS Motor Company 33rd Annual Report (FY25) — Board section / BRSR section / Corporate Governance Report.",
@@ -292,7 +337,7 @@
     "manufacturing": {
       "facilities": ["Hosur, Tamil Nadu", "Mysuru, Karnataka", "Nalagarh, Himachal Pradesh"],
       "facilitiesInternational": ["PT TVS Indonesia", "Norton Motorcycles (UK)"],
-      "note": "Installed annual capacity not explicitly disclosed in FY25 AR; treat as Pending."
+      "note": "Installed annual 2W capacity NOT disclosed in any TVS Motor Annual Report FY16-FY25 reviewed (revised Schedule III to the Companies Act, 2013 removed the mandatory 'Capacity, Production & Stock' table from the Notes to Accounts). Stays blank — not a workbook gap, an industry-wide disclosure gap."
     }
   }
 }
