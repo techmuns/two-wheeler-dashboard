@@ -33,6 +33,25 @@ const buildSinglePoint = (fy25Value) => {
   return arr
 }
 
+// Build a per-FY % series from a `<segment>ByFy` map and a total-volume series
+// aligned on the source axis. Used for Motorcycle / Scooter / Moped / 3W /
+// Exports volume mix where the OEM discloses absolute units in every AR but
+// not the % itself. Every populated cell here is derived from disclosed
+// line items; nothing is estimated.
+const buildMixSeries = (byFy, totalSeries, sourceAxis) => {
+  const arr = new Array(FY.length).fill(null)
+  if (!byFy || !totalSeries || !sourceAxis) return arr
+  FY.forEach((fy, idx) => {
+    const seg = byFy[fy]
+    const srcIdx = sourceAxis.indexOf(fy)
+    const total = srcIdx >= 0 ? totalSeries[srcIdx] : null
+    if (typeof seg === 'number' && typeof total === 'number' && total > 0) {
+      arr[idx] = Number(((seg / total) * 100).toFixed(2))
+    }
+  })
+  return arr
+}
+
 const allNull = (arr) => !arr || arr.every((v) => typeof v !== 'number')
 
 const NA = (label, fmt, reason, key) => ({
@@ -88,11 +107,19 @@ export function buildSupportingGroups(raw, opts = {}) {
     wcDays:            align(raw?.metrics?.wcDays, ax),
     capex:             align(raw?.cf?.capex, ax),
     evShare:           align(raw?.metrics?.evShare, ax),
-    motorcycleMix:     buildSinglePoint(raw?.metrics?.motorcycleMixFy25),
-    scooterMix:        buildSinglePoint(raw?.metrics?.scooterMixFy25),
-    mopedMix:          buildSinglePoint(raw?.metrics?.mopedMixFy25),
-    threeWheelerMix:   buildSinglePoint(raw?.metrics?.threeWheelerMixFy25),
+    motorcycleMix:     buildMixSeries(raw?.ops?.motorcyclesByFy,   raw?.ops?.totalVolume, ax),
+    scooterMix:        buildMixSeries(raw?.ops?.scootersByFy,      raw?.ops?.totalVolume, ax),
+    mopedMix:          buildMixSeries(raw?.ops?.mopedsByFy,        raw?.ops?.totalVolume, ax),
+    threeWheelerMix:   buildMixSeries(raw?.ops?.threeWheelersByFy, raw?.ops?.totalVolume, ax),
+    exportMix:         buildMixSeries(raw?.ops?.exportsByFy,       raw?.ops?.totalVolume, ax),
   }
+
+  // Fall back to single-point FY25 mix if per-FY volumes aren't disclosed
+  // (e.g. other OEMs whose workbooks ship only the FY25 % figure).
+  if (allNull(s.motorcycleMix)) s.motorcycleMix = buildSinglePoint(raw?.metrics?.motorcycleMixFy25)
+  if (allNull(s.scooterMix))    s.scooterMix    = buildSinglePoint(raw?.metrics?.scooterMixFy25)
+  if (allNull(s.mopedMix))      s.mopedMix      = buildSinglePoint(raw?.metrics?.mopedMixFy25)
+  if (allNull(s.threeWheelerMix)) s.threeWheelerMix = buildSinglePoint(raw?.metrics?.threeWheelerMixFy25)
 
   // ---------- market share from industry file ----------
   const msKey = marketShareKey
@@ -162,12 +189,12 @@ export function buildSupportingGroups(raw, opts = {}) {
       name: 'Volume Mix',
       chartType: 'line',
       metrics: [
-        NA('Export Volume %',     'pp', NA_REASONS.mixHist, 'exportVolume'),
+        resolve('exportVolume',     'Export Volume %',      'pp', s.exportMix,        'audited', auditedSrc, { naReason: pendingReason, note: 'Derived FY-by-FY from disclosed Exports volume / Total volume in the AR Forex section.' }),
         resolve('evVolume',         'EV Volume %',          'pp', s.evShare,          'audited', auditedSrc, { naReason: pendingReason, note: 'Disclosed in audited workbook where available; FY25 reflects EV unit count / total volume.' }),
-        resolve('motorcycleVolume', 'Motorcycle Volume %',  'pp', s.motorcycleMix,    'audited', auditedSrc, { naReason: pendingReason, note: 'FY25 only where workbook discloses unit-level segment split.' }),
-        resolve('scooterVolume',    'Scooter Volume %',     'pp', s.scooterMix,       'audited', auditedSrc, { naReason: pendingReason, note: 'FY25 only.' }),
-        resolve('mopedVolume',      'Moped Volume %',       'pp', s.mopedMix,         'audited', auditedSrc, { naReason: pendingReason, note: 'FY25 only.' }),
-        resolve('threeWheelerVolume', 'Three-Wheeler Volume %', 'pp', s.threeWheelerMix, 'audited', auditedSrc, { naReason: pendingReason, note: 'FY25 only.' }),
+        resolve('motorcycleVolume', 'Motorcycle Volume %',  'pp', s.motorcycleMix,    'audited', auditedSrc, { naReason: pendingReason, note: 'Derived FY-by-FY from Directors’ Report Quantitative table where unit-level segment splits are disclosed.' }),
+        resolve('scooterVolume',    'Scooter Volume %',     'pp', s.scooterMix,       'audited', auditedSrc, { naReason: pendingReason, note: 'Derived FY-by-FY from Directors’ Report Quantitative table.' }),
+        resolve('mopedVolume',      'Moped Volume %',       'pp', s.mopedMix,         'audited', auditedSrc, { naReason: pendingReason, note: 'Derived FY-by-FY from Directors’ Report Quantitative table.' }),
+        resolve('threeWheelerVolume', 'Three-Wheeler Volume %', 'pp', s.threeWheelerMix, 'audited', auditedSrc, { naReason: pendingReason, note: 'Derived FY-by-FY from Directors’ Report Quantitative table.' }),
         NA('75–110CC Volume',  'abs', NA_REASONS.ccSlab, 'v_75_110'),
         NA('110–125CC Volume', 'abs', NA_REASONS.ccSlab, 'v_110_125'),
         NA('125–150CC Volume', 'abs', NA_REASONS.ccSlab, 'v_125_150'),
@@ -177,7 +204,7 @@ export function buildSupportingGroups(raw, opts = {}) {
         NA('>350CC Volume',    'abs', NA_REASONS.ccSlab, 'v_350_plus'),
       ],
       sourceFootnote: isPopulated
-        ? `EV / Motorcycle / Scooter / Moped / 3W mix from ${auditedSrc} (FY25 only). Export mix and CC-slab volumes: not in workbook.`
+        ? `EV / Motorcycle / Scooter / Moped / 3W / Export mix derived FY-by-FY from ${auditedSrc} (segment-unit volumes in the Directors’ Report Quantitative table ÷ Total Volume). CC-slab volumes: not in workbook.`
         : pendingReason,
     },
 

@@ -84,6 +84,25 @@ export function buildFromActuals(json, opts = {}) {
   const capex = alignToFY(json?.cf?.capex, ax)
   const fcf   = alignToFY(json?.cf?.fcf, ax)
 
+  // Derive per-FY % mix series from disclosed unit volumes (Motorcycle / Scooter /
+  // Moped / 3W / Exports / Total). Every populated cell is computed from a
+  // disclosed AR line item — no estimates.
+  const ops = json?.ops || {}
+  const total = json?.ops?.totalVolume || []
+  const buildMixByFy = (byFy) => FY.map((fy) => {
+    const i = ax.indexOf(fy)
+    const seg = byFy?.[fy]
+    const tot = i >= 0 ? total[i] : null
+    return (typeof seg === 'number' && typeof tot === 'number' && tot > 0)
+      ? Number(((seg / tot) * 100).toFixed(2))
+      : null
+  })
+  const mcMixSeries  = buildMixByFy(ops.motorcyclesByFy)
+  const scMixSeries  = buildMixByFy(ops.scootersByFy)
+  const mpMixSeries  = buildMixByFy(ops.mopedsByFy)
+  const twMixSeries  = buildMixByFy(ops.threeWheelersByFy)
+  const expMixSeries = buildMixByFy(ops.exportsByFy)
+
   // FY values
   const v25 = (s) => s[fy25Idx]
   const v24 = (s) => s[fy24Idx]
@@ -150,13 +169,25 @@ export function buildFromActuals(json, opts = {}) {
       series: evShare,
       source: 'TVS 2025 AR — EV volumes disclosed for FY25',
     },
-    {
-      key: 'exportMix',
-      label: 'Export Mix %',
-      value: null, sub: 'FY25', delta: null, tone: 'flat', fmt: 'pp',
-      series: new Array(FY.length).fill(null),
-      source: 'Pending — not consistently disclosed in audited statements',
-    },
+    (() => {
+      const v25 = expMixSeries[fy25Idx]
+      const v24 = expMixSeries[fy24Idx]
+      const delta = (typeof v25 === 'number' && typeof v24 === 'number') ? v25 - v24 : null
+      const hasAny = expMixSeries.some((x) => typeof x === 'number')
+      return {
+        key: 'exportMix',
+        label: 'Export Mix %',
+        value: fmtPct(v25),
+        sub: 'FY25',
+        delta: fmtPpSigned(delta),
+        tone: toneFromDelta(delta),
+        fmt: 'pp',
+        series: expMixSeries,
+        source: hasAny
+          ? `${json?.sources?.primary} — Forex section of the Directors' Report discloses Exports volume each FY; mix derived vs Total Volume.`
+          : 'Pending — exports volume not disclosed in workbook',
+      }
+    })(),
   ]
 
   // ---- Performance section ----
@@ -166,24 +197,23 @@ export function buildFromActuals(json, opts = {}) {
       oem:      volGrowth,
       industry: getIndustryGrowthSeries(),
     },
-    // Right chart: stacked product mix. Only FY25 has a real mix in the audited data;
-    // earlier years stay null and render as gaps. We still expose the FY25 split so
-    // the chart shows a single solid bar for FY25 rather than going fully blank.
+    // Right chart: stacked product mix. Each segment %'s series is derived
+    // FY-by-FY from disclosed unit volumes (Directors' Report Quantitative
+    // table). Falls back to the workbook's FY25-only metric if per-FY
+    // volumes aren't present.
     mix: (() => {
       const m = json?.metrics || {}
-      const mc = new Array(FY.length).fill(null)
-      const sc = new Array(FY.length).fill(null)
-      const mp = new Array(FY.length).fill(null)
-      const tw = new Array(FY.length).fill(null)
-      if (typeof m.motorcycleMixFy25 === 'number') mc[fy25Idx] = m.motorcycleMixFy25
-      if (typeof m.scooterMixFy25 === 'number')    sc[fy25Idx] = m.scooterMixFy25
-      if (typeof m.mopedMixFy25 === 'number')      mp[fy25Idx] = m.mopedMixFy25
-      if (typeof m.threeWheelerMixFy25 === 'number') tw[fy25Idx] = m.threeWheelerMixFy25
+      const withFallback = (series, fy25Fallback) => {
+        if (series.some((x) => typeof x === 'number')) return series
+        const arr = new Array(FY.length).fill(null)
+        if (typeof fy25Fallback === 'number') arr[fy25Idx] = fy25Fallback
+        return arr
+      }
       return [
-        { name: 'Motorcycles',   color: '#1F2937', values: mc },
-        { name: 'Scooters',      color: '#3B82F6', values: sc },
-        { name: 'Mopeds',        color: '#10B981', values: mp },
-        { name: 'Three-Wheelers', color: '#F59E0B', values: tw },
+        { name: 'Motorcycles',    color: '#1F2937', values: withFallback(mcMixSeries, m.motorcycleMixFy25) },
+        { name: 'Scooters',       color: '#3B82F6', values: withFallback(scMixSeries, m.scooterMixFy25) },
+        { name: 'Mopeds',         color: '#10B981', values: withFallback(mpMixSeries, m.mopedMixFy25) },
+        { name: 'Three-Wheelers', color: '#F59E0B', values: withFallback(twMixSeries, m.threeWheelerMixFy25) },
       ]
     })(),
     // Rich per-FY volume mix consumed by PerformanceSection. Only FYs with
@@ -270,7 +300,6 @@ export function buildFromActuals(json, opts = {}) {
   // EV / iQube · Domestic 2W · Exports 2W. Each carries a 3-year volume
   // series (FY23-FY25) so the Maruti-style detail modal can render a
   // trend chart. 'Total 2W' here excludes 3W so domestic + exports add up.
-  const ops = json?.ops || {}
 
   const seriesFromByFy = (byFy) => {
     if (!byFy) return []
@@ -380,8 +409,13 @@ export function buildFromActuals(json, opts = {}) {
     ),
     'Product Mix': buildBlock(
       ['Motorcycles %', 'Scooters %', 'Mopeds %', 'EV %'],
-      [null, null, null, null],
-      [json?.metrics?.motorcycleMixFy25 ?? null, json?.metrics?.scooterMixFy25 ?? null, json?.metrics?.mopedMixFy25 ?? null, evShareFy25],
+      [mcMixSeries[fy24Idx], scMixSeries[fy24Idx], mpMixSeries[fy24Idx], v24(evShare)],
+      [
+        mcMixSeries[fy25Idx] ?? json?.metrics?.motorcycleMixFy25 ?? null,
+        scMixSeries[fy25Idx] ?? json?.metrics?.scooterMixFy25    ?? null,
+        mpMixSeries[fy25Idx] ?? json?.metrics?.mopedMixFy25      ?? null,
+        evShareFy25,
+      ],
       ['pp', 'pp', 'pp', 'pp'],
     ),
     'Market Share': buildBlock(
