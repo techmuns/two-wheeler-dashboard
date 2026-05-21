@@ -1,5 +1,5 @@
 {
-  "url": "https://www.sebi.gov.in/sebi_data/attachdocs/dec-2023/1703580725954.PDF",
-  "slug": "OLA_DRHP",
-  "_note": "Queued by Claude. Modifying this file triggers .github/workflows/fetch-pdf.yml on push. The workflow downloads the PDF on the runner, extracts the text, and commits only src/data/source-text/<slug>.txt -- the PDF itself never goes into the repo (solves the 100 MB limit for large investor docs)."
+  "url": "https://www.eicher.in/content/dam/eicher-motors/investor/financial-and-reports/annual-reports/eml-ir25.pdf",
+  "slug": "EICHER_2025",
+  "_note": "Queued by Claude. Modifying this file triggers .github/workflows/fetch-pdf.yml on push. The workflow downloads the PDF on the runner, extracts the text, and commits only src/data/source-text/<slug>.txt -- the PDF itself never goes into the repo."
 }
