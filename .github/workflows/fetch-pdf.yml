@@ -1,17 +1,16 @@
 name: Fetch + extract PDF text
 
-# Downloads a publicly-accessible PDF on the runner, extracts the layout
-# text, and commits the .txt (and optional .json sections) -- but never
-# the PDF itself. Solves the 100 MB / LFS-per-file repo size limit for
-# large investor documents like the Ola DRHP (~50 MB).
+# Downloads one or more publicly-accessible PDFs on the runner, extracts
+# the layout text, and commits the .txt files (never the PDF). Solves
+# the 100 MB / LFS-per-file repo size limit for large investor documents.
 #
 # Triggers:
-#   1. Manual button in Actions (workflow_dispatch)
-#   2. Push to .github/fetch-queue.json with the URL + filename slug
+#   1. Manual button in Actions (workflow_dispatch — single file)
+#   2. Push to .github/fetch-queue.json — single file or array of files
 #
-# After the run lands, the assistant can read the extracted .txt file
-# from src/data/source-text/<slug>.txt and parse cells into the company
-# JSON exactly the same way TVS was processed locally.
+# Queue file shape (either):
+#   { "url": "...", "slug": "OLA_DRHP" }
+#   { "files": [ { "url": "...", "slug": "..." }, ... ] }
 
 on:
   workflow_dispatch:
@@ -21,7 +20,7 @@ on:
         required: true
         default: 'https://www.sebi.gov.in/sebi_data/attachdocs/dec-2023/1703580725954.PDF'
       slug:
-        description: 'Slug to save extracted text as (no extension), e.g. OLA_DRHP -> src/data/source-text/OLA_DRHP.txt'
+        description: 'Slug to save extracted text as (no extension), e.g. OLA_DRHP'
         required: true
         default: 'OLA_DRHP'
   push:
@@ -49,92 +48,137 @@ jobs:
           sudo apt-get install -y -qq poppler-utils
           pdftotext -v 2>&1 | head -1
 
-      - name: Resolve URL + slug
-        id: resolve
+      - name: Build job list from event
+        id: list
         run: |
           set -euo pipefail
+          mkdir -p /tmp/dl
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            URL='${{ inputs.url }}'
-            SLUG='${{ inputs.slug }}'
+            jq -nc --arg url '${{ inputs.url }}' --arg slug '${{ inputs.slug }}' \
+              '[{url:$url, slug:$slug}]' > /tmp/dl/jobs.json
           else
             if [ ! -f .github/fetch-queue.json ]; then
               echo "::error::Push trigger fired but .github/fetch-queue.json is missing."
               exit 1
             fi
-            URL=$(jq -r '.url' .github/fetch-queue.json)
-            # Accept either 'slug' or 'filename' (strip .pdf if filename was used)
-            SLUG=$(jq -r '.slug // (.filename | sub("\\.[Pp][Dd][Ff]$"; ""))' .github/fetch-queue.json)
+            # Accept either { url, slug } or { files: [...] } or array root.
+            jq -c '
+              if type == "array" then .
+              elif .files then .files
+              elif .url and (.slug or .filename) then
+                [{url: .url, slug: (.slug // (.filename | sub("\\.[Pp][Dd][Ff]$"; "")))}]
+              else error("queue file must have { url, slug } or { files: [...] }")
+              end
+            ' .github/fetch-queue.json > /tmp/dl/jobs.json
           fi
-          # Strict sanity-check on the slug.
-          if ! echo "$SLUG" | grep -qE '^[A-Za-z0-9_-]+$'; then
-            echo "::error::Slug must be [A-Za-z0-9_-]+ (got: $SLUG)"; exit 1
-          fi
-          echo "URL=$URL"   >> "$GITHUB_OUTPUT"
-          echo "SLUG=$SLUG" >> "$GITHUB_OUTPUT"
-          echo "Fetching: $URL"
-          echo "Will save: src/data/source-text/$SLUG.txt"
+          echo "Job list:"
+          jq . /tmp/dl/jobs.json
+          COUNT=$(jq 'length' /tmp/dl/jobs.json)
+          echo "count=$COUNT" >> "$GITHUB_OUTPUT"
 
-      - name: Download PDF to /tmp (never to repo)
-        env:
-          URL:  ${{ steps.resolve.outputs.URL }}
+      - name: Fetch + extract each PDF
         run: |
           set -euo pipefail
-          mkdir -p /tmp/dl
-          curl -L --fail -sS \
-            -A "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36" \
-            -H "Accept: application/pdf,application/octet-stream,*/*" \
-            -o /tmp/dl/in.pdf "$URL"
-          file /tmp/dl/in.pdf
-          if ! file /tmp/dl/in.pdf | grep -qi 'PDF document'; then
-            echo "::error::Downloaded file is not a PDF (check the URL)."
-            head -c 500 /tmp/dl/in.pdf | hexdump -C | head -5
-            exit 1
-          fi
-          SIZE=$(stat -c%s /tmp/dl/in.pdf)
-          echo "Downloaded $SIZE bytes."
-
-      - name: Extract layout text + page count
-        env:
-          SLUG: ${{ steps.resolve.outputs.SLUG }}
-        run: |
-          set -euo pipefail
+          UA='Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36'
           mkdir -p src/data/source-text
-          OUT="src/data/source-text/$SLUG.txt"
 
-          # -layout preserves table column alignment which is what the
-          # downstream parser keys off. No -enc utf8 needed; default is utf-8.
-          pdftotext -layout /tmp/dl/in.pdf "$OUT"
-          pdfinfo /tmp/dl/in.pdf > "src/data/source-text/$SLUG.meta.txt" || true
+          fetch() {
+            curl -L --fail -sS \
+              -c /tmp/dl/cookies.txt -b /tmp/dl/cookies.txt \
+              -A "$UA" \
+              -H "Accept: application/pdf,application/octet-stream,*/*" \
+              -o "$1" "$2"
+          }
 
-          LINES=$(wc -l < "$OUT")
-          BYTES=$(stat -c%s "$OUT")
-          echo "Extracted: $LINES lines, $BYTES bytes -> $OUT"
-          echo "$OUT_BYTES_LINES=$LINES" >> "$GITHUB_STEP_SUMMARY" || true
+          process_one() {
+            local URL="$1"; local SLUG="$2"
+            if ! echo "$SLUG" | grep -qE '^[A-Za-z0-9_-]+$'; then
+              echo "::warning::Skipping bad slug: $SLUG"
+              return 0
+            fi
+            echo ""
+            echo "──────────────────────────────────────────────"
+            echo "Job: $SLUG"
+            echo "URL: $URL"
+            rm -f /tmp/dl/in.pdf /tmp/dl/page1.html /tmp/dl/cookies.txt
 
-          # If even the text file is too big for git (>20 MB), gzip it.
-          if [ "$BYTES" -gt 20971520 ]; then
-            gzip -9 "$OUT"
-            echo "Compressed to ${OUT}.gz"
-          fi
+            fetch /tmp/dl/in.pdf "$URL" || { echo "::error::curl failed for $SLUG"; return 1; }
+            file /tmp/dl/in.pdf
 
-      - name: Commit extracted text (PDF stays on runner, never committed)
-        env:
-          SLUG: ${{ steps.resolve.outputs.SLUG }}
-          URL:  ${{ steps.resolve.outputs.URL }}
+            # Google Drive virus-scan interstitial (for files >25 MB) returns
+            # an HTML confirmation page. Look for the confirm token + retry.
+            if file /tmp/dl/in.pdf | grep -qi 'HTML\|XML\|ASCII text'; then
+              echo "Got HTML interstitial, retrying with Drive confirm token..."
+              mv /tmp/dl/in.pdf /tmp/dl/page1.html
+              local FILE_ID
+              FILE_ID=$(echo "$URL" | grep -oE 'id=[A-Za-z0-9_-]+' | head -1 | cut -d= -f2 || true)
+              local TOKEN
+              TOKEN=$(grep -oE 'confirm=[A-Za-z0-9_-]{4,}' /tmp/dl/page1.html | head -1 | cut -d= -f2 || true)
+              if [ -n "${FILE_ID:-}" ] && [ -n "${TOKEN:-}" ]; then
+                local CONFIRMED="https://drive.usercontent.google.com/download?id=${FILE_ID}&export=download&confirm=${TOKEN}"
+                fetch /tmp/dl/in.pdf "$CONFIRMED"
+              elif [ -n "${FILE_ID:-}" ]; then
+                # Fallback: hit usercontent.google.com directly with confirm=t.
+                fetch /tmp/dl/in.pdf "https://drive.usercontent.google.com/download?id=${FILE_ID}&export=download&confirm=t"
+              else
+                local ACTION
+                ACTION=$(grep -oE 'action="[^"]+"' /tmp/dl/page1.html | head -1 | cut -d'"' -f2 | sed 's/&amp;/\&/g' || true)
+                if [ -n "$ACTION" ]; then
+                  fetch /tmp/dl/in.pdf "$ACTION"
+                else
+                  echo "::error::HTML interstitial but no confirm token / form action for $SLUG"
+                  head -c 1500 /tmp/dl/page1.html
+                  return 1
+                fi
+              fi
+              file /tmp/dl/in.pdf
+            fi
+
+            if ! file /tmp/dl/in.pdf | grep -qi 'PDF document'; then
+              echo "::error::Final file is not a PDF for $SLUG"
+              head -c 1000 /tmp/dl/in.pdf | hexdump -C | head -10
+              return 1
+            fi
+
+            local SIZE; SIZE=$(stat -c%s /tmp/dl/in.pdf)
+            echo "Downloaded $SIZE bytes."
+
+            local OUT="src/data/source-text/${SLUG}.txt"
+            pdftotext -layout /tmp/dl/in.pdf "$OUT"
+            pdfinfo /tmp/dl/in.pdf > "src/data/source-text/${SLUG}.meta.txt" || true
+            local LINES; LINES=$(wc -l < "$OUT")
+            local TBYTES; TBYTES=$(stat -c%s "$OUT")
+            echo "Extracted: $LINES lines, $TBYTES bytes -> $OUT"
+            if [ "$TBYTES" -gt 20971520 ]; then
+              gzip -9 "$OUT"
+              echo "Compressed to ${OUT}.gz"
+            fi
+          }
+
+          FAILED=0
+          while IFS= read -r row; do
+            URL=$(echo "$row" | jq -r '.url')
+            SLUG=$(echo "$row" | jq -r '.slug // (.filename | sub("\\.[Pp][Dd][Ff]$"; ""))')
+            process_one "$URL" "$SLUG" || FAILED=$((FAILED+1))
+          done < <(jq -c '.[]' /tmp/dl/jobs.json)
+
+          echo ""
+          echo "Done. Failures: $FAILED"
+          ls -la src/data/source-text/
+
+      - name: Commit extracted text (PDFs never committed)
         run: |
           set -e
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add src/data/source-text/
           if git diff --staged --quiet; then
-            echo "No changes -- extracted text matches existing."
+            echo "No changes -- nothing new extracted."
             exit 0
           fi
-          git commit -m "data: extract text from $SLUG via Actions
+          COUNT=$(jq 'length' /tmp/dl/jobs.json)
+          git commit -m "data: extract text from $COUNT PDF(s) via Actions
 
-Source URL: $URL
-Extracted:  src/data/source-text/$SLUG.txt
-Note: PDF is fetched to runner /tmp and discarded after extraction.
-      Only the layout-preserving text + pdfinfo metadata is committed.
+$(jq -r '.[] | "  - \(.slug) : \(.url)"' /tmp/dl/jobs.json)
 "
           git push
