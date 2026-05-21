@@ -2,16 +2,16 @@
   "files": [
     {
       "url": "https://drive.google.com/uc?export=download&id=12S9rkTJFhCLZ-zqSrB3pB_UGxu7ndXqG",
-      "slug": "UNKNOWN_A"
+      "slug": "OEM_1"
     },
     {
       "url": "https://drive.google.com/uc?export=download&id=1W6PPcRDd1qgVIvBki87hGSAcGZ4O8aCR",
-      "slug": "UNKNOWN_B"
+      "slug": "OEM_2"
     },
     {
       "url": "https://drive.google.com/uc?export=download&id=1UPX4d9YhbiECWFJ-o4ggLEJ-WB_ROn94",
       "slug": "EICHER_2025"
     }
   ],
-  "_note": "Queued by Claude. Three Google Drive files; one confirmed Eicher FY25 AR, two unknown — will be auto-detected from their text content and renamed in a follow-up commit."
+  "_note": "User says these three Drive files are Ola, Bajaj, and Eicher (one was repeated in the original message but the IDs are distinct). Eicher confirmed = #3. The two OEM_* slugs are placeholders — assistant identifies which is Ola vs Bajaj by reading the first few pages of the extracted text and renames in a follow-up commit."
 }
