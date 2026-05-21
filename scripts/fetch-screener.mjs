@@ -146,11 +146,20 @@ async function main() {
 
   const outDir = resolve(__dirname, '..', 'src', 'data', 'companies')
   mkdirSync(outDir, { recursive: true })
+  // Sidecar directory so the Screener fetch NEVER clobbers manually-curated
+  // company JSONs (which carry AR-extracted volume splits, KMP, profile,
+  // logo config, etc. that Screener does not provide).
+  const screenerDir = resolve(outDir, '_screener')
+  mkdirSync(screenerDir, { recursive: true })
 
   for (const t of tickers) {
     try {
       const data = await fetchTicker(t)
-      const file = resolve(outDir, `${data.id}.json`)
+      // Always write to the sidecar — never overwrite the curated companies/*.json
+      // files, which carry dashboard-shape data (volumes / KMP / logo / etc.).
+      // The dashboard layer reads this sidecar and merges Screener financials
+      // into the per-company object only where the curated file is missing data.
+      const file = resolve(screenerDir, `${data.id}.json`)
       writeFileSync(file, JSON.stringify(data, null, 2) + '\n')
       const periods = data.profitLoss.periods
       console.log(`  wrote ${file}`)
