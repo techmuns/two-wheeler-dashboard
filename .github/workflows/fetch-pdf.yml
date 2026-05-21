@@ -1,22 +1,29 @@
-name: Fetch PDF (annual report / DRHP)
+name: Fetch + extract PDF text
 
-# Two ways to trigger:
-#   1. Manual button click in Actions tab (workflow_dispatch)
-#   2. Push to .github/fetch-queue.json with the URL + filename
-# Method 2 lets the assistant queue a fetch without needing a workflow_run
-# permission. Whoever pushes the queue file owns the fetch.
+# Downloads a publicly-accessible PDF on the runner, extracts the layout
+# text, and commits the .txt (and optional .json sections) -- but never
+# the PDF itself. Solves the 100 MB / LFS-per-file repo size limit for
+# large investor documents like the Ola DRHP (~50 MB).
+#
+# Triggers:
+#   1. Manual button in Actions (workflow_dispatch)
+#   2. Push to .github/fetch-queue.json with the URL + filename slug
+#
+# After the run lands, the assistant can read the extracted .txt file
+# from src/data/source-text/<slug>.txt and parse cells into the company
+# JSON exactly the same way TVS was processed locally.
 
 on:
   workflow_dispatch:
     inputs:
       url:
-        description: 'Direct PDF URL (must end in .pdf or .PDF and be publicly accessible)'
+        description: 'Direct PDF URL (publicly accessible)'
         required: true
         default: 'https://www.sebi.gov.in/sebi_data/attachdocs/dec-2023/1703580725954.PDF'
-      filename:
-        description: 'Save as this filename (recommended: <COMPANY>_<DOC>.pdf, e.g. OLA_DRHP.pdf)'
+      slug:
+        description: 'Slug to save extracted text as (no extension), e.g. OLA_DRHP -> src/data/source-text/OLA_DRHP.txt'
         required: true
-        default: 'OLA_DRHP.pdf'
+        default: 'OLA_DRHP'
   push:
     paths:
       - '.github/fetch-queue.json'
@@ -29,83 +36,105 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  fetch:
+  fetch-and-extract:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Resolve URL + filename from event
+      - name: Install poppler-utils
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq poppler-utils
+          pdftotext -v 2>&1 | head -1
+
+      - name: Resolve URL + slug
         id: resolve
         run: |
           set -euo pipefail
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
             URL='${{ inputs.url }}'
-            NAME='${{ inputs.filename }}'
+            SLUG='${{ inputs.slug }}'
           else
             if [ ! -f .github/fetch-queue.json ]; then
               echo "::error::Push trigger fired but .github/fetch-queue.json is missing."
               exit 1
             fi
-            URL=$(jq -r '.url'      .github/fetch-queue.json)
-            NAME=$(jq -r '.filename' .github/fetch-queue.json)
+            URL=$(jq -r '.url' .github/fetch-queue.json)
+            # Accept either 'slug' or 'filename' (strip .pdf if filename was used)
+            SLUG=$(jq -r '.slug // (.filename | sub("\\.[Pp][Dd][Ff]$"; ""))' .github/fetch-queue.json)
+          fi
+          # Strict sanity-check on the slug.
+          if ! echo "$SLUG" | grep -qE '^[A-Za-z0-9_-]+$'; then
+            echo "::error::Slug must be [A-Za-z0-9_-]+ (got: $SLUG)"; exit 1
           fi
           echo "URL=$URL"   >> "$GITHUB_OUTPUT"
-          echo "NAME=$NAME" >> "$GITHUB_OUTPUT"
-          echo "Fetching: $URL  ->  $NAME"
+          echo "SLUG=$SLUG" >> "$GITHUB_OUTPUT"
+          echo "Fetching: $URL"
+          echo "Will save: src/data/source-text/$SLUG.txt"
 
-      - name: Download PDF
+      - name: Download PDF to /tmp (never to repo)
         env:
           URL:  ${{ steps.resolve.outputs.URL }}
-          NAME: ${{ steps.resolve.outputs.NAME }}
         run: |
           set -euo pipefail
-          if ! echo "$NAME" | grep -qiE '\.pdf$'; then
-            echo "::error::Filename must end in .pdf (got: $NAME)"; exit 1
-          fi
-          if [ -f "$NAME" ]; then
-            echo "::warning::File $NAME already exists; will overwrite."
-          fi
-          echo "Fetching $URL"
+          mkdir -p /tmp/dl
           curl -L --fail -sS \
             -A "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36" \
             -H "Accept: application/pdf,application/octet-stream,*/*" \
-            -o "$NAME" "$URL"
-          file "$NAME"
-          if ! file "$NAME" | grep -qi 'PDF document'; then
+            -o /tmp/dl/in.pdf "$URL"
+          file /tmp/dl/in.pdf
+          if ! file /tmp/dl/in.pdf | grep -qi 'PDF document'; then
             echo "::error::Downloaded file is not a PDF (check the URL)."
-            head -c 500 "$NAME" | hexdump -C | head -5
+            head -c 500 /tmp/dl/in.pdf | hexdump -C | head -5
             exit 1
           fi
-          SIZE=$(stat -c%s "$NAME")
-          echo "Downloaded $SIZE bytes to $NAME"
-          ls -la "$NAME"
+          SIZE=$(stat -c%s /tmp/dl/in.pdf)
+          echo "Downloaded $SIZE bytes."
 
-      - name: Commit the PDF (LFS if > 25 MB)
+      - name: Extract layout text + page count
         env:
-          NAME: ${{ steps.resolve.outputs.NAME }}
+          SLUG: ${{ steps.resolve.outputs.SLUG }}
+        run: |
+          set -euo pipefail
+          mkdir -p src/data/source-text
+          OUT="src/data/source-text/$SLUG.txt"
+
+          # -layout preserves table column alignment which is what the
+          # downstream parser keys off. No -enc utf8 needed; default is utf-8.
+          pdftotext -layout /tmp/dl/in.pdf "$OUT"
+          pdfinfo /tmp/dl/in.pdf > "src/data/source-text/$SLUG.meta.txt" || true
+
+          LINES=$(wc -l < "$OUT")
+          BYTES=$(stat -c%s "$OUT")
+          echo "Extracted: $LINES lines, $BYTES bytes -> $OUT"
+          echo "$OUT_BYTES_LINES=$LINES" >> "$GITHUB_STEP_SUMMARY" || true
+
+          # If even the text file is too big for git (>20 MB), gzip it.
+          if [ "$BYTES" -gt 20971520 ]; then
+            gzip -9 "$OUT"
+            echo "Compressed to ${OUT}.gz"
+          fi
+
+      - name: Commit extracted text (PDF stays on runner, never committed)
+        env:
+          SLUG: ${{ steps.resolve.outputs.SLUG }}
           URL:  ${{ steps.resolve.outputs.URL }}
         run: |
           set -e
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git lfs install >/dev/null 2>&1 || true
-          SIZE=$(stat -c%s "$NAME")
-          if [ "$SIZE" -gt 26214400 ]; then
-            echo "File is $SIZE bytes; tracking with Git LFS."
-            git lfs track "*.pdf" || true
-            git add .gitattributes || true
-          fi
-          git add "$NAME"
+          git add src/data/source-text/
           if git diff --staged --quiet; then
-            echo "No changes -- file already matches what's in the repo."
+            echo "No changes -- extracted text matches existing."
             exit 0
           fi
-          git commit -m "data: fetch $NAME via Actions
+          git commit -m "data: extract text from $SLUG via Actions
 
-Source: $URL
-Bytes:  $SIZE
-Fetched: $(date -u +%Y-%m-%dT%H:%M:%SZ)
+Source URL: $URL
+Extracted:  src/data/source-text/$SLUG.txt
+Note: PDF is fetched to runner /tmp and discarded after extraction.
+      Only the layout-preserving text + pdfinfo metadata is committed.
 "
           git push
