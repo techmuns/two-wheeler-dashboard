@@ -6,24 +6,319 @@
   "basis": "Standalone",
   "currency": "INR",
   "unit": "Cr",
-  "fyAxis": [],
-  "fetchedAt": null,
-  "sources": {
-    "primary": null,
-    "notes": "Awaiting upload of audited annual-report workbook. Match the schema and tab layout of TVS_Motor_Financials_Actuals_FY16_FY25.xlsx: tabs = Financials / Metrics / Source Notes; standalone basis; FY16 → FY25 columns; line items = Revenue, Other Income, Cost of Materials, Employee Benefits, EBITDA, D&A, EBIT, Interest, PBT, PAT, Total Assets, Net Worth, Total Debt, Cash & Investments, Net Debt, Receivables, Inventory, Payables, Working Capital, CFO, Capex, FCF, CFI, CFF, Total Sales Volume, segment breakouts where disclosed (Motorcycles / Scooters / Mopeds / EV).",
-    "perFY": {}
-  },
+  "fyAxis": ["FY16","FY17","FY18","FY19","FY20","FY21","FY22","FY23","FY24","FY25"],
+  "fetchedAt": "2026-05-21T08:00:00Z",
   "verification": {
-    "status": "pending",
-    "confidence": "low",
-    "verifiedAgainstPrimary": false,
-    "method": "No source data uploaded yet for Hero MotoCorp.",
-    "upgradePath": "Provide Hero MotoCorp FY16–FY25 standalone audited workbook (same format as the TVS upload). Replace this file's contents — the dashboard will auto-populate every metric."
+    "status": "audited",
+    "confidence": "high",
+    "verifiedAgainstPrimary": true,
+    "method": "FY23–FY25 cells lifted directly from Hero MotoCorp standalone audited annual reports: 41st AR (FY24) covering FY23 + FY24 comparatives, and 42nd AR (FY25) covering FY24 + FY25 comparatives. Standalone basis. Derived items (EBITDA, EBIT, working capital, ratios, FCF, margins) computed by formula from disclosed line items. FY16–FY22 cells remain pending PDF parse — source ARs not yet supplied.",
+    "upgradePath": "Provide Hero MotoCorp standalone audited annual reports for FY16–FY22 (or a populated workbook of those FYs) to fill the back-history. Schema is already wired."
   },
-  "pl":      {},
-  "bs":      {},
-  "cf":      {},
-  "ops":     {},
-  "metrics": {},
-  "na":      []
+  "sources": {
+    "primary": "Hero MotoCorp Limited Annual Reports — 42nd AR (FY24-25) and 41st AR (FY23-24), Standalone audited financial statements.",
+    "notes": "Hero MotoCorp standalone has effectively no debt — only Ind AS 116 lease liabilities are reported under financial liabilities; there are no borrowings on standalone. 'totalDebt' here therefore equals total lease liabilities. 'cashAndInv' aggregates cash + earmarked bank balances + non-current investments + current investments. EBITDA disclosed in AR as 'Profit before Finance cost and Depreciation' minus Other Income (matches Chairman/MDA EBITDA figures of I 5,868 / 5,256 / 3,986 crore for FY25/FY24/FY23).",
+    "perFY": {
+      "FY16": "Pending PDF parse — FY16 AR not yet supplied.",
+      "FY17": "Pending PDF parse — FY17 AR not yet supplied.",
+      "FY18": "Pending PDF parse — FY18 AR not yet supplied.",
+      "FY19": "Pending PDF parse — FY19 AR not yet supplied.",
+      "FY20": "Pending PDF parse — FY20 AR not yet supplied.",
+      "FY21": "Pending PDF parse — FY21 AR not yet supplied.",
+      "FY22": "Pending PDF parse — FY22 AR not yet supplied.",
+      "FY23": "Hero MotoCorp 41st Annual Report (FY 2023-24) — Standalone comparatives: Balance Sheet (p.250 of AR / line 9395 of extract), Statement of Profit & Loss, Statement of Cash Flows; Board's Report Financial Highlights table (line 4115).",
+      "FY24": "Hero MotoCorp 41st Annual Report (FY 2023-24) — Standalone audited statements (line 9395 of extract); cross-checked against 42nd Annual Report (FY 2024-25) comparatives (line 9975).",
+      "FY25": "Hero MotoCorp 42nd Annual Report (FY 2024-25) — Standalone Balance Sheet (line 9975 of extract), Statement of P&L, Statement of Cash Flows; Board's Report Financial Highlights (line 4588) + MDA (line 4515)."
+    }
+  },
+  "pl": {
+    "revenue":      [null, null, null, null, null, null, null, 33805.65, 37455.72, 40756.37],
+    "otherIncome":  [null, null, null, null, null, null, null,   565.16,   892.55,  1055.92],
+    "ebitda":       [null, null, null, null, null, null, null,  3986.23,  5255.71,  5867.67],
+    "depreciation": [null, null, null, null, null, null, null,   656.96,   711.41,   775.86],
+    "ebit":         [null, null, null, null, null, null, null,  3329.27,  4544.30,  5091.81],
+    "interest":     [null, null, null, null, null, null, null,    19.87,    18.50,    19.92],
+    "pbt":          [null, null, null, null, null, null, null,  3874.56,  5258.36,  6127.81],
+    "pat":          [null, null, null, null, null, null, null,  2910.58,  3967.96,  4609.95]
+  },
+  "bs": {
+    "totalAssets":    [null, null, null, null, null, null, null, 23263.14, 25571.55, 27920.09],
+    "netWorth":       [null, null, null, null, null, null, null, 16705.09, 17986.18, 19806.85],
+    "totalDebt":      [null, null, null, null, null, null, null,   156.31,   137.58,   163.06],
+    "cashAndInv":     [null, null, null, null, null, null, null, 11355.86, 13695.03, 15262.72],
+    "netDebt":        [null, null, null, null, null, null, null,-11199.55,-13557.45,-15099.66],
+    "receivables":    [null, null, null, null, null, null, null,  2798.21,  2703.44,  3674.43],
+    "inventory":      [null, null, null, null, null, null, null,  1434.09,  1443.76,  1457.61],
+    "payables":       [null, null, null, null, null, null, null,  4704.46,  5528.15,  5566.14],
+    "workingCapital": [null, null, null, null, null, null, null,  -472.16, -1380.95,  -434.10]
+  },
+  "cf": {
+    "cfo":   [null, null, null, null, null, null, null,  2579.08,  4906.53,  4181.90],
+    "capex": [null, null, null, null, null, null, null,   577.70,   719.50,   826.84],
+    "fcf":   [null, null, null, null, null, null, null,  2001.38,  4187.03,  3355.06],
+    "cfi":   [null, null, null, null, null, null, null,  -468.81, -1801.88, -1585.78],
+    "cff":   [null, null, null, null, null, null, null, -2040.58, -2733.13, -2846.93]
+  },
+  "ops": {
+    "totalVolume":   [null, null, null, null, null, null, null, 5329000, 5621000, 5899000],
+
+    "motorcyclesByFy": {
+      "FY16": null, "FY17": null, "FY18": null, "FY19": null,
+      "FY20": null, "FY21": null, "FY22": null, "FY23": null,
+      "FY24": 5210000, "FY25": 5476000
+    },
+    "scootersByFy": {
+      "FY16": null, "FY17": null, "FY18": null, "FY19": null,
+      "FY20": null, "FY21": null, "FY22": null, "FY23": null,
+      "FY24": 410000, "FY25": 423000
+    },
+    "mopedsByFy": {
+      "FY16": null, "FY17": null, "FY18": null, "FY19": null,
+      "FY20": null, "FY21": null, "FY22": null, "FY23": null,
+      "FY24": null, "FY25": null
+    },
+    "threeWheelersByFy": {
+      "FY16": null, "FY17": null, "FY18": null, "FY19": null,
+      "FY20": null, "FY21": null, "FY22": null, "FY23": null,
+      "FY24": null, "FY25": null
+    },
+    "evByFy": {
+      "FY22": null, "FY23": null, "FY24": null, "FY25": 59000
+    },
+    "exportsByFy": {
+      "FY16": null,
+      "FY17": null,
+      "FY18": null,
+      "FY19": null,
+      "FY20": null,
+      "FY21": null,
+      "FY22": null,
+      "FY23": null,
+      "FY24": 200923,
+      "FY25": 287429
+    },
+
+    "motorcyclesFy25":   5476000,
+    "scootersFy25":      423000,
+    "mopedsFy25":        null,
+    "threeWheelersFy25": null,
+    "evVolumeFy25":      59000,
+
+    "notes": {
+      "scooterEvBlend": "Scooter volume for FY25 (4.23 lakh) includes 0.59 lakh EV (Vida) units. FY25 AR explicit footnote on Sales Volume disclosure: '* includes: EV scooters: 0.59 lakh, Global business: 2.87 lakh' (line 1632 of extract).",
+      "motorcycleFamilies": "Hero motorcycle portfolio (FY25): Entry — Splendor, HF Deluxe, Passion; Premium — Glamour, Xtreme 125R/160R, Karizma XMR, Mavrick 440, Xpulse 200. Splendor crossed cumulative 30.8 lakh annual sales (FY24 AR line 265).",
+      "scooterFamilies": "Hero ICE scooters: Pleasure, Destini, Xoom. EV scooters: Vida V1, Vida V2 (Plus/Pro/Lite). Vida cumulative production crossed 50,000 units on 28-Sep-2024 (FY25 AR line 1714).",
+      "noMopeds3w": "Hero does NOT manufacture mopeds or three-wheelers — set explicitly to null (vs. residual). Confirmed by FY25 BRSR Section 17 listing only 'Motorcycles & scooters' as the product (line 7895 of extract).",
+      "exports": "FY24 exports = 2,00,923 units (+16.31% over FY23) — FY24 AR Foreign Exchange Earnings & Outgo section (line 8769 of extract). FY25 exports = 2,87,429 units (+43.05% YoY) — FY25 AR Board's Report 'Global Forays' section (line 4695)."
+    },
+
+    "sourcesByFy": {
+      "productMix": {
+        "FY16": "Pending PDF parse — FY16 AR not yet supplied.",
+        "FY17": "Pending PDF parse — FY17 AR not yet supplied.",
+        "FY18": "Pending PDF parse — FY18 AR not yet supplied.",
+        "FY19": "Pending PDF parse — FY19 AR not yet supplied.",
+        "FY20": "Pending PDF parse — FY20 AR not yet supplied.",
+        "FY21": "Pending PDF parse — FY21 AR not yet supplied.",
+        "FY22": "Pending PDF parse — FY22 AR not yet supplied.",
+        "FY23": "Hero 41st AR (FY24) — Board's Report Financial Highlights table: total M&S sold 53 lakh units (rounded). Motorcycle/scooter split not separately disclosed in FY24 AR extract.",
+        "FY24": "Hero 41st AR (FY24) — Value Creation Model (line 1683): '5.21 million motorcycles sold' and '0.41 million scooters sold' (standalone, FY24).",
+        "FY25": "Hero 42nd AR (FY25) — Performance dashboard (line 1614/1616): '54.76 lakh Motorcycles sold' and '4.23 lakh Scooters sold' (includes EV scooters 0.59 lakh, Global business 2.87 lakh)."
+      },
+      "ev": {
+        "FY22": "Pending PDF parse — Vida launched late FY23; no Hero FY22 AR ingested.",
+        "FY23": "Pending PDF parse — Hero FY23 AR not yet supplied; FY24 AR does not disclose FY23 Vida volume separately.",
+        "FY24": "Pending PDF parse — FY24 AR does not disclose Vida units separately; 'Scooter' bucket (0.41M) includes both ICE and EV.",
+        "FY25": "Hero 42nd AR (FY25) — Sales Volume disclosure footnote (line 1632): 'EV scooters: 0.59 lakh' (= 59,000 Vida units, standalone FY25). Tirupati plant Vida cumulative production crossed 50,000 units on 28-Sep-2024 (line 1714)."
+      },
+      "exports": {
+        "FY16": "Pending PDF parse — FY16 AR not yet supplied.",
+        "FY17": "Pending PDF parse — FY17 AR not yet supplied.",
+        "FY18": "Pending PDF parse — FY18 AR not yet supplied.",
+        "FY19": "Pending PDF parse — FY19 AR not yet supplied.",
+        "FY20": "Pending PDF parse — FY20 AR not yet supplied.",
+        "FY21": "Pending PDF parse — FY21 AR not yet supplied.",
+        "FY22": "Pending PDF parse — FY22 AR not yet supplied.",
+        "FY23": "Pending PDF parse — FY24 AR mentions FY23 export growth rate context but not absolute units.",
+        "FY24": "Hero 41st AR (FY24) — Foreign Exchange Earnings & Outgo / Global Business section (line 8769): 'exporting 2,00,923 units and achieving a growth rate of 16.31% compared to the previous fiscal year (FY23)'.",
+        "FY25": "Hero 42nd AR (FY25) — Board's Report 'Global Forays' (line 4695): '2,87,429 units dispatched, representing a robust growth of 43.05% over the previous fiscal year'."
+      }
+    }
+  },
+  "dataStatus": {
+    "productMix": {
+      "FY16": "pending_pdf_parse",
+      "FY17": "pending_pdf_parse",
+      "FY18": "pending_pdf_parse",
+      "FY19": "pending_pdf_parse",
+      "FY20": "pending_pdf_parse",
+      "FY21": "pending_pdf_parse",
+      "FY22": "pending_pdf_parse",
+      "FY23": "pending_pdf_parse",
+      "FY24": "available",
+      "FY25": "available"
+    },
+    "powertrainMix": {
+      "FY16": "unavailable_pre_ev",
+      "FY17": "unavailable_pre_ev",
+      "FY18": "unavailable_pre_ev",
+      "FY19": "unavailable_pre_ev",
+      "FY20": "unavailable_pre_ev",
+      "FY21": "unavailable_pre_ev",
+      "FY22": "unavailable_pre_ev",
+      "FY23": "unavailable_minimal_ev",
+      "FY24": "pending_pdf_parse",
+      "FY25": "available"
+    },
+    "domesticExportMix": {
+      "FY16": "pending_pdf_parse",
+      "FY17": "pending_pdf_parse",
+      "FY18": "pending_pdf_parse",
+      "FY19": "pending_pdf_parse",
+      "FY20": "pending_pdf_parse",
+      "FY21": "pending_pdf_parse",
+      "FY22": "pending_pdf_parse",
+      "FY23": "pending_pdf_parse",
+      "FY24": "derived",
+      "FY25": "derived"
+    },
+    "ccMix": {
+      "FY16": "paid_source_required",
+      "FY17": "paid_source_required",
+      "FY18": "paid_source_required",
+      "FY19": "paid_source_required",
+      "FY20": "paid_source_required",
+      "FY21": "paid_source_required",
+      "FY22": "paid_source_required",
+      "FY23": "paid_source_required",
+      "FY24": "paid_source_required",
+      "FY25": "paid_source_required"
+    },
+    "revenueMix": {
+      "FY16": "unavailable",
+      "FY17": "unavailable",
+      "FY18": "unavailable",
+      "FY19": "unavailable",
+      "FY20": "unavailable",
+      "FY21": "unavailable",
+      "FY22": "unavailable",
+      "FY23": "unavailable",
+      "FY24": "unavailable",
+      "FY25": "unavailable"
+    },
+    "statusLegend": {
+      "available":              "Disclosed in Hero MotoCorp standalone audited statements / Board's Report / MDA for that FY.",
+      "derived":                "Computed from disclosed line items: Domestic = Total − Exports; EBITDA from 'Profit before Finance cost and Depreciation' minus Other Income.",
+      "pending_pdf_parse":      "Data exists in Hero MotoCorp annual report for that FY but the AR has not yet been ingested. Upload FY16–FY22 ARs (and FY23 AR) to fill.",
+      "paid_source_required":   "Requires SIAM 'Engine Capacity-Wise' annual bulletin or a model-wise sales subscription (e.g. JATO Dynamics). Cannot be derived from Hero standalone audited statements alone.",
+      "unavailable":            "Not disclosed by Hero MotoCorp in any public document.",
+      "unavailable_pre_ev":     "Vida (Hero's first EV scooter) launched Oct-2022 (late FY23). Pre-FY23 EV mix is exactly 0 by virtue of the product not existing.",
+      "unavailable_minimal_ev": "Vida volumes in FY23 were a partial-year, immaterial vs total; not broken out separately in audited statements."
+    }
+  },
+  "metrics": {
+    "revenueGrowth":      [null, null, null, null, null, null, null, null,  10.80,   8.81],
+    "volumeGrowth":       [null, null, null, null, null, null, null, null,   5.48,   4.95],
+    "realisationPerUnit": [null, null, null, null, null, null, null, 63437, 66635, 69091],
+    "realisationGrowth":  [null, null, null, null, null, null, null, null,  5.04,    3.69],
+    "ebitdaMargin":       [null, null, null, null, null, null, null, 11.79, 14.03, 14.40],
+    "ebitMargin":         [null, null, null, null, null, null, null,  9.85, 12.13, 12.49],
+    "pbtMargin":          [null, null, null, null, null, null, null, 11.46, 14.04, 15.03],
+    "patMargin":          [null, null, null, null, null, null, null,  8.61, 10.59, 11.31],
+    "grossMargin":        [null, null, null, null, null, null, null, null, null, null],
+    "debtEquity":         [null, null, null, null, null, null, null,  0.01,  0.01,  0.01],
+    "netDebtEquity":      [null, null, null, null, null, null, null, -0.67, -0.75, -0.76],
+    "wcDays":             [null, null, null, null, null, null, null, -5.10, -13.46, -3.89],
+    "fcfRevenue":         [null, null, null, null, null, null, null,  5.92, 11.18,  8.23],
+    "capexRevenue":       [null, null, null, null, null, null, null,  1.71,  1.92,  2.03],
+    "roe":                [null, null, null, null, null, null, null, 17.92, 22.88, 24.40],
+    "roce":               [null, null, null, null, null, null, null, null, null, null],
+    "evShare":            [0, 0, 0, 0, 0, 0, 0, null, null, 1.00],
+    "motorcycleMixFy25":  92.83,
+    "scooterMixFy25":     7.17,
+    "mopedMixFy25":       0,
+    "threeWheelerMixFy25": 0
+  },
+  "na": [
+    "Mopeds (Hero does not manufacture)",
+    "Three-wheelers (Hero does not manufacture)",
+    "Export Revenue % by FY pre-FY24",
+    "Capacity Utilisation %",
+    "Top Selling Model unit count",
+    "Stock Price 31-Mar"
+  ],
+  "profile": {
+    "asOfFy": "FY25",
+    "source": "Hero MotoCorp 42nd Annual Report (FY 2024-25) — Board's Report, Corporate Governance Report, BRSR sections.",
+    "kmp": {
+      "executiveChairman": "Dr. Pawan Munjal",
+      "executiveChairmanTitle": "Executive Chairman (DIN-00004223)",
+      "executiveDirectorAndActingCeo": "Vikram S. Kasbekar",
+      "executiveDirectorAndActingCeoTitle": "Executive Director & Acting Chief Executive Officer (DIN-00985182). Assumed Acting CEO role w.e.f. 01-May-2025 after Mr. Niranjan Gupta stepped down as CEO on 30-Apr-2025.",
+      "predecessorCeo": "Niranjan Kumar Gupta (CEO through 30-Apr-2025).",
+      "cfo": "Vivek Anand",
+      "cfoTitle": "Chief Financial Officer",
+      "companySecretary": "Dhiraj Kapoor",
+      "companySecretaryTitle": "Company Secretary & Compliance Officer (Membership No. F5454)",
+      "auditCommitteeChair": "Tina Trikha (DIN-02778940)",
+      "coo": null,
+      "cooNote": "Hero MotoCorp does not maintain a separate COO position on the standalone Board's Report; manufacturing/operations leadership currently consolidated under the Executive Director (Vikram Kasbekar)."
+    },
+    "employees": {
+      "permanent": 9527,
+      "permanentNote": "Hero 42nd AR (FY25) Board's Report (line 5387 of extract): 'The number of permanent employees on the rolls of Company as on March 31, 2025 was 9,527 (previous year 9,225)'.",
+      "permanentPriorYear": 9225,
+      "speciallyAbledHeadcount": 102,
+      "speciallyAbledNote": "Hero 42nd AR (FY25) Performance dashboard (line 1663): 'Specially Abled Workforce (Headcount) 102 (FY25), 103 (FY24), 103 (FY23)'."
+    },
+    "dealers": {
+      "totalTouchpoints": "Over 11,000",
+      "totalTouchpointsNote": "Hero 42nd AR (FY25) Capitals snapshot (line 1606): '11,000+ Customer touchpoints (worldwide)'. FY24 AR snapshot (line 1711) stated '10,000+ customer touchpoints'.",
+      "newTouchpointsFy25": 329,
+      "newTouchpointsFy25Note": "Hero 42nd AR (FY25) — '329 New customer touchpoints opened' (line 1607).",
+      "evDealerships": null,
+      "evDealershipsNote": "FY25 AR mentions Vida expanded to '25+ cities and 50+ touchpoints' for premium-EV touchpoints but does not give a single consolidated Vida dealership count."
+    },
+    "creditRating": {
+      "longTerm": "CRISIL AAA / ICRA AAA (Stable)",
+      "longTermScope": "Bank Loan Facilities – Long-Term + Non-Convertible Debentures / Fixed Deposit",
+      "shortTerm": "CRISIL A1+ / ICRA A1+",
+      "shortTermScope": "Bank Loan Facilities – Short-Term + Commercial Papers",
+      "source": "Hero 42nd AR (FY25) Board's Report 'Details of Credit Ratings for FY 2024-25' (line 6212 of extract). No change/revision during FY25."
+    },
+    "manufacturing": {
+      "facilities": [
+        "Dharuhera, Haryana",
+        "Gurugram, Haryana",
+        "Neemrana, Rajasthan",
+        "Haridwar, Uttarakhand",
+        "Halol, Gujarat",
+        "Chittoor (Tirupati), Andhra Pradesh"
+      ],
+      "facilitiesNote": "Hero 42nd AR (FY25) discloses '8 Manufacturing locations' globally (line 1564); 6 in India listed above + 2 international (Villa Rica, Colombia and Jessore, Bangladesh — line 1010/1031). Production capacity disclosed as 9.4 million units/year (FY25 AR line 1569; FY24 AR stated 9.5 million units).",
+      "facilitiesInternational": ["Villa Rica, Colombia", "Jessore, Bangladesh"],
+      "installedCapacityUnits": 9400000,
+      "installedCapacityNote": "Hero 42nd AR (FY25) Capitals snapshot: '9.4 mn units Production capacity' (line 1569)."
+    },
+    "marketShare": {
+      "motorcyclesDomesticPct": 42.6,
+      "motorcyclesDomesticNote": "Hero 42nd AR (FY25) Strategic Priorities snapshot (line 1564): '42.6% Motorcycle market share'.",
+      "scootersDomesticPct": 5.5,
+      "scootersDomesticNote": "Hero 42nd AR (FY25) Strategic Priorities snapshot (line 1566): '5.5% Scooter market share'.",
+      "evDomesticPctMar25": 6.1,
+      "evDomesticPctMar25Note": "Hero 42nd AR (FY25) Strategic Priorities snapshot: '6.1% EV market share (March - 2025)'.",
+      "iceTwoWheelerDomesticPct": 29.5,
+      "iceTwoWheelerDomesticNote": "Hero 42nd AR (FY25) Performance dashboard (line 1630): '29.5% Domestic ICE Two-wheeler market share'."
+    },
+    "milestones": {
+      "haridwarCumulativeUnits": 35000000,
+      "haridwarCumulativeNote": "Hero 42nd AR (FY25) — On 06-Jan-2025 the Haridwar plant surpassed 35 million cumulative vehicle production (line 1714).",
+      "vidaCumulativeUnitsSep24": 50000,
+      "vidaCumulativeNote": "Hero 42nd AR (FY25) — On 28-Sep-2024 Vida EV crossed 50,000 units cumulative production at Tirupati (line 1714)."
+    },
+    "auditors": {
+      "statutory": "Deloitte Haskins & Sells LLP, Chartered Accountants (ICAI Firm Registration: 117366W/W-100018)",
+      "source": "Hero 42nd AR (FY25) Board's Report 'Statutory Auditors' (line 5141 of extract); audit report signed by Vijay Agarwal, Partner (Membership No. 094468), 13-May-2025."
+    }
+  }
 }
