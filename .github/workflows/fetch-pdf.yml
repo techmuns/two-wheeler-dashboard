@@ -1,11 +1,10 @@
 name: Fetch PDF (annual report / DRHP)
 
-# Downloads a publicly-accessible PDF from a URL and commits it to the repo
-# root. Designed so any company's investor PDF (annual report, DRHP, Q4 deck)
-# can be ingested with one click from the GitHub Actions tab.
-#
-# Defaults populated for the Ola Electric DRHP (Dec 2023, ~50 MB) so the
-# first run is just 'click button'.
+# Two ways to trigger:
+#   1. Manual button click in Actions tab (workflow_dispatch)
+#   2. Push to .github/fetch-queue.json with the URL + filename
+# Method 2 lets the assistant queue a fetch without needing a workflow_run
+# permission. Whoever pushes the queue file owns the fetch.
 
 on:
   workflow_dispatch:
@@ -18,6 +17,9 @@ on:
         description: 'Save as this filename (recommended: <COMPANY>_<DOC>.pdf, e.g. OLA_DRHP.pdf)'
         required: true
         default: 'OLA_DRHP.pdf'
+  push:
+    paths:
+      - '.github/fetch-queue.json'
 
 permissions:
   contents: write
@@ -34,54 +36,61 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Download PDF
-        env:
-          URL:  ${{ inputs.url }}
-          NAME: ${{ inputs.filename }}
+      - name: Resolve URL + filename from event
+        id: resolve
         run: |
           set -euo pipefail
-
-          # Refuse if the filename doesn't end in .pdf (case-insensitive).
-          if ! echo "$NAME" | grep -qiE '\.pdf$'; then
-            echo "::error::Filename must end in .pdf (got: $NAME)"
-            exit 1
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            URL='${{ inputs.url }}'
+            NAME='${{ inputs.filename }}'
+          else
+            if [ ! -f .github/fetch-queue.json ]; then
+              echo "::error::Push trigger fired but .github/fetch-queue.json is missing."
+              exit 1
+            fi
+            URL=$(jq -r '.url'      .github/fetch-queue.json)
+            NAME=$(jq -r '.filename' .github/fetch-queue.json)
           fi
+          echo "URL=$URL"   >> "$GITHUB_OUTPUT"
+          echo "NAME=$NAME" >> "$GITHUB_OUTPUT"
+          echo "Fetching: $URL  ->  $NAME"
 
-          # Refuse to overwrite an existing file unless it's a previous download.
+      - name: Download PDF
+        env:
+          URL:  ${{ steps.resolve.outputs.URL }}
+          NAME: ${{ steps.resolve.outputs.NAME }}
+        run: |
+          set -euo pipefail
+          if ! echo "$NAME" | grep -qiE '\.pdf$'; then
+            echo "::error::Filename must end in .pdf (got: $NAME)"; exit 1
+          fi
           if [ -f "$NAME" ]; then
             echo "::warning::File $NAME already exists; will overwrite."
           fi
-
           echo "Fetching $URL"
-          # -L follow redirects, -sS quiet but show errors, -A real UA to bypass
-          # SEBI's bot heuristics, -o write to file, fail on HTTP error.
           curl -L --fail -sS \
             -A "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36" \
             -H "Accept: application/pdf,application/octet-stream,*/*" \
             -o "$NAME" "$URL"
-
-          # Sanity-check: must be a real PDF.
           file "$NAME"
           if ! file "$NAME" | grep -qi 'PDF document'; then
             echo "::error::Downloaded file is not a PDF (check the URL)."
             head -c 500 "$NAME" | hexdump -C | head -5
             exit 1
           fi
-
           SIZE=$(stat -c%s "$NAME")
           echo "Downloaded $SIZE bytes to $NAME"
           ls -la "$NAME"
 
-      - name: Commit the PDF
+      - name: Commit the PDF (LFS if > 25 MB)
         env:
-          NAME: ${{ inputs.filename }}
-          URL:  ${{ inputs.url }}
+          NAME: ${{ steps.resolve.outputs.NAME }}
+          URL:  ${{ steps.resolve.outputs.URL }}
         run: |
           set -e
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git lfs install >/dev/null 2>&1 || true
-          # Use Git LFS for files > 25 MB so we don't blow past GitHub's 100MB limit.
           SIZE=$(stat -c%s "$NAME")
           if [ "$SIZE" -gt 26214400 ]; then
             echo "File is $SIZE bytes; tracking with Git LFS."
