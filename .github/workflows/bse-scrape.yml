@@ -1,0 +1,52 @@
+name: BSE Company Scrape
+
+on:
+  workflow_dispatch:
+    inputs:
+      scrip:
+        description: '6-digit BSE scripCode (e.g. 544225 for Ola Electric)'
+        required: true
+        default: '544225'
+      slug:
+        description: 'Slug used in data/bse-<slug>.json'
+        required: true
+        default: 'ola-electric'
+  schedule:
+    - cron: '0 1,14 * * *'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: bse-scrape
+  cancel-in-progress: false
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Scrape BSE
+        env:
+          SCRIP: ${{ inputs.scrip || '544225' }}
+          SLUG: ${{ inputs.slug || 'ola-electric' }}
+        run: node scripts/scrape-bse-company.mjs "$SCRIP" "$SLUG"
+
+      - name: Commit refreshed data
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/bse-*.json
+          if git diff --staged --quiet; then
+            echo "No data changes — nothing to commit."
+          else
+            git commit -m "data: refresh BSE scrape (auto)"
+            git push
+          fi
