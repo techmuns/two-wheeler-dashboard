@@ -10,7 +10,7 @@ on:
   schedule:
     - cron: '0 1,14 * * *'
   push:
-    branches: [claude/exciting-dirac-2zUUa]
+    branches: [main, claude/exciting-dirac-2zUUa]
     paths:
       - 'scripts/scrape-bse-company.mjs'
       - '.github/workflows/bse-scrape.yml'
