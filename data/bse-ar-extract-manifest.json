@@ -1,0 +1,139 @@
+{
+  "ranAt": "2026-05-22T10:54:30.969Z",
+  "entries": [
+    {
+      "slug": "bajaj",
+      "year": 2022,
+      "txtPath": "src/data/source-text/BAJAJ_2022.txt",
+      "status": "extracted",
+      "url": "https://www.bseindia.com/bseplus/AnnualReport/532977/73451532977.pdf",
+      "bytes": 13482294
+    },
+    {
+      "slug": "bajaj",
+      "year": 2021,
+      "txtPath": "src/data/source-text/BAJAJ_2021.txt",
+      "status": "extracted",
+      "url": "https://www.bseindia.com/bseplus/AnnualReport/532977/68685532977.pdf",
+      "bytes": 7037179
+    },
+    {
+      "slug": "bajaj",
+      "year": 2020,
+      "txtPath": "src/data/source-text/BAJAJ_2020.txt",
+      "status": "extracted",
+      "url": "https://www.bseindia.com/bseplus/AnnualReport/532977/5329770320.pdf",
+      "bytes": 10273611
+    },
+    {
+      "slug": "bajaj",
+      "year": 2019,
+      "txtPath": "src/data/source-text/BAJAJ_2019.txt",
+      "status": "extracted",
+      "url": "https://www.bseindia.com/bseplus/AnnualReport/532977/5329770319.pdf",
+      "bytes": 8318432
+    },
+    {
+      "slug": "bajaj",
+      "year": 2018,
+      "txtPath": "src/data/source-text/BAJAJ_2018.txt",
+      "status": "extracted",
+      "url": "https://www.bseindia.com/bseplus/AnnualReport/532977/5329770318.pdf",
+      "bytes": 6561049
+    },
+    {
+      "slug": "bajaj",
+      "year": 2017,
+      "txtPath": "src/data/source-text/BAJAJ_2017.txt",
+      "status": "extracted",
+      "url": "https://www.bseindia.com/bseplus/AnnualReport/532977/5329770317.pdf",
+      "bytes": 9891187
+    },
+    {
+      "slug": "bajaj",
+      "year": 2016,
+      "txtPath": "src/data/source-text/BAJAJ_2016.txt",
+      "status": "extracted",
+      "url": "https://www.bseindia.com/bseplus/AnnualReport/532977/5329770316.pdf",
+      "bytes": 7643358
+    },
+    {
+      "slug": "hero",
+      "year": 2022,
+      "txtPath": "src/data/source-text/HERO_2022.txt",
+      "status": "extracted",
+      "url": "https://www.bseindia.com/bseplus/AnnualReport/500182/73731500182_19_07_22.pdf",
+      "bytes": 15841744
+    },
+    {
+      "slug": "hero",
+      "year": 2021,
+      "txtPath": "src/data/source-text/HERO_2021.txt",
+      "status": "extracted",
+      "url": "https://www.bseindia.com/bseplus/AnnualReport/500182/68852500182.pdf",
+      "bytes": 24491779
+    },
+    {
+      "slug": "hero",
+      "year": 2020,
+      "txtPath": "src/data/source-text/HERO_2020.txt",
+      "status": "extracted",
+      "url": "https://www.bseindia.com/bseplus/AnnualReport/500182/5001820320.pdf",
+      "bytes": 17777931
+    },
+    {
+      "slug": "hero",
+      "year": 2019,
+      "txtPath": "src/data/source-text/HERO_2019.txt",
+      "status": "extracted",
+      "url": "https://www.bseindia.com/bseplus/AnnualReport/500182/5001820319.pdf",
+      "bytes": 7169464
+    },
+    {
+      "slug": "hero",
+      "year": 2018,
+      "txtPath": "src/data/source-text/HERO_2018.txt",
+      "status": "extracted",
+      "url": "https://www.bseindia.com/bseplus/AnnualReport/500182/5001820318.pdf",
+      "bytes": 10680286
+    },
+    {
+      "slug": "hero",
+      "year": 2017,
+      "txtPath": "src/data/source-text/HERO_2017.txt",
+      "status": "extracted",
+      "url": "https://www.bseindia.com/bseplus/AnnualReport/500182/5001820317.pdf",
+      "bytes": 8206780
+    },
+    {
+      "slug": "hero",
+      "year": 2016,
+      "txtPath": "src/data/source-text/HERO_2016.txt",
+      "status": "extracted",
+      "url": "https://www.bseindia.com/bseplus/AnnualReport/500182/5001820316.pdf",
+      "bytes": 5554064
+    },
+    {
+      "slug": "eicher",
+      "year": 2016,
+      "txtPath": "src/data/source-text/EICHER_2016.txt",
+      "status": "extracted",
+      "url": "https://www.bseindia.com/bseplus/AnnualReport/505200/5052000316.pdf",
+      "bytes": 7704561
+    },
+    {
+      "slug": "ola-electric",
+      "year": 2025,
+      "status": "failed",
+      "url": "https://www.bseindia.com/bseplus/AnnualReport/544225/5d179c83-6a35-4feb-be6d-a5c61dd0bc7b.pdf.pdf",
+      "error": "HTTP 404"
+    },
+    {
+      "slug": "ola-electric",
+      "year": 2025,
+      "status": "failed",
+      "url": "https://www.bseindia.com/bseplus/AnnualReport/544225/7668374f-1f11-44db-bc4c-59b413ae4ddb.pdf.pdf",
+      "error": "HTTP 404"
+    }
+  ]
+}
