@@ -3,14 +3,10 @@ name: BSE Company Scrape
 on:
   workflow_dispatch:
     inputs:
-      scrip:
-        description: '6-digit BSE scripCode (e.g. 544225 for Ola Electric)'
-        required: true
-        default: '544225'
-      slug:
-        description: 'Slug used in data/bse-<slug>.json'
-        required: true
-        default: 'ola-electric'
+      only:
+        description: 'Optional slug to scrape just one OEM (tvs|bajaj|hero|eicher|ola-electric). Leave blank to scrape all 5.'
+        required: false
+        default: ''
   schedule:
     - cron: '0 1,14 * * *'
 
@@ -33,11 +29,30 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Scrape BSE
+      - name: Scrape BSE (all OEMs, or only the one selected)
         env:
-          SCRIP: ${{ inputs.scrip || '544225' }}
-          SLUG: ${{ inputs.slug || 'ola-electric' }}
-        run: node scripts/scrape-bse-company.mjs "$SCRIP" "$SLUG"
+          ONLY: ${{ inputs.only }}
+        run: |
+          set -e
+          # scripCode|slug pairs — 5 OEMs covered by the dashboard.
+          OEMS=(
+            "532343|tvs"
+            "532977|bajaj"
+            "500182|hero"
+            "505200|eicher"
+            "544225|ola-electric"
+          )
+          for pair in "${OEMS[@]}"; do
+            scrip="${pair%%|*}"
+            slug="${pair##*|}"
+            if [ -n "$ONLY" ] && [ "$ONLY" != "$slug" ]; then
+              echo "skipping $slug (only=$ONLY)"
+              continue
+            fi
+            echo "=== $slug ($scrip) ==="
+            node scripts/scrape-bse-company.mjs "$scrip" "$slug"
+            sleep 3
+          done
 
       - name: Commit refreshed data
         run: |
