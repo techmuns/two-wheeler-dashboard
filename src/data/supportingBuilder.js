@@ -91,6 +91,16 @@ export function buildSupportingGroups(raw, opts = {}) {
   const pendingReason = isPopulated ? NA_REASONS.standalone : NA_REASONS.pending(publicName || shortName || 'OEM')
 
   // ---------- raw series alignment ----------
+  // Segment mix % per FY, computed from disclosed unit volumes (segment / total)
+  // so the full history plots — not just the FY25 snapshot. Years without a
+  // disclosed split stay null.
+  const totalVolAligned = align(raw?.ops?.totalVolume, ax)
+  const mixPct = (byFy) => FY.map((fy, i) => {
+    const v = byFy?.[fy]
+    const t = totalVolAligned[i]
+    return (typeof v === 'number' && typeof t === 'number' && t > 0) ? Number(((v / t) * 100).toFixed(1)) : null
+  })
+
   const s = {
     revenueGrowth:     align(raw?.metrics?.revenueGrowth, ax),
     volumeGrowth:      align(raw?.metrics?.volumeGrowth, ax),
@@ -102,10 +112,10 @@ export function buildSupportingGroups(raw, opts = {}) {
     capacity:            align(raw?.metrics?.capacity, ax),
     capacityUtilisation: align(raw?.metrics?.capacityUtilisation, ax),
     evShare:           align(raw?.metrics?.evShare, ax),
-    motorcycleMix:     buildSinglePoint(raw?.metrics?.motorcycleMixFy25),
-    scooterMix:        buildSinglePoint(raw?.metrics?.scooterMixFy25),
-    mopedMix:          buildSinglePoint(raw?.metrics?.mopedMixFy25),
-    threeWheelerMix:   buildSinglePoint(raw?.metrics?.threeWheelerMixFy25),
+    motorcycleMix:     mixPct(raw?.ops?.motorcyclesByFy),
+    scooterMix:        mixPct(raw?.ops?.scootersByFy),
+    mopedMix:          mixPct(raw?.ops?.mopedsByFy),
+    threeWheelerMix:   mixPct(raw?.ops?.threeWheelersByFy),
   }
 
   // ---------- market share from industry file ----------
@@ -174,10 +184,10 @@ export function buildSupportingGroups(raw, opts = {}) {
       metrics: [
         NA('Export Volume %',     'pp', NA_REASONS.mixHist, 'exportVolume'),
         resolve('evVolume',         'EV Volume %',          'pp', s.evShare,          'audited', auditedSrc, { naReason: pendingReason }),
-        resolve('motorcycleVolume', 'Motorcycle Volume %',  'pp', s.motorcycleMix,    'audited', auditedSrc, { naReason: pendingReason, note: 'FY25 only.' }),
-        resolve('scooterVolume',    'Scooter Volume %',     'pp', s.scooterMix,       'audited', auditedSrc, { naReason: pendingReason, note: 'FY25 only.' }),
-        resolve('mopedVolume',      'Moped Volume %',       'pp', s.mopedMix,         'audited', auditedSrc, { naReason: pendingReason, note: 'FY25 only.' }),
-        resolve('threeWheelerVolume', 'Three-Wheeler Volume %', 'pp', s.threeWheelerMix, 'audited', auditedSrc, { naReason: pendingReason, note: 'FY25 only.' }),
+        resolve('motorcycleVolume', 'Motorcycle Volume %',  'pp', s.motorcycleMix,    'audited', auditedSrc, { naReason: pendingReason }),
+        resolve('scooterVolume',    'Scooter Volume %',     'pp', s.scooterMix,       'audited', auditedSrc, { naReason: pendingReason }),
+        resolve('mopedVolume',      'Moped Volume %',       'pp', s.mopedMix,         'audited', auditedSrc, { naReason: pendingReason }),
+        resolve('threeWheelerVolume', 'Three-Wheeler Volume %', 'pp', s.threeWheelerMix, 'audited', auditedSrc, { naReason: pendingReason }),
         PAID('75–110CC Volume',  'abs', 'v_75_110'),
         PAID('110–125CC Volume', 'abs', 'v_110_125'),
         PAID('125–150CC Volume', 'abs', 'v_125_150'),
