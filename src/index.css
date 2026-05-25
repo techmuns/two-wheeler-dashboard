@@ -554,6 +554,7 @@ body {
 .read-pill.neutral  { background: #EEF2F7; color: #475569; }
 .read-pill.negative { background: #FBE9EA; color: #9F1F2E; }
 .read-pill.watch    { background: #FCEFD3; color: #8A5A0A; }
+.read-pill.paid     { background: #EFE9FE; color: #5B21B6; border: 1px solid #DDD0F2; font-weight: 600; }
 
 .bsr-pill {
   display: inline-flex;
