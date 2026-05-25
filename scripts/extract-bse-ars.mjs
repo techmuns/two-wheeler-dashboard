@@ -29,8 +29,10 @@ const DEFAULT_YEARS = {
   tvs: [], // already complete in repo
   bajaj: [2016, 2017, 2018, 2019, 2020, 2021, 2022],
   hero: [2016, 2017, 2018, 2019, 2020, 2021, 2022],
-  eicher: [2016],
-  'ola-electric': 'all', // only 2 ARs total
+  // Eicher: pull the full back-catalogue so Royal Enfield / VECV volumes can be
+  // parsed for every disclosed FY (only FY16 had been extracted before).
+  eicher: 'all',
+  'ola-electric': 'all', // only the post-IPO ARs (FY24/FY25) are on BSE
 };
 
 const HEADERS = {

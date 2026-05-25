@@ -56,7 +56,32 @@ const buildOem = (raw, screener, opts) => {
   let source = raw
   if (!curatedHasData && screener) {
     const mapped = mapScreenerToCompany(screener, { name: opts.name, shortName: opts.shortName })
-    if (mapped) source = mapped
+    if (mapped) {
+      source = mapped
+      // Overlay curated operational data on top of the Screener financials.
+      // Screener carries P&L / BS / CF only — no volumes — so when the curated
+      // <id>.json supplies an `ops` block (AR-sourced unit volumes / segment
+      // splits / exports) or a `profile`, merge it in so the performance and
+      // mix charts render while the audited Screener financials are preserved.
+      const hasOps = raw?.ops && Object.keys(raw.ops).length
+      const hasProfile = raw?.profile && Object.keys(raw.profile).length
+      if (hasOps || hasProfile) {
+        source = {
+          ...mapped,
+          ops: hasOps ? { ...mapped.ops, ...raw.ops } : mapped.ops,
+          metrics: { ...mapped.metrics, ...(raw.metrics || {}) },
+          dataStatus: { ...(mapped.dataStatus || {}), ...(raw.dataStatus || {}) },
+          profile: hasProfile ? raw.profile : mapped.profile,
+          na: raw.na?.length ? raw.na : mapped.na,
+          sources: {
+            ...mapped.sources,
+            ...(raw.sources?.primary ? { primary: raw.sources.primary } : {}),
+            notes: raw.sources?.notes || mapped.sources?.notes,
+            perFY: { ...(mapped.sources?.perFY || {}), ...(raw.sources?.perFY || {}) },
+          },
+        }
+      }
+    }
   }
   return {
     ...buildFromActuals(source, opts),
