@@ -1,6 +1,6 @@
 # Two-Wheeler Dashboard — Data Audit
 
-_Generated 2026-05-25T08:19:31.015Z by `scripts/audit-data.mjs`._
+_Generated 2026-05-25T08:50:00.149Z by `scripts/audit-data.mjs`._
 
 This audit reads every per-OEM JSON, computes coverage, runs accounting cross-checks (e.g. EBITDA margin = EBITDA / Revenue, FCF = CFO − Capex, Net debt = Total debt − Cash) and flags discrepancies > tolerance.
 
@@ -11,8 +11,8 @@ This audit reads every per-OEM JSON, computes coverage, runs accounting cross-ch
 | **tvs** | Standalone | 10 FYs | 80/80 | 90/90 | 50/50 | 64/70 | 165/170 | audited (curated AR text) |
 | **bajaj** | Standalone | 10 FYs | 80/80 | 90/90 | 50/50 | 64/80 | 157/170 | audited (curated AR text) |
 | **hero** | Standalone | 10 FYs | 80/80 | 90/90 | 50/50 | 21/70 | 155/170 | audited (curated AR text) |
-| **eicher** | Consolidated | 10 FYs | 72/80 | 36/40 | 36/50 | 0/10 | 62/80 | audited (Screener sidecar) |
-| **ola** | Consolidated | 10 FYs | 40/80 | 20/40 | 20/50 | 0/10 | 30/80 | audited (Screener sidecar) |
+| **eicher** | Consolidated | 10 FYs | 72/80 | 36/40 | 45/50 | 0/10 | 80/100 | audited (Screener sidecar) |
+| **ola** | Consolidated | 10 FYs | 40/80 | 20/40 | 25/50 | 0/10 | 38/100 | audited (Screener sidecar) |
 
 ## 2. P&L coverage by FY
 
@@ -50,13 +50,13 @@ _All 100 computable checks pass within tolerance._
 
 _All 92 computable checks pass within tolerance._
 
-### eicher — 54 PASS · 0 FAIL · 54 total
+### eicher — 63 PASS · 0 FAIL · 63 total
 
-_All 54 computable checks pass within tolerance._
+_All 63 computable checks pass within tolerance._
 
-### ola — 27 PASS · 0 FAIL · 27 total
+### ola — 32 PASS · 0 FAIL · 32 total
 
-_All 27 computable checks pass within tolerance._
+_All 32 computable checks pass within tolerance._
 
 ## 5. Source provenance
 
