@@ -3,13 +3,13 @@
   "id": "eicher",
   "name": "Eicher Motors Ltd / Royal Enfield",
   "shortName": "Royal Enfield",
-  "basis": "Financials: Eicher Motors consolidated (Screener). Volumes: Royal Enfield motorcycles.",
+  "basis": "Financials: Eicher Motors consolidated (exchange filings). Volumes: Royal Enfield motorcycles.",
   "currency": "INR",
   "unit": "Cr",
   "fyAxis": [],
   "fetchedAt": null,
   "sources": {
-    "primary": "Eicher Motors consolidated financials (Screener.in) + Royal Enfield motorcycle sales volumes from Eicher Motors annual reports FY17–FY25 (BSE scripcode 505200).",
+    "primary": "Royal Enfield volumes from Eicher Motors annual reports (FY17–FY25); financials from exchange filings (BSE/NSE).",
     "notes": "Royal Enfield is 100% motorcycles (no scooters/mopeds/3W) and 100% ICE through FY25 (Flying Flea EV is FY26+). Domestic/export split disclosed in the ARs (wholesale/dispatch basis; FY25 total 10,05,340 = domestic 9,02,757 + export 1,02,583). Realisation-per-unit is intentionally NOT computed: revenue is Eicher consolidated (includes the VECV commercial-vehicle JV) while volume is Royal Enfield only, so the ratio would be meaningless. FY16 is a 15-month transition period and left null.",
     "perFY": {
       "FY17": "Eicher Motors Annual Report FY2016-17 (BSE filing, scripcode 505200; src/data/source-text/EICHER_2017.txt) — Royal Enfield motorcycle sales volume (Directors' Report / operational highlights); domestic + export reconciles to total. Parsed in data/raw-eicher-backfill.json.",
@@ -27,7 +27,7 @@
     "status": "audited",
     "confidence": "high",
     "verifiedAgainstPrimary": true,
-    "method": "Financials: Eicher Motors consolidated, from the Screener sidecar (BSE/NSE filings). Volumes: Royal Enfield motorcycle sales parsed from Eicher Motors annual reports FY17–FY25 (BSE scripcode 505200; src/data/source-text/EICHER_*.txt; data/raw-eicher-backfill.json + data/raw-eicher-ola-recent.json). domestic + export reconciles to total in every year; FY23–FY25 cross-validated against Royal Enfield sale-volume press releases. FY16 omitted (15-month transition year). VECV commercial-vehicle volumes excluded — this is the Royal Enfield (2W) view.",
+    "method": "Financials: Eicher Motors consolidated, from exchange filings (BSE/NSE). Volumes: Royal Enfield sales from Eicher annual reports FY17–FY25 (domestic + export reconciles to total). VECV excluded; FY16 (15-month transition) omitted.",
     "upgradePath": "Engine-capacity (350cc vs 650cc) unit split is not disclosed in the ARs and would need SIAM / JATO."
   },
   "pl": {},

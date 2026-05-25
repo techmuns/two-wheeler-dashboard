@@ -38,6 +38,7 @@ const tvs = {
     brandColor: '#0066B3',
     dotColor: '#0ea5e9',
     marketShareKey: 'TVS',
+    sourceShort: 'Annual reports',
   }),
   supportingGroups: buildSupportingGroups(tvsRaw, { shortName: 'TVS', publicName: 'TVS', marketShareKey: 'TVS' }),
 }
@@ -103,6 +104,7 @@ const bajaj = buildOem(bajajRaw, bajajScr, {
   brandColor: '#003DA5',
   dotColor: '#1d4ed8',
   marketShareKey: 'Bajaj Auto',
+  sourceShort: 'Annual reports',
 })
 
 const hero = buildOem(heroRaw, heroScr, {
@@ -114,6 +116,7 @@ const hero = buildOem(heroRaw, heroScr, {
   brandColor: '#E11D48',
   dotColor: '#dc2626',
   marketShareKey: 'Hero MotoCorp',
+  sourceShort: 'Annual reports',
 })
 
 const eicher = buildOem(eicherRaw, eicherScr, {
@@ -125,6 +128,7 @@ const eicher = buildOem(eicherRaw, eicherScr, {
   brandColor: '#7B3F00',
   dotColor: '#b45309',
   marketShareKey: 'Royal Enfield',
+  sourceShort: 'Annual reports · Exchange filings',
 })
 
 const ola = buildOem(olaRaw, olaScr, {
@@ -136,6 +140,7 @@ const ola = buildOem(olaRaw, olaScr, {
   brandColor: '#16A34A',
   dotColor: '#16a34a',
   marketShareKey: 'Ola Electric',
+  sourceShort: 'Annual reports · Exchange filings',
 })
 
 export const FY = FY_AXIS

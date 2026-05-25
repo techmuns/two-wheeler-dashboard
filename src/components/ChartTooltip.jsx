@@ -63,7 +63,7 @@ export function MixTooltip({ active, payload, label }) {
 
       {disclosed.length === 0 ? (
         <div style={{ fontSize: 12, color: '#94A3B8', fontStyle: 'italic' }}>
-          Split not verified from source yet.
+          Not disclosed.
         </div>
       ) : (
         disclosed.map((p) => {

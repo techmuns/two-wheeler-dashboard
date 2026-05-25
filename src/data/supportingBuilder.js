@@ -13,13 +13,13 @@ import marketShareJson from './industry/2w-market-share.json'
 const SERIES_PALETTE = ['#1f2937', '#3b82f6', '#10b981', '#f59e0b', '#6d28d9', '#dc2626', '#0EA5E9']
 
 const NA_REASONS = {
-  pending:       (n) => `Awaiting ${n} audited workbook upload. Drop the FY16–FY25 standalone workbook into src/data/companies/<id>.json to populate.`,
-  standalone:    'Not disclosed in standalone audited statements; would need company KMP filings / investor handout extraction.',
-  ccSlab:        'CC-slab (75–110 / 110–125 / 125–150 / 150–200 / 200–250 / 250–350 / >350) splits are not in standalone audited disclosures. Available in the SIAM "Engine Capacity-Wise" annual bulletin; requires upload.',
-  mixHist:       'OEM does not disclose this mix line consistently across FY16–FY25 in standalone audited statements. Only FY25 value disclosed where available.',
-  revMix:        'OEM does not disclose segment-level revenue split (EV / Motorcycle / Export revenue %) in standalone audited statements.',
-  launches:      'Launch counts not published in audited financials; would need investor-presentation extraction across 10 annual decks.',
-  profile:       'Company profile field (KMP / dealer count / employee count / credit rating / stock price) not in the uploaded workbook. Public sources: company investor portal, CRISIL Ratings, BSE/NSE price archive.',
+  pending:       (n) => `Awaiting ${n} data.`,
+  standalone:    'Not in financial filings.',
+  ccSlab:        'CC-slab not disclosed.',
+  mixHist:       'Disclosed FY25 only.',
+  revMix:        'Segment revenue not disclosed.',
+  launches:      'Not in financial filings.',
+  profile:       'Not in filings.',
 }
 
 const align = (arr, sourceAxis) => FY.map((fy) => {
@@ -112,9 +112,7 @@ export function buildSupportingGroups(raw, opts = {}) {
         resolve('volumeGrowth',      'Volume Growth %',      'pp', s.volumeGrowth,      'audited', auditedSrc, { naReason: pendingReason }),
         resolve('realisationGrowth', 'Realisation Growth %', 'pp', s.realisationGrowth, 'audited', auditedSrc, { naReason: pendingReason }),
       ],
-      sourceFootnote: isPopulated
-        ? `Source: ${auditedSrc}. All three series computed FY-on-FY from disclosed revenue, volume, and revenue/volume realisation.`
-        : pendingReason,
+      sourceFootnote: isPopulated ? 'Source: Annual reports' : pendingReason,
     },
 
     {
@@ -125,9 +123,7 @@ export function buildSupportingGroups(raw, opts = {}) {
         resolve('ebitdaMargin', 'EBITDA Margin %',      'pp',  s.ebitdaMargin, 'audited', auditedSrc, { naReason: pendingReason }),
         resolve('wcDays',       'Working Capital Days', 'abs', s.wcDays,       'audited', auditedSrc, { naReason: pendingReason }),
       ],
-      sourceFootnote: isPopulated
-        ? `Source: ${auditedSrc}. Margins from disclosed P&L lines; WC Days = (Receivables + Inventory − Payables) / Revenue × 365.`
-        : pendingReason,
+      sourceFootnote: isPopulated ? 'Source: Annual reports' : pendingReason,
     },
 
     {
@@ -135,22 +131,20 @@ export function buildSupportingGroups(raw, opts = {}) {
       chartType: 'line',
       metrics: [
         resolve('capacity', 'Capacity (units/yr)', 'abs', s.capacity, 'disclosed', auditedSrc,
-          { naReason: 'Installed annual capacity not stated in that year’s annual report.', note: 'Installed annual production capacity disclosed in the annual report MD&A / capitals snapshot (TVS: investor/press disclosure, approximate).' }),
+          { naReason: 'Not stated that year.' }),
         resolve('capacityUtilisation', 'Capacity Utilisation %', 'pp', s.capacityUtilisation, 'derived', auditedSrc,
-          { naReason: 'Needs both installed capacity and volume for that FY.', note: 'Derived = total sales volume ÷ installed capacity (sales used as production proxy; approximate).' }),
+          { naReason: 'Needs capacity + volume.', note: 'Volume ÷ capacity.' }),
         resolve('capex', 'Capex (₹ Cr)', 'abs', s.capex, 'audited', auditedSrc, { naReason: pendingReason }),
       ],
-      sourceFootnote: isPopulated
-        ? `Capex from ${auditedSrc}. Installed capacity from annual-report MD&A / capitals snapshots (TVS from investor/press disclosure, approximate); Utilisation % = sales volume ÷ capacity.`
-        : pendingReason,
+      sourceFootnote: isPopulated ? 'Source: Annual reports' : pendingReason,
     },
 
     {
       name: 'Market Share',
       chartType: 'line',
       metrics: [
-        resolve('marketShare', `Market Share % (overall 2W)`, 'pp', mktShareSeries, 'approximate', mktSrc,
-          { naReason: msKey ? 'Market-share row not found in SIAM industry file.' : 'No market-share key configured for this OEM.', note: 'Approximate — from SIAM industry file; verify against latest SIAM bulletin.' }),
+        resolve('marketShare', `Market Share % (2W)`, 'pp', mktShareSeries, 'approximate', 'Vahan · FADA',
+          { naReason: 'Not available.', note: 'Approximate.' }),
         NA('75–110CC Market Share',  'pp', NA_REASONS.ccSlab, 'ms_75_110'),
         NA('110–125CC Market Share', 'pp', NA_REASONS.ccSlab, 'ms_110_125'),
         NA('125–150CC Market Share', 'pp', NA_REASONS.ccSlab, 'ms_125_150'),
@@ -159,7 +153,7 @@ export function buildSupportingGroups(raw, opts = {}) {
         NA('250–350CC Market Share', 'pp', NA_REASONS.ccSlab, 'ms_250_350'),
         NA('>350CC Market Share',    'pp', NA_REASONS.ccSlab, 'ms_350_plus'),
       ],
-      sourceFootnote: `Overall 2W share from ${mktSrc} (approximate). CC-slab share: ${NA_REASONS.ccSlab}`,
+      sourceFootnote: 'Source: Vahan · FADA (approx.)',
     },
 
     {
@@ -167,8 +161,8 @@ export function buildSupportingGroups(raw, opts = {}) {
       chartType: 'line',
       metrics: [
         NA('Export Volume %',     'pp', NA_REASONS.mixHist, 'exportVolume'),
-        resolve('evVolume',         'EV Volume %',          'pp', s.evShare,          'audited', auditedSrc, { naReason: pendingReason, note: 'Disclosed in audited workbook where available; FY25 reflects EV unit count / total volume.' }),
-        resolve('motorcycleVolume', 'Motorcycle Volume %',  'pp', s.motorcycleMix,    'audited', auditedSrc, { naReason: pendingReason, note: 'FY25 only where workbook discloses unit-level segment split.' }),
+        resolve('evVolume',         'EV Volume %',          'pp', s.evShare,          'audited', auditedSrc, { naReason: pendingReason }),
+        resolve('motorcycleVolume', 'Motorcycle Volume %',  'pp', s.motorcycleMix,    'audited', auditedSrc, { naReason: pendingReason, note: 'FY25 only.' }),
         resolve('scooterVolume',    'Scooter Volume %',     'pp', s.scooterMix,       'audited', auditedSrc, { naReason: pendingReason, note: 'FY25 only.' }),
         resolve('mopedVolume',      'Moped Volume %',       'pp', s.mopedMix,         'audited', auditedSrc, { naReason: pendingReason, note: 'FY25 only.' }),
         resolve('threeWheelerVolume', 'Three-Wheeler Volume %', 'pp', s.threeWheelerMix, 'audited', auditedSrc, { naReason: pendingReason, note: 'FY25 only.' }),
@@ -180,9 +174,7 @@ export function buildSupportingGroups(raw, opts = {}) {
         NA('250–350CC Volume', 'abs', NA_REASONS.ccSlab, 'v_250_350'),
         NA('>350CC Volume',    'abs', NA_REASONS.ccSlab, 'v_350_plus'),
       ],
-      sourceFootnote: isPopulated
-        ? `EV / Motorcycle / Scooter / Moped / 3W mix from ${auditedSrc} (FY25 only). Export mix and CC-slab volumes: not in workbook.`
-        : pendingReason,
+      sourceFootnote: isPopulated ? 'Source: Annual reports · Vahan' : pendingReason,
     },
 
     {

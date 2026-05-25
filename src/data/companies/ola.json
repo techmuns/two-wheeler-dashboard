@@ -3,13 +3,13 @@
   "id": "ola",
   "name": "Ola Electric Mobility Ltd",
   "shortName": "Ola",
-  "basis": "Financials: Ola Electric Mobility consolidated (Screener). Volumes: electric scooter deliveries.",
+  "basis": "Financials: Ola Electric consolidated (exchange filings). Volumes: electric scooter deliveries.",
   "currency": "INR",
   "unit": "Cr",
   "fyAxis": [],
   "fetchedAt": null,
   "sources": {
-    "primary": "Ola Electric consolidated financials (Screener.in) + electric-scooter deliveries FY22–FY25 from the Ola Electric FY25 Annual Report (BSE scripcode 544225).",
+    "primary": "Ola Electric deliveries from the FY25 annual report; financials from exchange filings (BSE/NSE).",
     "notes": "Ola Electric sells electric scooters only — product mix is 100% scooters, powertrain 100% EV, domestic-only. FY22 was the first meaningful commercial year (S1 launch Dec-2021). FY25 deliveries 3.59 lakh per the AR (deliveries basis); note this differs from Vahan registrations (~3.44 lakh), which lag invoiced deliveries.",
     "perFY": {
       "FY22": "Ola Electric electric-scooter deliveries for FY2021-22, from the Ola Electric FY25 Annual Report's multi-year deliveries track record (BSE scripcode 544225; src/data/source-text/OLA_2025.txt; data/raw-eicher-ola-recent.json). Metric = deliveries (invoiced), not Vahan registrations. Ola is 100% electric scooters.",
@@ -22,7 +22,7 @@
     "status": "audited",
     "confidence": "high",
     "verifiedAgainstPrimary": true,
-    "method": "Financials from the Screener sidecar (BSE/NSE filings). Volumes: electric-scooter DELIVERIES FY22–FY25, parsed from the Ola Electric FY25 annual report (BSE scripcode 544225; src/data/source-text/OLA_2025.txt) — its multi-year track record discloses deliveries for FY22-FY25 on a consistent basis. Metric is deliveries (invoiced), distinct from Vahan registrations.",
+    "method": "Financials from exchange filings (BSE/NSE). Volumes: electric-scooter deliveries FY22–FY25 from the Ola Electric FY25 annual report (deliveries basis, not Vahan registrations).",
     "upgradePath": "Pre-FY22 not applicable (entity pre-commercial; S1 launched Dec-2021)."
   },
   "pl": {},
