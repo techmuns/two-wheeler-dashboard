@@ -459,7 +459,7 @@ export function buildFromActuals(json, opts = {}) {
     dataFresh: isEmpty ? 'Pending' : 'Audited',
     hero: heroOverride || {
       title: shortName || name,
-      subtitle: isEmpty ? 'Data pending' : 'Audited snapshot · FY16–FY25',
+      subtitle: 'Buy-side snapshot',
       fy: 'FY25',
     },
     kpis,
@@ -472,7 +472,7 @@ export function buildFromActuals(json, opts = {}) {
     // Optional logo. When { path } is present the UI will try to load the
     // asset from public/<path>; on 404 or decode error it gracefully falls
     // back to the text wordmark. Never fetches from sourceUrl directly.
-    logo: json?.logo || null,
+    logo: opts.logo || json?.logo || null,
     // KMP / employees / dealers / credit rating / manufacturing block.
     // Sourced from the latest annual report. Used by the Company Profile
     // group in the Supporting Data dropdown.

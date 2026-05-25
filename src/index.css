@@ -92,54 +92,49 @@ body {
   gap: 20px;
 }
 .logo-mark-header {
-  width: 200px;
-  height: 60px;
-  border-radius: 12px;
+  width: 256px;
+  height: 74px;
+  border-radius: 16px;
   background:
-    linear-gradient(135deg, rgba(245, 240, 251, 0.55), rgba(232, 221, 247, 0.55)),
+    linear-gradient(135deg, rgba(245, 240, 251, 0.65), rgba(255, 255, 255, 0.95)),
     #FFFFFF;
-  border: 1px solid #DDD0F2;
+  border: 1px solid #E7E0F5;
   box-shadow:
-    0 1px 2px rgba(76, 29, 149, 0.05),
-    inset 0 1px 0 rgba(255, 255, 255, 0.7);
+    0 2px 6px rgba(76, 29, 149, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
   display: flex;
   align-items: center;
   justify-content: center;
-  /* Tight padding so the official OEM logo (already trimmed of white
-     margins server-side) fills the box near edge-to-edge, matching the
-     Maruti reference. Text wordmark fallback keeps a comfortable
-     padding via .logo-text-full's own typography. */
-  padding: 4px 8px;
+  /* Comfortable padding so the logo sits calm and contained — never edge to
+     edge — matching the Maruti reference card. */
+  padding: 20px;
   flex-shrink: 0;
 }
 .logo-mark-header img {
   display: block;
   width: auto;
   height: auto;
-  max-width: 100%;
-  max-height: 100%;
+  max-width: 200px;
+  max-height: 48px;
   object-fit: contain;
+  object-position: center;
 }
 
-/* TVS official logo ships as a JPEG-like flat PNG -- even after the
-   white background is alpha-keyed server-side, faint anti-aliased
-   edges can carry a residual white halo against the lavender frame.
-   mix-blend-mode: multiply makes white pixels disappear into any
-   non-white surface (lavender / tint / etc.) so the wordmark sits
-   on the frame the same way the Maruti logo does in the reference. */
+/* Flat PNG logos (e.g. TVS) carry a residual white background — multiply makes
+   it disappear into the lavender frame so it blends like the Maruti reference. */
 .logo-mark-img--tvs {
   mix-blend-mode: multiply;
 }
 @media (max-width: 640px) {
-  .logo-mark-header { width: 64px; padding: 4px; }
-  .logo-mark-header .logo-text-full { display: none; }
+  .logo-mark-header { width: 184px; height: 62px; padding: 12px; }
 }
 .logo-text-full {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 700;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.02em;
   color: #4C1D95;
-  text-transform: uppercase;
+  text-align: center;
+  line-height: 1.15;
 }
 .logo-text-short {
   font-size: 14px;
