@@ -105,6 +105,7 @@ const bajaj = buildOem(bajajRaw, bajajScr, {
   dotColor: '#1d4ed8',
   marketShareKey: 'Bajaj Auto',
   sourceShort: 'Annual reports',
+  logo: { path: '/logos/bajaj-auto.svg', fallbackPath: '/logos/bajaj-auto.png' },
 })
 
 const hero = buildOem(heroRaw, heroScr, {
@@ -117,6 +118,7 @@ const hero = buildOem(heroRaw, heroScr, {
   dotColor: '#dc2626',
   marketShareKey: 'Hero MotoCorp',
   sourceShort: 'Annual reports',
+  logo: { path: '/logos/hero-motocorp.svg', fallbackPath: '/logos/hero-motocorp.png' },
 })
 
 const eicher = buildOem(eicherRaw, eicherScr, {
@@ -129,6 +131,7 @@ const eicher = buildOem(eicherRaw, eicherScr, {
   dotColor: '#b45309',
   marketShareKey: 'Royal Enfield',
   sourceShort: 'Annual reports · Exchange filings',
+  logo: { path: '/logos/royal-enfield.svg', fallbackPath: '/logos/eicher.svg' },
 })
 
 const ola = buildOem(olaRaw, olaScr, {
@@ -141,6 +144,7 @@ const ola = buildOem(olaRaw, olaScr, {
   dotColor: '#16a34a',
   marketShareKey: 'Ola Electric',
   sourceShort: 'Annual reports · Exchange filings',
+  logo: { path: '/logos/ola-electric.svg', fallbackPath: '/logos/ola-electric.png' },
 })
 
 export const FY = FY_AXIS
@@ -152,6 +156,5 @@ export const SECTOR_META = {
   subtitle: 'Auto sector research · segment switcher',
   badge: '2W',
   latestFy: 'FY25',
-  footer:
-    'Sources: Company annual reports (standalone audited) · audited Q4 result packages · SIAM monthly bulletins · Vahan registrations dashboard',
+  footer: 'Source: Annual reports · Exchange filings · Vahan · FADA',
 }

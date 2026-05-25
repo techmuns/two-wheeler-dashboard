@@ -292,7 +292,7 @@ export function buildIndustry(opts = {}) {
     dataFresh: 'Live',
     hero: {
       title: 'Indian Two-Wheeler Industry Cockpit',
-      subtitle: 'SIAM dispatches · Vahan registrations · FADA retail · FY16–FY25',
+      subtitle: 'Two-wheeler industry snapshot',
       fy: 'FY25',
     },
     kpis,
@@ -300,7 +300,7 @@ export function buildIndustry(opts = {}) {
     productDrivers: drivers,
     supportingData: supporting,
     charts,
-    modelSource: `Sources: ${volumeGrowth.source} · ${segmentMix.source} · ${evShare.source} · ${exports2W.source} · ${marketShare.source}. Verify cells against the latest SIAM bulletin / Vahan extract — JSONs in src/data/industry/ are the single source of truth.`,
+    modelSource: 'Source: Vahan · FADA',
     sourceCitations: {
       'Total 2W volume / growth':  volumeGrowth.source,
       'Segment mix (M / S / Mo)':  segmentMix.source,
