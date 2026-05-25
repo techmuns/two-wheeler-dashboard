@@ -82,7 +82,9 @@
   },
   "metrics": {
     "volumeGrowth": [null, null, null, null, null, null, null, 645.9, 110.95, 8.98],
-    "evShare": [null, null, null, null, null, null, 100, 100, 100, 100]
+    "evShare": [null, null, null, null, null, null, 100, 100, 100, 100],
+    "capacity": [null, null, null, null, null, null, null, null, null, 1000000],
+    "capacityUtilisation": [null, null, null, null, null, null, null, null, null, 35.9]
   },
   "na": ["Pre-FY22 volumes (entity pre-commercial)", "Capacity Utilisation %", "Stock Price 31-Mar"],
   "dataStatus": {

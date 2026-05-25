@@ -133,7 +133,9 @@
   },
   "metrics": {
     "volumeGrowth": [null, null, 23.12, 0.32, -15.21, -12.64, -2.29, 40.21, 9.32, 10.15],
-    "evShare": [null, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    "evShare": [null, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    "capacity": [null, null, 825000, 900000, 1200000, 1000000, 1200000, 1200000, 1200000, 1200000],
+    "capacityUtilisation": [null, null, 99.4, 91.4, 58.1, 60.9, 49.6, 69.6, 76.1, 83.8]
   },
   "na": ["350cc vs 650cc volume split (not disclosed as RE-total units in the AR)", "Royal Enfield standalone vs consolidated reconciliation (using consolidated)", "Capacity Utilisation %", "Stock Price 31-Mar"],
   "dataStatus": {

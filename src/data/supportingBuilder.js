@@ -87,6 +87,8 @@ export function buildSupportingGroups(raw, opts = {}) {
     ebitdaMargin:      align(raw?.metrics?.ebitdaMargin, ax),
     wcDays:            align(raw?.metrics?.wcDays, ax),
     capex:             align(raw?.cf?.capex, ax),
+    capacity:            align(raw?.metrics?.capacity, ax),
+    capacityUtilisation: align(raw?.metrics?.capacityUtilisation, ax),
     evShare:           align(raw?.metrics?.evShare, ax),
     motorcycleMix:     buildSinglePoint(raw?.metrics?.motorcycleMixFy25),
     scooterMix:        buildSinglePoint(raw?.metrics?.scooterMixFy25),
@@ -132,12 +134,14 @@ export function buildSupportingGroups(raw, opts = {}) {
       name: 'Capacity & Capex',
       chartType: 'line',
       metrics: [
-        NA('Capacity',               'abs', NA_REASONS.profile, 'capacity'),
-        NA('Capacity Utilisation %', 'pp',  NA_REASONS.profile, 'capacityUtilisation'),
+        resolve('capacity', 'Capacity (units/yr)', 'abs', s.capacity, 'disclosed', auditedSrc,
+          { naReason: 'Installed annual capacity not stated in that year’s annual report.', note: 'Installed annual production capacity disclosed in the annual report MD&A / capitals snapshot (TVS: investor/press disclosure, approximate).' }),
+        resolve('capacityUtilisation', 'Capacity Utilisation %', 'pp', s.capacityUtilisation, 'derived', auditedSrc,
+          { naReason: 'Needs both installed capacity and volume for that FY.', note: 'Derived = total sales volume ÷ installed capacity (sales used as production proxy; approximate).' }),
         resolve('capex', 'Capex (₹ Cr)', 'abs', s.capex, 'audited', auditedSrc, { naReason: pendingReason }),
       ],
       sourceFootnote: isPopulated
-        ? `Capex from ${auditedSrc}. Capacity + utilisation %: ${NA_REASONS.profile}`
+        ? `Capex from ${auditedSrc}. Installed capacity from annual-report MD&A / capitals snapshots (TVS from investor/press disclosure, approximate); Utilisation % = sales volume ÷ capacity.`
         : pendingReason,
     },
 
