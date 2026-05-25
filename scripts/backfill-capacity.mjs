@@ -20,9 +20,11 @@ const FY = ['FY16','FY17','FY18','FY19','FY20','FY21','FY22','FY23','FY24','FY25
 
 const raw = JSON.parse(await readFile(join(ROOT, 'data/raw-capacity.json'), 'utf8'))
 
-// Capacity by company by FY (units/year). TVS added from IR/press (approximate).
+// Capacity by company by FY (units/year). TVS added from IR/press (approximate):
+// current installed base ~6.8M applies to FY24 and FY25 (the +1.5M expansion to
+// 8.3M is planned for FY27, so capacity is flat across FY24-FY25).
 const CAP = {
-  tvs:    { FY25: 6800000 },
+  tvs:    { FY24: 6800000, FY25: 6800000 },
   bajaj:  raw.bajaj,
   hero:   raw.hero,
   eicher: raw.eicher,

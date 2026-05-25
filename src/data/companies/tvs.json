@@ -280,8 +280,8 @@
     "scooterMixFy25": 40.14,
     "mopedMixFy25": 10.75,
     "threeWheelerMixFy25": 2.85,
-    "capacity": [null, null, null, null, null, null, null, null, null, 6800000],
-    "capacityUtilisation": [null, null, null, null, null, null, null, null, null, 69.8]
+    "capacity": [null, null, null, null, null, null, null, null, 6800000, 6800000],
+    "capacityUtilisation": [null, null, null, null, null, null, null, null, 61.6, 69.8]
   },
   "na": ["Export Revenue %", "Capacity Utilisation %", "New Model Launches", "Facelift Launches", "Top Selling Model", "Stock Price 31-Mar"],
   "profile": {
