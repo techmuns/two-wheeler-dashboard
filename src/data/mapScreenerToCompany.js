@@ -103,10 +103,17 @@ export function mapScreenerToCompany(screener, opts = {}) {
   const netDebt = borrowings.slice()
   const equity  = equityCap.map((e, i) => typeof e === 'number' && typeof reserves[i] === 'number' ? e + reserves[i] : null)
   const debtEquity = borrowings.map((b, i) => typeof b === 'number' && typeof equity[i] === 'number' && equity[i] !== 0 ? Number((b / equity[i]).toFixed(2)) : null)
-  // Capex: not separately disclosed by Screener (CFI includes investments,
-  // acquisitions, sale proceeds — using |CFI| as capex is misleading).
-  // Leave null; rely on Screener's pre-computed Free Cash Flow row for FCF.
-  const capex = new Array(FY_TARGET.length).fill(null)
+  // Capex: Screener has no explicit capex line, but it reports both Operating
+  // Cash Flow and Free Cash Flow, and FCF = CFO − Capex by definition, so
+  // Capex = CFO − FCF (only where both are present). (Using |CFI| would be
+  // wrong — CFI also nets investments, acquisitions and sale proceeds.)
+  const capex = cfo.map((c, i) =>
+    (typeof c === 'number' && typeof fcf[i] === 'number') ? Number((c - fcf[i]).toFixed(2)) : null)
+  const pctOfRev = (top) => top.map((v, i) =>
+    (typeof v === 'number' && typeof revenue[i] === 'number' && Math.abs(revenue[i]) >= 5)
+      ? Number(((v / revenue[i]) * 100).toFixed(2)) : null)
+  const fcfRevenue = pctOfRev(fcf)
+  const capexRevenue = pctOfRev(capex)
 
   // ---- Build dashboard-shape company object ----
   const built = {
@@ -172,6 +179,8 @@ export function mapScreenerToCompany(screener, opts = {}) {
       debtEquity,
       roce,
       wcDays: wcd,
+      fcfRevenue,
+      capexRevenue,
     },
     dataStatus: {
       productMix:        Object.fromEntries(FY_TARGET.slice(0, 10).map((fy) => [fy, 'pending_pdf_parse'])),
