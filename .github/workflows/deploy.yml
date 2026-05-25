@@ -1,9 +1,9 @@
-name: Deploy
+name: Deploy to GitHub Pages
 
-# Builds the dashboard and deploys the static assets to Cloudflare Workers
-# (config in wrangler.toml). Runs on every push to main so the live site always
-# reflects the latest committed data — fixing the "stale deploy" problem where
-# the site lagged behind the repo.
+# Builds the dashboard and publishes it to GitHub Pages on every push to main,
+# so the live site always reflects the latest committed data. Uses the repo's
+# built-in GITHUB_TOKEN — no external secret to configure. The Vite build uses
+# base './' (relative), which works on a Pages project site.
 
 on:
   push:
@@ -12,36 +12,29 @@ on:
 
 permissions:
   contents: read
+  pages: write
+  id-token: write
 
 concurrency:
-  group: deploy-main
+  group: pages
   cancel-in-progress: true
 
 jobs:
-  deploy:
+  build-deploy:
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-
       - run: npm install
-
       - run: npm run build
-
-      - name: Check Cloudflare credentials are configured
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-        run: |
-          if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
-            echo "::error::CLOUDFLARE_API_TOKEN secret is not set. Add it (and CLOUDFLARE_ACCOUNT_ID if the token is account-scoped) under Settings -> Secrets and variables -> Actions, then re-run this workflow."
-            exit 1
-          fi
-
-      - name: Deploy to Cloudflare Workers
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-        run: npx -y wrangler@4 deploy
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+      - id: deployment
+        uses: actions/deploy-pages@v4
