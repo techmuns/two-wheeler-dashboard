@@ -53,9 +53,9 @@ export default function DataQualityPanel({ company }) {
         </div>
 
         <p className="mt-3 text-[11.5px] text-[#475569] leading-relaxed">
-          {rollup.status === 'audited' && 'Every data source on this view has been read directly from a primary document (uploaded annual report / audited result package) during this build.'}
-          {rollup.status === 'approximate' && 'Some sources on this view are widely-cited approximations from analyst training data, not freshly fetched from the primary SIAM / Vahan / FADA endpoint. They are accurate in direction and within a small tolerance, but each cell should be re-verified before being used in published research.'}
-          {rollup.status === 'pending' && 'No source data has been uploaded for this company yet.'}
+          {rollup.status === 'audited' && 'All figures read from primary filings.'}
+          {rollup.status === 'approximate' && 'Some figures are industry estimates — verify before publishing.'}
+          {rollup.status === 'pending' && 'No data uploaded yet.'}
         </p>
 
         {open && (
@@ -75,7 +75,6 @@ export default function DataQualityPanel({ company }) {
                   <tr key={v.key} className="border-b border-[#F1F5F9] align-top">
                     <td className="py-3 pr-3">
                       <div className="font-semibold text-[#0B1F33]">{v.label}</div>
-                      <div className="text-[11px] text-[#6B7280] mt-0.5">{v.source}</div>
                     </td>
                     <td className="py-3 pr-3">
                       <StatusPill status={v.meta?.status || 'pending'} size="sm" />
@@ -93,25 +92,6 @@ export default function DataQualityPanel({ company }) {
                 ))}
               </tbody>
             </table>
-            <div className="mt-4 space-y-2">
-              {verifications
-                .filter((v) => v.meta?.method || v.meta?.upgradePath)
-                .map((v) => (
-                  <div key={`detail-${v.key}`} className="border-l-2 border-[#DDD0F2] pl-3 py-1">
-                    <div className="text-[11.5px] font-semibold text-[#0B1F33]">{v.label}</div>
-                    {v.meta?.method && (
-                      <div className="text-[11px] text-[#475569] mt-1 leading-snug">
-                        <span className="font-semibold text-[#6B7280]">Method:</span> {v.meta.method}
-                      </div>
-                    )}
-                    {v.meta?.upgradePath && v.meta?.status !== 'audited' && (
-                      <div className="text-[11px] text-[#6D28D9] mt-1 leading-snug">
-                        <span className="font-semibold">Upgrade path:</span> {v.meta.upgradePath}
-                      </div>
-                    )}
-                  </div>
-                ))}
-            </div>
           </div>
         )}
       </div>

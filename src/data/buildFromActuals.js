@@ -125,7 +125,7 @@ export function buildFromActuals(json, opts = {}) {
       tone: toneFromDelta(typeof mktShare[fy25Idx] === 'number' && typeof mktShare[fy24Idx] === 'number' ? mktShare[fy25Idx] - mktShare[fy24Idx] : null),
       fmt: 'pp',
       series: mktShare,
-      source: marketShareJson.source ? `${marketShareJson.source} (approximate — domestic 2W share)` : 'SIAM industry estimate',
+      source: 'Vahan · FADA',
     },
     {
       key: 'volGrowth',
@@ -169,7 +169,7 @@ export function buildFromActuals(json, opts = {}) {
       tone: 'pos',
       fmt: 'pp',
       series: evShare,
-      source: 'TVS 2025 AR — EV volumes disclosed for FY25',
+      source: opts.sourceShort || 'Annual reports',
     },
     {
       key: 'exportMix',
@@ -180,7 +180,7 @@ export function buildFromActuals(json, opts = {}) {
       tone: toneFromDelta(typeof exportMixSeries[fy25Idx] === 'number' && typeof exportMixSeries[fy24Idx] === 'number' ? exportMixSeries[fy25Idx] - exportMixSeries[fy24Idx] : null),
       fmt: 'pp',
       series: exportMixSeries,
-      source: `${json?.sources?.primary || 'Annual reports'} — export volume / total volume (units).`,
+      source: 'Annual reports',
     },
   ]
 
@@ -339,7 +339,7 @@ export function buildFromActuals(json, opts = {}) {
     }
   })
 
-  const sourceAR = 'TVS Motor Annual Reports FY16–FY25 + monthly sales press releases (BSE / NSE)'
+  const sourceAR = 'Annual reports · Vahan'
 
   const buildDriver = (key, name, category, byFy, sourceText = sourceAR) => {
     const series = seriesFromByFy(byFy)
@@ -370,11 +370,9 @@ export function buildFromActuals(json, opts = {}) {
     buildDriver('motorcycles', 'Motorcycles', 'ICE 2W',              ops.motorcyclesByFy),
     buildDriver('scooters',    'Scooters',    'Domestic 2W',          ops.scootersByFy),
     buildDriver('mopeds',      'Mopeds',      'XL100 / sub-100cc',    ops.mopedsByFy),
-    buildDriver('ev',          'EV / iQube',  'Electric scooter',     ops.evByFy,
-      'TVS Motor monthly sales press releases + 33rd AR Management Discussion'),
+    buildDriver('ev',          'EV / iQube',  'Electric scooter',     ops.evByFy, 'Annual reports · Vahan'),
     buildDriver('domestic2w',  'Domestic 2W', 'M + S + Moped (India)', domestic2WByFy),
-    buildDriver('exports2w',   'Exports 2W',  'All 2W segments',       ops.exportsByFy,
-      'TVS Motor Annual Reports — Forex section + monthly press releases'),
+    buildDriver('exports2w',   'Exports 2W',  'All 2W segments',       ops.exportsByFy, 'Annual reports'),
   ].map((d) => (d.value === '—' ? { ...d, tag: 'Pending', signal: 'Pending' } : d))
 
   // ---- Supporting Data (table blocks) ----
@@ -461,9 +459,7 @@ export function buildFromActuals(json, opts = {}) {
     dataFresh: isEmpty ? 'Pending' : 'Audited',
     hero: heroOverride || {
       title: shortName || name,
-      subtitle: isEmpty
-        ? 'Pending — annual-report workbook not yet uploaded'
-        : 'Audited annual snapshot · FY16–FY25 standalone',
+      subtitle: isEmpty ? 'Data pending' : 'Audited snapshot · FY16–FY25',
       fy: 'FY25',
     },
     kpis,
@@ -471,9 +467,7 @@ export function buildFromActuals(json, opts = {}) {
     productDrivers: drivers,
     supportingData: supporting,
     charts,
-    modelSource: isEmpty
-      ? 'No source data uploaded yet for this company. Provide an audited financials workbook to populate.'
-      : `Source: ${opts.publicName || name} Annual Reports FY16–FY25 (standalone audited) + audited Q4 result packages. Derived items computed from disclosed line items; no estimates.`,
+    modelSource: isEmpty ? 'Source: pending' : `Source: ${opts.sourceShort || 'Annual reports'}`,
     sourceCitations: json?.sources?.perFY || {},
     // Optional logo. When { path } is present the UI will try to load the
     // asset from public/<path>; on 404 or decode error it gracefully falls

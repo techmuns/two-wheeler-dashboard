@@ -82,7 +82,7 @@ export default function KpiModal({ open, kpi, company, onClose }) {
             <h3 className="text-[20px] font-semibold text-[#0B1F33] tracking-tight leading-tight mt-1">
               {kpi.label} <span className="text-[#94A3B8] font-normal">|</span> {company.name} <span className="text-[#94A3B8] font-normal">|</span> 10-Year Trend
             </h3>
-            <div className="text-[12.5px] text-[#334E68] mt-1">10-year window (FY16–FY25) with FY26–FY27 forecast continuation.</div>
+            <div className="text-[12.5px] text-[#334E68] mt-1">FY16–FY25 trend</div>
           </div>
           <button onClick={onClose} className="w-9 h-9 rounded-lg text-[#475569] hover:bg-white text-2xl leading-none flex items-center justify-center">×</button>
         </div>

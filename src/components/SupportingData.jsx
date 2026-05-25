@@ -177,7 +177,7 @@ function GroupedSupportingData({ company }) {
     <section>
       <div className="section-head">
         <span className="section-eyebrow">Supporting Data</span>
-        <span className="section-hint">8 metric groups · audited where disclosed · marked Unavailable where not</span>
+        <span className="section-hint">Audited where disclosed</span>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
@@ -187,7 +187,7 @@ function GroupedSupportingData({ company }) {
             <div className="chart-panel-row1">
               <div className="min-w-0 flex-1">
                 <div className="chart-panel-title">{group.name}</div>
-                <div className="chart-panel-sub">{group.metrics.length} metric{group.metrics.length !== 1 ? 's' : ''} · FY24 vs FY25 · Read = Positive / Neutral / Negative</div>
+                <div className="chart-panel-sub">{group.metrics.length} metric{group.metrics.length !== 1 ? 's' : ''} · FY24 vs FY25</div>
               </div>
               <div className="w-[200px] shrink-0">
                 <Dropdown
@@ -251,11 +251,7 @@ function GroupedSupportingData({ company }) {
               <div className="min-w-0">
                 <div className="chart-panel-title">{group.name} — trend</div>
                 <div className="chart-panel-sub">
-                  {isProfile
-                    ? 'Profile view — non-numeric / point-in-time fields'
-                    : showUnavailable
-                      ? 'Not disclosed in the uploaded workbook'
-                      : 'FY16–FY25 series · only metrics with disclosed data are plotted'}
+                  {isProfile ? 'Profile' : showUnavailable ? 'Not disclosed' : 'FY16–FY25'}
                 </div>
               </div>
               <span className="bsr-pill">FY25</span>

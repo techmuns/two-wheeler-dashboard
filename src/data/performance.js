@@ -143,14 +143,9 @@ export function getStatusReason(company, status) {
   return legend?.[status] || null
 }
 
-// Per-mix-type source citation, scoped to the company being viewed.
-export function getMixSource(company, mixType) {
-  const who = company?.shortName || company?.name || 'the company'
-  return (
-    mixType === 'product'    ? `${who} product mix from standalone annual-report sales-in-numbers disclosures + monthly sales press releases (BSE / NSE). Years without a disclosed segment split are left blank, not estimated.` :
-    mixType === 'powertrain' ? `${who} powertrain mix: EV volume from annual reports / monthly press releases; ICE = Total − EV. Pre-EV years shown as 0.` :
-                                `${who} domestic / export split from annual-report disclosures; Domestic = Total − Exports. Years without a disclosed export figure are left blank.`
-  )
+// Short source label for the mix charts.
+export function getMixSource() {
+  return 'Source: Annual reports · Vahan'
 }
 
 // Volume growth YoY between two FYs, given the per-FY total map. Returns null

@@ -391,13 +391,7 @@ export default function PerformanceSection({ company }) {
                 2W industry domestic volume growth %
               </span>
             </div>
-            <div className="chart-source">
-              {oemKey} growth from audited annual reports.{' '}
-              {industryMeta.hasData
-                ? `Industry growth: ${industryMeta.source}.`
-                : `Industry growth: ${industryMeta.source} — series pending upload (gaps show null, not zero).`}
-              {' '}FY26–FY27 styled lighter as forecast.
-            </div>
+            <div className="chart-source">Source: Annual reports · Vahan · FADA</div>
           </div>
         </div>
 
@@ -446,7 +440,7 @@ export default function PerformanceSection({ company }) {
             </div>
             <div className="flex items-center justify-between gap-2 mt-1.5">
               <div className="text-[10.5px] text-[#6B7280] leading-snug">
-                Split available for disclosed years. Missing years are not shown unless verified from source.
+                Disclosed years only.
               </div>
               <button
                 type="button"

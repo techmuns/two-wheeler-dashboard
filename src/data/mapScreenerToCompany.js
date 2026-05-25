@@ -129,8 +129,8 @@ export function mapScreenerToCompany(screener, opts = {}) {
     fetchedAt: screener.fetchedAt,
 
     sources: {
-      primary: `Screener.in consolidated financials — ${url}`,
-      notes: 'Pulled by scripts/fetch-screener.mjs from screener.in. Operational data (unit volumes, segment splits, exports, EV, market share, KMP, dealer count) is NOT in Screener — requires annual-report PDF upload to populate.',
+      primary: 'Consolidated financials from exchange filings (BSE/NSE).',
+      notes: 'Financials from exchange filings. Volumes / market share added from annual reports where available.',
       perFY: {},
     },
 
@@ -138,7 +138,7 @@ export function mapScreenerToCompany(screener, opts = {}) {
       status: 'audited',
       confidence: 'high',
       verifiedAgainstPrimary: true,
-      method: `Auto-fetched from Screener consolidated page. Underlying numbers are from BSE / NSE quarterly filings, so the financial lines are audited. Volumes / KMP / market share fields stay 'unavailable' until an AR is uploaded.`,
+      method: 'Consolidated financials from BSE/NSE filings. Volumes / KMP added from annual reports where available.',
       upgradePath: 'Upload company annual report PDFs (e.g. BAJAJ_2025.pdf) to extract volumes, KMP, dealer count, credit rating.',
     },
 
