@@ -50,7 +50,10 @@ export function mapScreenerToCompany(screener, opts = {}) {
 
   const revenue = alignToFY(pickRow(screener.profitLoss, ['Sales', 'Revenue']), periods)
   const opProfit = alignToFY(pickRow(screener.profitLoss, ['Operating Profit']), periods)
-  const opm    = alignToFY(pickRow(screener.profitLoss, ['OPM %']), periods)
+  const opmRaw = alignToFY(pickRow(screener.profitLoss, ['OPM %']), periods)
+  // Cap insane %s — Ola FY21 revenue was ₹1 Cr so OPM% = -32228% is technically
+  // accurate but useless for the dashboard. Null it out.
+  const opm = opmRaw.map(v => typeof v === 'number' && Math.abs(v) <= 300 ? v : null)
   const otherInc = alignToFY(pickRow(screener.profitLoss, ['Other Income']), periods)
   const interest = alignToFY(pickRow(screener.profitLoss, ['Interest']), periods)
   const dep    = alignToFY(pickRow(screener.profitLoss, ['Depreciation']), periods)
@@ -70,31 +73,40 @@ export function mapScreenerToCompany(screener, opts = {}) {
   const roce = alignToFY(pickRow(screener.ratios, ['ROCE %']), periods)
   const wcd  = alignToFY(pickRow(screener.ratios, ['Working Capital Days']), periods)
 
-  // EBITDA = Operating Profit (Screener's OP already excludes interest, dep).
+  // EBITDA = Operating Profit (Screener's OP excludes interest + D&A).
   const ebitda = opProfit.slice()
 
-  // EBIT = OP (rough proxy — Screener doesn't disclose separately).
-  // PBT margin / PAT margin derived from sales.
-  const pctOf = (top, bot) => top.map((v, i) =>
-    typeof v === 'number' && typeof bot[i] === 'number' && bot[i] !== 0
-      ? Number(((v / bot[i]) * 100).toFixed(2))
-      : null)
+  // EBIT = EBITDA − D&A (reconcile cleanly so audit cross-checks pass).
+  const ebit = ebitda.map((e, i) =>
+    typeof e === 'number' && typeof dep[i] === 'number' ? Number((e - dep[i]).toFixed(2)) : null)
 
-  const grossMargin  = pctOf(opProfit, revenue).map((v, i) => {
-    // Use OP/Sales as gross-margin proxy (Screener doesn't split material cost cleanly).
-    return v
+  // Margins — guard against tiny denominators (Ola FY21 sales = ₹1 Cr produces
+  // junk %s otherwise). Cap at ±300% to keep the UI sane.
+  const pctOf = (top, bot) => top.map((v, i) => {
+    if (typeof v !== 'number' || typeof bot[i] !== 'number' || bot[i] === 0) return null
+    if (Math.abs(bot[i]) < 5) return null   // denominator too small for a meaningful ratio
+    const r = (v / bot[i]) * 100
+    if (!Number.isFinite(r) || Math.abs(r) > 300) return null
+    return Number(r.toFixed(2))
   })
 
+  // Gross margin proxy — flag explicitly that this is OP/Sales, not real GM.
+  // Real GM = (Revenue − Cost of materials − Stock movement) / Revenue,
+  // which Screener doesn't disclose. Left null to avoid misleading the UI.
+  const grossMargin = new Array(FY_TARGET.length).fill(null)
+
   const patMargin    = pctOf(pat, revenue)
-  const ebitMargin   = pctOf(opProfit, revenue)
+  const ebitMargin   = pctOf(ebit, revenue)
 
   // Net Debt = Borrowings (Screener doesn't carry standalone Cash & Equivalents
   // line that's directly comparable; this is a known limitation).
   const netDebt = borrowings.slice()
   const equity  = equityCap.map((e, i) => typeof e === 'number' && typeof reserves[i] === 'number' ? e + reserves[i] : null)
   const debtEquity = borrowings.map((b, i) => typeof b === 'number' && typeof equity[i] === 'number' && equity[i] !== 0 ? Number((b / equity[i]).toFixed(2)) : null)
-  // Capex = |CFI| as a rough proxy.
-  const capex = cfi.map((v) => (typeof v === 'number' ? Math.abs(v) : null))
+  // Capex: not separately disclosed by Screener (CFI includes investments,
+  // acquisitions, sale proceeds — using |CFI| as capex is misleading).
+  // Leave null; rely on Screener's pre-computed Free Cash Flow row for FCF.
+  const capex = new Array(FY_TARGET.length).fill(null)
 
   // ---- Build dashboard-shape company object ----
   const built = {
@@ -128,7 +140,7 @@ export function mapScreenerToCompany(screener, opts = {}) {
       otherIncome: otherInc,
       ebitda,
       depreciation: dep,
-      ebit: opProfit,  // proxy
+      ebit,            // EBITDA − D&A
       interest,
       pbt,
       pat,

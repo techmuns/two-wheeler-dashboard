@@ -487,9 +487,7 @@ export default function PerformanceSection({ company }) {
               ))}
             </div>
             <div className="chart-source">
-              {mixType === 'product'    && 'Product mix: TVS Motor FY25 Annual Report (workbook) + TVS monthly sales press releases on BSE / NSE. Mopeds = Total − (M + S + 3W).'}
-              {mixType === 'powertrain' && 'Powertrain mix: TVS Motor monthly press releases (iQube volume) + workbook total. ICE = Total − EV.'}
-              {mixType === 'geography'  && 'Domestic / Export mix: TVS Motor monthly press releases (Domestic + Exports breakup) + workbook total. Domestic = Total − Exports.'}
+              {mixSource}
             </div>
           </div>
           {coverageOpen && (

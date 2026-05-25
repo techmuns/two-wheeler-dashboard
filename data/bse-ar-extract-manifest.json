@@ -1,0 +1,205 @@
+{
+  "ranAt": "2026-05-25T08:29:03.505Z",
+  "entries": [
+    {
+      "slug": "bajaj",
+      "year": 2022,
+      "txtPath": "src/data/source-text/BAJAJ_2022.txt",
+      "status": "already-present"
+    },
+    {
+      "slug": "bajaj",
+      "year": 2021,
+      "txtPath": "src/data/source-text/BAJAJ_2021.txt",
+      "status": "already-present"
+    },
+    {
+      "slug": "bajaj",
+      "year": 2020,
+      "txtPath": "src/data/source-text/BAJAJ_2020.txt",
+      "status": "already-present"
+    },
+    {
+      "slug": "bajaj",
+      "year": 2019,
+      "txtPath": "src/data/source-text/BAJAJ_2019.txt",
+      "status": "already-present"
+    },
+    {
+      "slug": "bajaj",
+      "year": 2018,
+      "txtPath": "src/data/source-text/BAJAJ_2018.txt",
+      "status": "already-present"
+    },
+    {
+      "slug": "bajaj",
+      "year": 2017,
+      "txtPath": "src/data/source-text/BAJAJ_2017.txt",
+      "status": "already-present"
+    },
+    {
+      "slug": "bajaj",
+      "year": 2016,
+      "txtPath": "src/data/source-text/BAJAJ_2016.txt",
+      "status": "already-present"
+    },
+    {
+      "slug": "hero",
+      "year": 2022,
+      "txtPath": "src/data/source-text/HERO_2022.txt",
+      "status": "already-present"
+    },
+    {
+      "slug": "hero",
+      "year": 2021,
+      "txtPath": "src/data/source-text/HERO_2021.txt",
+      "status": "already-present"
+    },
+    {
+      "slug": "hero",
+      "year": 2020,
+      "txtPath": "src/data/source-text/HERO_2020.txt",
+      "status": "already-present"
+    },
+    {
+      "slug": "hero",
+      "year": 2019,
+      "txtPath": "src/data/source-text/HERO_2019.txt",
+      "status": "already-present"
+    },
+    {
+      "slug": "hero",
+      "year": 2018,
+      "txtPath": "src/data/source-text/HERO_2018.txt",
+      "status": "already-present"
+    },
+    {
+      "slug": "hero",
+      "year": 2017,
+      "txtPath": "src/data/source-text/HERO_2017.txt",
+      "status": "already-present"
+    },
+    {
+      "slug": "hero",
+      "year": 2016,
+      "txtPath": "src/data/source-text/HERO_2016.txt",
+      "status": "already-present"
+    },
+    {
+      "slug": "eicher",
+      "year": 2025,
+      "txtPath": "src/data/source-text/EICHER_2025.txt",
+      "status": "extracted",
+      "url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/12df1c37-a6d3-456e-8151-edcdb4535ad5.pdf",
+      "bytes": 25624943
+    },
+    {
+      "slug": "eicher",
+      "year": 2024,
+      "txtPath": "src/data/source-text/EICHER_2024.txt",
+      "status": "extracted",
+      "url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/717238ca-0a65-4a34-9441-893ddeea9f2f.pdf",
+      "bytes": 21075107
+    },
+    {
+      "slug": "eicher",
+      "year": 2023,
+      "txtPath": "src/data/source-text/EICHER_2023.txt",
+      "status": "extracted",
+      "url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/857d13f1-9d43-4eac-b527-ed0df0099697.pdf",
+      "bytes": 16521738
+    },
+    {
+      "slug": "eicher",
+      "year": 2023,
+      "txtPath": "src/data/source-text/EICHER_2023.txt",
+      "status": "already-present"
+    },
+    {
+      "slug": "eicher",
+      "year": 2022,
+      "txtPath": "src/data/source-text/EICHER_2022.txt",
+      "status": "already-present"
+    },
+    {
+      "slug": "eicher",
+      "year": 2021,
+      "txtPath": "src/data/source-text/EICHER_2021.txt",
+      "status": "already-present"
+    },
+    {
+      "slug": "eicher",
+      "year": 2020,
+      "txtPath": "src/data/source-text/EICHER_2020.txt",
+      "status": "already-present"
+    },
+    {
+      "slug": "eicher",
+      "year": 2019,
+      "txtPath": "src/data/source-text/EICHER_2019.txt",
+      "status": "already-present"
+    },
+    {
+      "slug": "eicher",
+      "year": 2018,
+      "txtPath": "src/data/source-text/EICHER_2018.txt",
+      "status": "already-present"
+    },
+    {
+      "slug": "eicher",
+      "year": 2017,
+      "txtPath": "src/data/source-text/EICHER_2017.txt",
+      "status": "already-present"
+    },
+    {
+      "slug": "eicher",
+      "year": 2016,
+      "txtPath": "src/data/source-text/EICHER_2016.txt",
+      "status": "already-present"
+    },
+    {
+      "slug": "eicher",
+      "year": 2014,
+      "txtPath": "src/data/source-text/EICHER_2014.txt",
+      "status": "already-present"
+    },
+    {
+      "slug": "eicher",
+      "year": 2013,
+      "txtPath": "src/data/source-text/EICHER_2013.txt",
+      "status": "already-present"
+    },
+    {
+      "slug": "eicher",
+      "year": 2012,
+      "txtPath": "src/data/source-text/EICHER_2012.txt",
+      "status": "already-present"
+    },
+    {
+      "slug": "eicher",
+      "year": 2011,
+      "txtPath": "src/data/source-text/EICHER_2011.txt",
+      "status": "already-present"
+    },
+    {
+      "slug": "eicher",
+      "year": 2010,
+      "txtPath": "src/data/source-text/EICHER_2010.txt",
+      "status": "already-present"
+    },
+    {
+      "slug": "ola-electric",
+      "year": 2025,
+      "txtPath": "src/data/source-text/OLA_2025.txt",
+      "status": "extracted",
+      "url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/5d179c83-6a35-4feb-be6d-a5c61dd0bc7b.pdf",
+      "bytes": 11131800
+    },
+    {
+      "slug": "ola-electric",
+      "year": 2025,
+      "txtPath": "src/data/source-text/OLA_2025.txt",
+      "status": "already-present"
+    }
+  ]
+}
