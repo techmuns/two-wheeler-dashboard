@@ -229,7 +229,14 @@ function GroupedSupportingData({ company }) {
                         {m.unavailable ? '—' : fmtChange(m.change, m.fmt)}
                       </td>
                       <td>
-                        {m.unavailable ? (
+                        {m.paid ? (
+                          <span className="read-pill paid">
+                            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" style={{ marginRight: 4 }}>
+                              <rect x="5" y="11" width="14" height="9" rx="2" /><path d="M8 11V8a4 4 0 018 0v3" />
+                            </svg>
+                            Paid data
+                          </span>
+                        ) : m.unavailable ? (
                           <span className="read-pill watch">Unavailable</span>
                         ) : (
                           <span className={readClass[m.read] || readClass.Neutral}>{m.read}</span>
@@ -259,7 +266,12 @@ function GroupedSupportingData({ company }) {
             <div className="chart-panel-meta">
               <span>{group.metrics.length} metrics</span>
               <span>{group.metrics.filter((m) => !m.unavailable).length} available</span>
-              <span>{group.metrics.filter((m) => m.unavailable).length} unavailable</span>
+              {group.metrics.some((m) => m.paid) && (
+                <span>{group.metrics.filter((m) => m.paid).length} licensed</span>
+              )}
+              {group.metrics.some((m) => m.unavailable && !m.paid) && (
+                <span>{group.metrics.filter((m) => m.unavailable && !m.paid).length} unavailable</span>
+              )}
             </div>
           </div>
 

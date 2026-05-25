@@ -48,6 +48,18 @@ const OK = (key, label, fmt, series, verification, source, note) => ({
   key, label, fmt, series, verification, source, note: note || null, unavailable: false,
 })
 
+// A metric that exists but is only available behind a paid/licensed source
+// (e.g. SIAM engine-capacity bulletin / JATO). Rendered locked, not removed.
+const PAID = (label, fmt, key) => ({
+  key, label, fmt,
+  series: new Array(FY.length).fill(null),
+  verification: 'paid',
+  source: 'Licensed (SIAM / JATO)',
+  unavailable: true,
+  paid: true,
+  reason: 'Licensed data — SIAM engine-capacity bulletin / JATO.',
+})
+
 // Returns a metric object — automatically degrades to Unavailable if the
 // resolved series is all-null.
 const resolve = (key, label, fmt, series, verification, source, opts = {}) => {
@@ -145,15 +157,15 @@ export function buildSupportingGroups(raw, opts = {}) {
       metrics: [
         resolve('marketShare', `Market Share % (2W)`, 'pp', mktShareSeries, 'approximate', 'Vahan · FADA',
           { naReason: 'Not available.', note: 'Approximate.' }),
-        NA('75–110CC Market Share',  'pp', NA_REASONS.ccSlab, 'ms_75_110'),
-        NA('110–125CC Market Share', 'pp', NA_REASONS.ccSlab, 'ms_110_125'),
-        NA('125–150CC Market Share', 'pp', NA_REASONS.ccSlab, 'ms_125_150'),
-        NA('150–200CC Market Share', 'pp', NA_REASONS.ccSlab, 'ms_150_200'),
-        NA('200–250CC Market Share', 'pp', NA_REASONS.ccSlab, 'ms_200_250'),
-        NA('250–350CC Market Share', 'pp', NA_REASONS.ccSlab, 'ms_250_350'),
-        NA('>350CC Market Share',    'pp', NA_REASONS.ccSlab, 'ms_350_plus'),
+        PAID('75–110CC Market Share',  'pp', 'ms_75_110'),
+        PAID('110–125CC Market Share', 'pp', 'ms_110_125'),
+        PAID('125–150CC Market Share', 'pp', 'ms_125_150'),
+        PAID('150–200CC Market Share', 'pp', 'ms_150_200'),
+        PAID('200–250CC Market Share', 'pp', 'ms_200_250'),
+        PAID('250–350CC Market Share', 'pp', 'ms_250_350'),
+        PAID('>350CC Market Share',    'pp', 'ms_350_plus'),
       ],
-      sourceFootnote: 'Source: Vahan · FADA (approx.)',
+      sourceFootnote: 'Source: Vahan retail. CC-slab splits: licensed data (SIAM / JATO).',
     },
 
     {
@@ -166,27 +178,20 @@ export function buildSupportingGroups(raw, opts = {}) {
         resolve('scooterVolume',    'Scooter Volume %',     'pp', s.scooterMix,       'audited', auditedSrc, { naReason: pendingReason, note: 'FY25 only.' }),
         resolve('mopedVolume',      'Moped Volume %',       'pp', s.mopedMix,         'audited', auditedSrc, { naReason: pendingReason, note: 'FY25 only.' }),
         resolve('threeWheelerVolume', 'Three-Wheeler Volume %', 'pp', s.threeWheelerMix, 'audited', auditedSrc, { naReason: pendingReason, note: 'FY25 only.' }),
-        NA('75–110CC Volume',  'abs', NA_REASONS.ccSlab, 'v_75_110'),
-        NA('110–125CC Volume', 'abs', NA_REASONS.ccSlab, 'v_110_125'),
-        NA('125–150CC Volume', 'abs', NA_REASONS.ccSlab, 'v_125_150'),
-        NA('150–200CC Volume', 'abs', NA_REASONS.ccSlab, 'v_150_200'),
-        NA('200–250CC Volume', 'abs', NA_REASONS.ccSlab, 'v_200_250'),
-        NA('250–350CC Volume', 'abs', NA_REASONS.ccSlab, 'v_250_350'),
-        NA('>350CC Volume',    'abs', NA_REASONS.ccSlab, 'v_350_plus'),
+        PAID('75–110CC Volume',  'abs', 'v_75_110'),
+        PAID('110–125CC Volume', 'abs', 'v_110_125'),
+        PAID('125–150CC Volume', 'abs', 'v_125_150'),
+        PAID('150–200CC Volume', 'abs', 'v_150_200'),
+        PAID('200–250CC Volume', 'abs', 'v_200_250'),
+        PAID('250–350CC Volume', 'abs', 'v_250_350'),
+        PAID('>350CC Volume',    'abs', 'v_350_plus'),
       ],
-      sourceFootnote: isPopulated ? 'Source: Annual reports · Vahan' : pendingReason,
+      sourceFootnote: isPopulated ? 'Source: Annual reports · Vahan. CC-slab splits: licensed (SIAM / JATO).' : pendingReason,
     },
 
-    {
-      name: 'Revenue Mix',
-      chartType: 'line',
-      metrics: [
-        NA('Export Revenue %',     'pp', NA_REASONS.revMix, 'exportRevenue'),
-        NA('EV Revenue %',         'pp', NA_REASONS.revMix, 'evRevenue'),
-        NA('Motorcycle Revenue %', 'pp', NA_REASONS.revMix, 'motorcycleRevenue'),
-      ],
-      sourceFootnote: NA_REASONS.revMix,
-    },
+    // 'Revenue Mix' group removed — segment-level revenue split (EV / motorcycle
+    // / export revenue %) is not disclosed by any OEM and not available even from
+    // paid sources, so it would always be empty.
 
     // NOTE: 'Company Profile' group intentionally removed from this dropdown.
     // KMP / dealers / employees / credit rating / manufacturing all live on
