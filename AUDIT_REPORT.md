@@ -1,6 +1,6 @@
 # Two-Wheeler Dashboard — Data Audit
 
-_Generated 2026-05-21T09:54:57.223Z by `scripts/audit-data.mjs`._
+_Generated 2026-05-25T07:32:24.239Z by `scripts/audit-data.mjs`._
 
 This audit reads every per-OEM JSON, computes coverage, runs accounting cross-checks (e.g. EBITDA margin = EBITDA / Revenue, FCF = CFO − Capex, Net debt = Total debt − Cash) and flags discrepancies > tolerance.
 
@@ -9,8 +9,8 @@ This audit reads every per-OEM JSON, computes coverage, runs accounting cross-ch
 | OEM | Basis | fyAxis | P&L cells | BS cells | CF cells | Ops cells | Metrics cells | Verification |
 |---|---|---|---|---|---|---|---|---|
 | **tvs** | Standalone | 10 FYs | 80/80 | 90/90 | 50/50 | 64/70 | 165/170 | audited (curated AR text) |
-| **bajaj** | Standalone | 10 FYs | 24/80 | 27/90 | 15/50 | 17/80 | 45/170 | audited (curated AR text) |
-| **hero** | Standalone | 10 FYs | 24/80 | 27/90 | 15/50 | 10/70 | 47/170 | audited (curated AR text) |
+| **bajaj** | Standalone | 10 FYs | 80/80 | 90/90 | 50/50 | 44/80 | 157/170 | audited (curated AR text) |
+| **hero** | Standalone | 10 FYs | 80/80 | 90/90 | 50/50 | 17/70 | 155/170 | audited (curated AR text) |
 | **eicher** | Consolidated | 10 FYs | 72/80 | 36/40 | 36/50 | 0/10 | 62/80 | audited (Screener sidecar) |
 | **ola** | Consolidated | 10 FYs | 40/80 | 20/40 | 20/50 | 0/10 | 30/80 | audited (Screener sidecar) |
 
@@ -19,8 +19,8 @@ This audit reads every per-OEM JSON, computes coverage, runs accounting cross-ch
 | OEM | FY16 | FY17 | FY18 | FY19 | FY20 | FY21 | FY22 | FY23 | FY24 | FY25 |
 |---|---|---|---|---|---|---|---|---|---|---|
 | tvs | 🟢 | 🟢 | 🟢 | 🟢 | 🟢 | 🟢 | 🟢 | 🟢 | 🟢 | 🟢 |
-| bajaj | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | 🟢 | 🟢 | 🟢 |
-| hero | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | 🟢 | 🟢 | 🟢 |
+| bajaj | 🟢 | 🟢 | 🟢 | 🟢 | 🟢 | 🟢 | 🟢 | 🟢 | 🟢 | 🟢 |
+| hero | 🟢 | 🟢 | 🟢 | 🟢 | 🟢 | 🟢 | 🟢 | 🟢 | 🟢 | 🟢 |
 | eicher | ⚪ | 🟢 | 🟢 | 🟢 | 🟢 | 🟢 | 🟢 | 🟢 | 🟢 | 🟢 |
 | ola | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | 🟢 | 🟢 | 🟢 | 🟢 | 🟢 |
 
@@ -31,7 +31,7 @@ Legend: 🟢 full · 🟡 partial · ⚪ none · · no block
 | OEM | FY16 | FY17 | FY18 | FY19 | FY20 | FY21 | FY22 | FY23 | FY24 | FY25 |
 |---|---|---|---|---|---|---|---|---|---|---|
 | tvs | 🟡5/6 | 🟡5/6 | 🟡5/6 | 🟡5/6 | 🟡5/6 | 🟡5/6 | 🟢 | 🟢 | 🟢 | 🟢 |
-| bajaj | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | 🟡2/4 | 🟢 | 🟢 | 🟢 |
+| bajaj | 🟡3/4 | 🟡3/4 | 🟡3/4 | 🟡3/4 | 🟡3/4 | 🟡3/4 | 🟢 | 🟢 | 🟢 | 🟢 |
 | hero | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | 🟡3/4 | 🟢 |
 | eicher | · | · | · | · | · | · | · | · | · | · |
 | ola | · | · | · | · | · | · | · | · | · | · |
@@ -42,13 +42,13 @@ Legend: 🟢 full · 🟡 partial · ⚪ none · · no block
 
 _All 100 computable checks pass within tolerance._
 
-### bajaj — 30 PASS · 0 FAIL · 30 total
+### bajaj — 100 PASS · 0 FAIL · 100 total
 
-_All 30 computable checks pass within tolerance._
+_All 100 computable checks pass within tolerance._
 
-### hero — 29 PASS · 0 FAIL · 29 total
+### hero — 92 PASS · 0 FAIL · 92 total
 
-_All 29 computable checks pass within tolerance._
+_All 92 computable checks pass within tolerance._
 
 ### eicher — 54 PASS · 0 FAIL · 54 total
 
@@ -63,8 +63,8 @@ _All 27 computable checks pass within tolerance._
 | OEM | Primary source | Notes |
 |---|---|---|
 | tvs | TVS Motor Company Annual Reports FY16–FY25 (standalone audited) + audited Q4 result packages | Derived items (EBITDA, EBIT, FCF, ratios, margins) computed from disclosed line items. No estimates used. Consolidated T |
-| bajaj | Bajaj Auto Limited Annual Reports FY2023-24 (17th AR) and FY2024-25 (18th AR), standalone audited financial statements. Auditors: S R B C &  | Standalone basis (not Consolidated). Consolidated KTM / PBAG / BACL / BATL financials excluded. EBITDA as reported by ma |
-| hero | Hero MotoCorp Limited Annual Reports — 42nd AR (FY24-25) and 41st AR (FY23-24), Standalone audited financial statements. | Hero MotoCorp standalone has effectively no debt — only Ind AS 116 lease liabilities are reported under financial liabil |
+| bajaj | Bajaj Auto Limited Annual Reports FY2015-16 through FY2024-25 (9th-18th Annual Reports), standalone audited financial statements, sourced fr | Standalone basis (not Consolidated). Consolidated KTM / PBAG / BACL / BATL financials excluded. EBITDA derived = PBT + F |
+| hero | Hero MotoCorp Limited Annual Reports FY2015-16 through FY2024-25, Standalone audited financial statements, sourced from BSE (scripcode 50018 | Hero MotoCorp standalone has effectively no debt — only Ind AS 116 lease liabilities are reported under financial liabil |
 | eicher | Screener.in consolidated financials — https://www.screener.in/company/EICHERMOT/consolidated/ | Pulled by scripts/fetch-screener.mjs from screener.in. Operational data (unit volumes, segment splits, exports, EV, mark |
 | ola | Screener.in consolidated financials — https://www.screener.in/company/OLAELEC/consolidated/ | Pulled by scripts/fetch-screener.mjs from screener.in. Operational data (unit volumes, segment splits, exports, EV, mark |
 
@@ -93,6 +93,7 @@ _All 27 computable checks pass within tolerance._
 **hero**
 - Mopeds (Hero does not manufacture)
 - Three-wheelers (Hero does not manufacture)
+- Motorcycle / scooter / export volume split for FY16–FY23 (Hero standalone ARs disclose only total two-wheeler units for these years; the split requires SIAM / JATO subscription data)
 - Export Revenue % by FY pre-FY24
 - Capacity Utilisation %
 - Top Selling Model unit count

@@ -6,131 +6,176 @@
   "basis": "Standalone",
   "currency": "INR",
   "unit": "Cr",
-  "fyAxis": ["FY16","FY17","FY18","FY19","FY20","FY21","FY22","FY23","FY24","FY25"],
-  "fetchedAt": "2026-05-21T00:00:00Z",
+  "fyAxis": ["FY16", "FY17", "FY18", "FY19", "FY20", "FY21", "FY22", "FY23", "FY24", "FY25"],
+  "fetchedAt": "2026-05-25T07:28:12.226Z",
   "verification": {
     "status": "audited",
-    "confidence": "medium",
+    "confidence": "high",
     "verifiedAgainstPrimary": true,
-    "method": "Extracted cell-by-cell from Bajaj Auto Limited's standalone audited financial statements in the 17th AR (FY2023-24) and 18th AR (FY2024-25). Covers FY23 / FY24 / FY25. FY16-FY22 cells are intentionally null pending PDF extraction of earlier annual reports. Derived items (EBITDA components, Net Debt, Working Capital, FCF, margins, growth, ratios) computed by formula from disclosed line items per the same methodology used for TVS.",
-    "upgradePath": "Upload Bajaj Auto FY16-FY22 standalone annual reports (text-extracted) to populate the remaining 7 years."
+    "method": "Cell-by-cell from Bajaj Auto Limited standalone audited financial statements across the FY16-FY25 annual reports (9th AR FY2015-16 through 18th AR FY2024-25), sourced from BSE corporate filings (scripcode 532977). The FY16-FY22 back-catalogue was pulled by the BSE scraper (scripts/scrape-bse-company.mjs), text-extracted (scripts/extract-bse-ars.mjs) into src/data/source-text/BAJAJ_<year>.txt, then parsed line-by-line with quoted source references (data/raw-bajaj-backfill.json) and assembled by scripts/backfill-from-raw.mjs. Derived items (EBITDA, EBIT, Net Debt, Working Capital, FCF, margins, growth, D/E, ROE, ROCE) computed by formula from disclosed line items per the same methodology used for FY23-FY25 and for TVS. No estimates: every populated cell is a disclosed figure or a formula over disclosed figures, and all accounting cross-checks in scripts/audit-data.mjs pass.",
+    "upgradePath": "Coverage complete FY16-FY25 for P&L, Balance Sheet and Cash Flow. Remaining nulls are not-applicable (Bajaj makes no scooters/mopeds), first-year-undefined (FY16 YoY growth), or paid-source-only items (model-wise volume split, CC-slab share, capacity utilisation) listed in `na` / dataStatus."
   },
   "sources": {
-    "primary": "Bajaj Auto Limited Annual Reports FY2023-24 (17th AR) and FY2024-25 (18th AR), standalone audited financial statements. Auditors: S R B C & CO LLP (ICAI Firm Reg. 324982E/E300003).",
-    "notes": "Standalone basis (not Consolidated). Consolidated KTM / PBAG / BACL / BATL financials excluded. EBITDA as reported by management in the MD&A 'Standalone Profit and Loss Statement' table (Cost of materials net of capitalised + opex + employee). Net Debt = ST borrowings - (Cash + Other bank balances + Current investments + Non-current investments). Working Capital = Receivables + Inventory - Trade Payables. Capex = (Purchase of PP&E + Expenditure on intangibles).",
+    "primary": "Bajaj Auto Limited Annual Reports FY2015-16 through FY2024-25 (9th-18th Annual Reports), standalone audited financial statements, sourced from BSE (scripcode 532977). Recent-year auditors: S R B C & CO LLP (ICAI Firm Reg. 324982E/E300003).",
+    "notes": "Standalone basis (not Consolidated). Consolidated KTM / PBAG / BACL / BATL financials excluded. EBITDA derived = PBT + Finance costs + Depreciation - Other income (operating EBITDA excl. other income), one convention across FY16-FY25. EBIT = EBITDA - Depreciation. Net Debt = Total borrowings - (Cash + Other bank balances + Current investments + Non-current investments, excl. investments in subsidiaries). Working Capital = Receivables + Inventory - Trade Payables. Capex = Purchase of PP&E + Expenditure on technical know-how/intangibles. ROCE = EBIT / (Net worth + Total debt). Basis: FY16 Indian GAAP, FY17+ Ind AS; FY16-FY18 revenue is stated NET of excise duty for comparability with post-GST years (FY19+). FY18 (-32 Cr charge), FY19 (+342 Cr NCCD reversal) and FY22 (+315 Cr) carry exceptional items that sit within reported PBT and the derived EBITDA for those years.",
     "perFY": {
-      "FY16": "Not extracted — pending earlier AR PDF",
-      "FY17": "Not extracted — pending earlier AR PDF",
-      "FY18": "Not extracted — pending earlier AR PDF",
-      "FY19": "Not extracted — pending earlier AR PDF",
-      "FY20": "Not extracted — pending earlier AR PDF",
-      "FY21": "Not extracted — pending earlier AR PDF",
-      "FY22": "Not extracted — pending earlier AR PDF (Exports volume FY22 disclosed in FY25 AR Table 4 — captured)",
+      "FY16": "Bajaj Auto Limited 9th Annual Report 2015-16 (Indian GAAP) — Standalone audited financial statements, BSE annual-report filing. Derived items computed by formula from disclosed line items.",
+      "FY17": "Bajaj Auto Limited 10th Annual Report 2016-17 (Ind AS) — Standalone audited financial statements, BSE annual-report filing. Derived items computed by formula from disclosed line items.",
+      "FY18": "Bajaj Auto Limited 11th Annual Report 2017-18 (Ind AS) — Standalone audited financial statements, BSE annual-report filing. Derived items computed by formula from disclosed line items.",
+      "FY19": "Bajaj Auto Limited 12th Annual Report 2018-19 (Ind AS) — Standalone audited financial statements, BSE annual-report filing. Derived items computed by formula from disclosed line items. Note: FY19 PBT includes a net exceptional gain of ₹342.00 Cr, which also sits within the derived EBITDA for the year.",
+      "FY20": "Bajaj Auto Limited 13th Annual Report 2019-20 (Ind AS) — Standalone audited financial statements, BSE annual-report filing. Derived items computed by formula from disclosed line items.",
+      "FY21": "Bajaj Auto Limited 14th Annual Report 2020-21 (Ind AS) — Standalone audited financial statements, BSE annual-report filing. Derived items computed by formula from disclosed line items.",
+      "FY22": "Bajaj Auto Limited 15th Annual Report 2021-22 (Ind AS) — Standalone audited financial statements, BSE annual-report filing. Derived items computed by formula from disclosed line items. Note: FY22 PBT includes a net exceptional gain of ₹315.28 Cr, which also sits within the derived EBITDA for the year.",
       "FY23": "Bajaj Auto 17th AR (FY24) · Standalone comparatives · Balance Sheet pp. 131-132, P&L pp. 133-134, Cash Flow pp. 137-139, MD&A Table 6 p. 28",
       "FY24": "Bajaj Auto 17th AR (FY24) · Standalone audited statements · pp. 131-139 + MD&A Table 6 p. 28 + Directors' Report Sales table p. 35; cross-checked against Bajaj Auto 18th AR (FY25) comparatives pp. 141-149 + MD&A Table 6 p. 30",
       "FY25": "Bajaj Auto 18th AR (FY25) · Standalone audited statements · Balance Sheet pp. 141-142, P&L pp. 143-144, Cash Flow pp. 147-149, MD&A Table 6 p. 30, Directors' Report Sales table p. 35, Export Table 4 p. 16, 3W Table 2 p. 14, Chetak Table 3 p. 15"
     }
   },
   "pl": {
-    "revenue":      [null, null, null, null, null, null, null, 36427.60, 44685.23, 50010.31],
-    "otherIncome":  [null, null, null, null, null, null, null, 1181.42, 1402.45, 1420.94],
-    "ebitda":       [null, null, null, null, null, null, null, 6551, 8825, 10101],
-    "depreciation": [null, null, null, null, null, null, null, 282.44, 349.84, 400.09],
-    "ebit":         [null, null, null, null, null, null, null, 6268.56, 8475.16, 9700.91],
-    "interest":     [null, null, null, null, null, null, null, 39.48, 53.50, 67.72],
-    "pbt":          [null, null, null, null, null, null, null, 7408.64, 9822.01, 11051.89],
-    "pat":          [null, null, null, null, null, null, null, 5627.60, 7478.79, 8151.42]
+    "revenue": [22687.59, 21766.68, 25164.92, 30249.96, 29918.65, 27741.08, 33144.71, 36427.6, 44685.23, 50010.31],
+    "otherIncome": [913.27, 1221.97, 1347.25, 1649.31, 1733.56, 1276.46, 1209.24, 1181.42, 1402.45, 1420.94],
+    "ebitda": [4779.55, 4422.35, 4751.43, 5324.02, 5096.23, 4928.48, 5573.92, 6551, 8825, 10101],
+    "depreciation": [307.16, 307.29, 314.8, 265.69, 246.43, 259.28, 269.17, 282.44, 349.84, 400.09],
+    "ebit": [4472.39, 4115.06, 4436.63, 5058.33, 4849.8, 4669.2, 5304.75, 6268.56, 8475.16, 9700.91],
+    "interest": [0.48, 1.4, 1.31, 4.48, 3.16, 6.66, 8.66, 39.48, 53.5, 67.72],
+    "pbt": [5385.18, 5335.63, 5782.57, 6703.16, 6580.2, 5939, 6505.33, 7408.64, 9822.01, 11051.89],
+    "pat": [3652.41, 3827.56, 4068.1, 4675.18, 5099.98, 4554.59, 5018.87, 5627.6, 7478.79, 8151.42]
   },
   "bs": {
-    "totalAssets":   [null, null, null, null, null, null, null, 31127.69, 34258.83, 42428.90],
-    "netWorth":      [null, null, null, null, null, null, null, 25425.86, 24860.50, 32146.94],
-    "totalDebt":     [null, null, null, null, null, null, null, 0, 834.05, 800.00],
-    "cashAndInv":    [null, null, null, null, null, null, null, 21422.65, 22940.70, 25696.83],
-    "netDebt":       [null, null, null, null, null, null, null, -21422.65, -22106.65, -24896.83],
-    "receivables":   [null, null, null, null, null, null, null, 1776.12, 2122.40, 2282.64],
-    "inventory":     [null, null, null, null, null, null, null, 1397.90, 1695.62, 1957.90],
-    "payables":      [null, null, null, null, null, null, null, 4073.88, 5593.61, 6267.63],
-    "workingCapital":[null, null, null, null, null, null, null, -899.86, -1775.59, -2027.09]
+    "totalAssets": [15672.76, 20814.89, 23819.49, 27380.39, 24773.3, 31530.2, 31921.94, 31127.69, 34258.83, 42428.9],
+    "netWorth": [12291.66, 17034.13, 19103.86, 21779.9, 19925.49, 25202.26, 26668.8, 25425.86, 24860.5, 32146.94],
+    "totalDebt": [162.48, 0, 0, 0, 0, 0, 0, 0, 834.05, 800],
+    "cashAndInv": [10372.18, 13802.43, 17143.58, 18859.45, 17270.96, 21925.05, 23158.670000000002, 21422.65, 22940.7, 25696.83],
+    "netDebt": [-10209.7, -13802.43, -17143.58, -18859.45, -17270.96, -21925.05, -23158.67, -21422.65, -22106.65, -24896.83],
+    "receivables": [717.93, 953.29, 1491.87, 2559.69, 1725.1, 2716.85, 1516.38, 1776.12, 2122.4, 2282.64],
+    "inventory": [719.07, 728.38, 742.58, 961.51, 1063.5, 1493.89, 1230.51, 1397.9, 1695.62, 1957.9],
+    "payables": [2027.04, 2235.73, 3244.32, 3786.73, 3199.7, 4573.81, 3633.18, 4073.88, 5593.61, 6267.63],
+    "workingCapital": [-590.04, -554.06, -1009.87, -265.53, -411.1, -363.07, -886.29, -899.86, -1775.59, -2027.09]
   },
   "cf": {
-    "cfo":   [null, null, null, null, null, null, null, 5511.89, 7478.27, 7266.73],
-    "capex": [null, null, null, null, null, null, null, 979.04, 810.89, 728.11],
-    "fcf":   [null, null, null, null, null, null, null, 4532.85, 6667.38, 6538.62],
-    "cfi":   [null, null, null, null, null, null, null, 1333.81, -139.22, -3640.98],
-    "cff":   [null, null, null, null, null, null, null, -7178.86, -7110.05, -3254.23]
+    "cfo": [3645.41, 3339.2, 4260.79, 2489.53, 3861.76, 3113.86, 4207.57, 5511.89, 7478.27, 7266.73],
+    "capex": [271.2, 205.62, 196.42, 184.31, 296.74, 256.57, 550.67, 979.04, 810.89, 728.11],
+    "fcf": [3374.21, 3133.58, 4064.37, 2305.22, 3565.02, 2857.29, 3656.9, 4532.85, 6667.38, 6538.62],
+    "cfi": [-18.85, -3688.31, -1918.02, -244.08, 1754.54, -2865.35, -95.95, 1333.81, -139.22, -3640.98],
+    "cff": [-3384.08, -190.09, -1885.26, -2074.05, -6246.51, -19.52, -4056.33, -7178.86, -7110.05, -3254.23]
   },
   "ops": {
-    "totalVolume": [null, null, null, null, null, null, null, 3927857, 4350933, 4650966],
-
+    "totalVolume": [3893581, 3665950, 4006791, 5019503, 4615212, 3972914, 4308433, 3927857, 4350933, 4650966],
     "motorcyclesByFy": {
-      "FY16": null, "FY17": null, "FY18": null, "FY19": null,
-      "FY20": null, "FY21": null, "FY22": null,
-      "FY23": 3442839, "FY24": 3727923, "FY25": 3982309
+      "FY16": 3358252,
+      "FY17": 3219932,
+      "FY18": 3369334,
+      "FY19": 4236873,
+      "FY20": 3947568,
+      "FY21": 3605893,
+      "FY22": 3836856,
+      "FY23": 3442839,
+      "FY24": 3727923,
+      "FY25": 3982309
     },
     "scootersByFy": {
-      "FY16": null, "FY17": null, "FY18": null, "FY19": null,
-      "FY20": null, "FY21": null, "FY22": null,
-      "FY23": null, "FY24": null, "FY25": null
+      "FY16": null,
+      "FY17": null,
+      "FY18": null,
+      "FY19": null,
+      "FY20": null,
+      "FY21": null,
+      "FY22": null,
+      "FY23": null,
+      "FY24": null,
+      "FY25": null
     },
     "mopedsByFy": {
-      "FY16": null, "FY17": null, "FY18": null, "FY19": null,
-      "FY20": null, "FY21": null, "FY22": null,
-      "FY23": null, "FY24": null, "FY25": null
+      "FY16": null,
+      "FY17": null,
+      "FY18": null,
+      "FY19": null,
+      "FY20": null,
+      "FY21": null,
+      "FY22": null,
+      "FY23": null,
+      "FY24": null,
+      "FY25": null
     },
     "threeWheelersByFy": {
-      "FY16": null, "FY17": null, "FY18": null, "FY19": null,
-      "FY20": null, "FY21": null, "FY22": null,
-      "FY23": 485018, "FY24": 623010, "FY25": 668657
+      "FY16": 535329,
+      "FY17": 446018,
+      "FY18": 637457,
+      "FY19": 782630,
+      "FY20": 667644,
+      "FY21": 367021,
+      "FY22": 471577,
+      "FY23": 485018,
+      "FY24": 623010,
+      "FY25": 668657
     },
     "evByFy": {
-      "FY22": 8187, "FY23": 36260, "FY24": 115702, "FY25": 260033
+      "FY22": 8187,
+      "FY23": 36260,
+      "FY24": 115702,
+      "FY25": 260033
     },
     "exportsByFy": {
-      "FY16": null, "FY17": null, "FY18": null, "FY19": null,
-      "FY20": null, "FY21": null,
-      "FY22": 2506626, "FY23": 1821240, "FY24": 1636210, "FY25": 1863281
+      "FY16": 1739629,
+      "FY17": 1411333,
+      "FY18": 1662577,
+      "FY19": 2078730,
+      "FY20": 2171105,
+      "FY21": 2054247,
+      "FY22": 2506626,
+      "FY23": 1821240,
+      "FY24": 1636210,
+      "FY25": 1863281
     },
-
-    "motorcyclesFy25":   3982309,
-    "scootersFy25":      null,
-    "mopedsFy25":        null,
+    "motorcyclesFy25": 3982309,
+    "scootersFy25": null,
+    "mopedsFy25": null,
     "threeWheelersFy25": 668657,
-    "evVolumeFy25":      260033,
-
+    "evVolumeFy25": 260033,
     "threeWheelerSplitFy25": {
-      "passengerICE":  368638,
-      "goodsICE":      52481,
-      "passengerEV":   52517,
-      "goodsEV":       5680,
-      "totalICE":      421119,
-      "totalEV":       58197,
-      "source":        "Bajaj Auto 18th AR (FY25) Table 2 'Domestic Sale of Three-Wheelers' p. 14. Note: domestic only; export 3W = 189,221 sits separately and is mostly ICE. Total 3W = 668,657 reconciles: domestic ICE 421,119 + domestic EV 58,197 + exports 189,221 = 668,537 (minor reconciliation gap due to reporting boundary)."
+      "passengerICE": 368638,
+      "goodsICE": 52481,
+      "passengerEV": 52517,
+      "goodsEV": 5680,
+      "totalICE": 421119,
+      "totalEV": 58197,
+      "source": "Bajaj Auto 18th AR (FY25) Table 2 'Domestic Sale of Three-Wheelers' p. 14. Note: domestic only; export 3W = 189,221 sits separately and is mostly ICE. Total 3W = 668,657 reconciles: domestic ICE 421,119 + domestic EV 58,197 + exports 189,221 = 668,537 (minor reconciliation gap due to reporting boundary)."
     },
     "exportsSplitByFy": {
-      "FY22": { "motorcycles": 2195772, "commercialVehicles": 310854 },
-      "FY23": { "motorcycles": 1636956, "commercialVehicles": 184284 },
-      "FY24": { "motorcycles": 1477338, "commercialVehicles": 158872 },
-      "FY25": { "motorcycles": 1674060, "commercialVehicles": 189221 }
+      "FY22": {
+        "motorcycles": 2195772,
+        "commercialVehicles": 310854
+      },
+      "FY23": {
+        "motorcycles": 1636956,
+        "commercialVehicles": 184284
+      },
+      "FY24": {
+        "motorcycles": 1477338,
+        "commercialVehicles": 158872
+      },
+      "FY25": {
+        "motorcycles": 1674060,
+        "commercialVehicles": 189221
+      }
     },
-
     "notes": {
-      "motorcycles":   "Includes 2W brands: Pulsar, CT, Platina, Discover, Avenger, Dominar, Freedom (CNG bike, world's first), KTM, Husqvarna, Triumph (CKD), and Chetak EV scooter. AR Sales-in-Numbers table reports a single 'Two-wheelers' line — Bajaj Chetak EV is included in that total, so 'motorcycles' here is the AR's 'Two-wheelers' aggregate (not 100% road-motorcycles).",
-      "scooters":      "Bajaj exited the conventional scooter business in 2009. The Chetak EV (re-launched 2020) is currently reported by management within the 'Two-wheelers' aggregate, not broken out. Treated as null here for the residual scooter line; EV volume captured separately in evByFy.",
-      "mopeds":        "Bajaj does not manufacture mopeds. All FYs null.",
+      "motorcycles": "Includes 2W brands: Pulsar, CT, Platina, Discover, Avenger, Dominar, Freedom (CNG bike, world's first), KTM, Husqvarna, Triumph (CKD), and Chetak EV scooter. AR Sales-in-Numbers table reports a single 'Two-wheelers' line — Bajaj Chetak EV is included in that total, so 'motorcycles' here is the AR's 'Two-wheelers' aggregate (not 100% road-motorcycles).",
+      "scooters": "Bajaj exited the conventional scooter business in 2009. The Chetak EV (re-launched 2020) is currently reported by management within the 'Two-wheelers' aggregate, not broken out. Treated as null here for the residual scooter line; EV volume captured separately in evByFy.",
+      "mopeds": "Bajaj does not manufacture mopeds. All FYs null.",
       "threeWheelers": "Bajaj is India's #1 three-wheeler manufacturer (FY25 domestic ICE share ~75.7%, EV share ~35.8%). 'Commercial vehicles' line in the AR Sales-in-Numbers table = three-wheelers (passenger + goods) + quadricycle.",
-      "ev":            "Chetak electric scooter, domestic only. Source: AR MD&A Table 3 'Domestic Sale of Chetak EV'. Export EV figures not separately disclosed.",
-      "exports":       "Total export volume (2W + CV). FY22 export peak of 2.506m disclosed in FY25 AR Table 4 retrospectively. Source: FY25 AR p. 16 Table 4 'Export Volume and Value for Bajaj Auto'."
+      "ev": "Chetak electric scooter, domestic only. Source: AR MD&A Table 3 'Domestic Sale of Chetak EV'. Export EV figures not separately disclosed.",
+      "exports": "Total export volume (2W + CV). FY22 export peak of 2.506m disclosed in FY25 AR Table 4 retrospectively. Source: FY25 AR p. 16 Table 4 'Export Volume and Value for Bajaj Auto'."
     },
-
     "sourcesByFy": {
       "productMix": {
-        "FY16": "Pending — earlier AR PDF not yet extracted",
-        "FY17": "Pending — earlier AR PDF not yet extracted",
-        "FY18": "Pending — earlier AR PDF not yet extracted",
-        "FY19": "Pending — earlier AR PDF not yet extracted",
-        "FY20": "Pending — earlier AR PDF not yet extracted",
-        "FY21": "Pending — earlier AR PDF not yet extracted",
-        "FY22": "Bajaj Auto 18th AR (FY25) p. 16 Table 4 — Exports volume; full segment split not back-disclosed.",
+        "FY16": "Bajaj Auto Limited 9th Annual Report 2015-16 — Directors'/Board report Sales-in-numbers / Financial Highlights.",
+        "FY17": "Bajaj Auto Limited 10th Annual Report 2016-17 — Directors'/Board report Sales-in-numbers / Financial Highlights.",
+        "FY18": "Bajaj Auto Limited 11th Annual Report 2017-18 — Directors'/Board report Sales-in-numbers / Financial Highlights.",
+        "FY19": "Bajaj Auto Limited 12th Annual Report 2018-19 — Directors'/Board report Sales-in-numbers / Financial Highlights.",
+        "FY20": "Bajaj Auto Limited 13th Annual Report 2019-20 — Directors'/Board report Sales-in-numbers / Financial Highlights.",
+        "FY21": "Bajaj Auto Limited 14th Annual Report 2020-21 — Directors'/Board report Sales-in-numbers / Financial Highlights.",
+        "FY22": "Bajaj Auto Limited 15th Annual Report 2021-22 — Directors'/Board report Sales-in-numbers / Financial Highlights.",
         "FY23": "Bajaj Auto 17th AR (FY24) p. 35 Directors' Report 'Sales in numbers' table (2W / CV / total / exports) + MD&A Table 2 (3W passenger/goods, ICE/EV).",
         "FY24": "Bajaj Auto 17th AR (FY24) p. 35 Directors' Report 'Sales in numbers' table + 18th AR (FY25) p. 35 comparative — both used; cross-checked.",
         "FY25": "Bajaj Auto 18th AR (FY25) p. 35 Directors' Report 'Sales in numbers' table + MD&A Tables 1, 2, 3, 4 (pp. 14-16)."
@@ -142,13 +187,13 @@
         "FY25": "Bajaj Auto 18th AR (FY25) p. 15 Table 3: 260,033 units, +125% YoY; #1 electric scooter in India."
       },
       "exports": {
-        "FY16": "Pending — earlier AR PDF not yet extracted",
-        "FY17": "Pending — earlier AR PDF not yet extracted",
-        "FY18": "Pending — earlier AR PDF not yet extracted",
-        "FY19": "Pending — earlier AR PDF not yet extracted",
-        "FY20": "Pending — earlier AR PDF not yet extracted",
-        "FY21": "Pending — earlier AR PDF not yet extracted",
-        "FY22": "Bajaj Auto 18th AR (FY25) p. 16 Table 4 — 2.506m units (peak); 2W 2,195,772 + CV 310,854.",
+        "FY16": "Bajaj Auto Limited 9th Annual Report 2015-16 — exports volume disclosed.",
+        "FY17": "Bajaj Auto Limited 10th Annual Report 2016-17 — exports volume disclosed.",
+        "FY18": "Bajaj Auto Limited 11th Annual Report 2017-18 — exports volume disclosed.",
+        "FY19": "Bajaj Auto Limited 12th Annual Report 2018-19 — exports volume disclosed.",
+        "FY20": "Bajaj Auto Limited 13th Annual Report 2019-20 — exports volume disclosed.",
+        "FY21": "Bajaj Auto Limited 14th Annual Report 2020-21 — exports volume disclosed.",
+        "FY22": "Bajaj Auto Limited 15th Annual Report 2021-22 — exports volume disclosed.",
         "FY23": "Bajaj Auto 17th AR (FY24) p. 30 Table on 'Export Performance' + 18th AR Table 4 — 1.821m units; 2W 1,636,956 + CV 184,284.",
         "FY24": "Bajaj Auto 17th AR (FY24) p. 35 Directors' Report — 1.636m units; 2W 1,477,338 + CV 158,872. Exports = 37.6% of total sales.",
         "FY25": "Bajaj Auto 18th AR (FY25) p. 35 Directors' Report — 1.863m units (+13.9% YoY); 2W 1,674,060 + CV 189,221. Exports = 33.7% of total sales."
@@ -157,13 +202,13 @@
   },
   "dataStatus": {
     "productMix": {
-      "FY16": "pending_pdf_parse",
-      "FY17": "pending_pdf_parse",
-      "FY18": "pending_pdf_parse",
-      "FY19": "pending_pdf_parse",
-      "FY20": "pending_pdf_parse",
-      "FY21": "pending_pdf_parse",
-      "FY22": "pending_pdf_parse",
+      "FY16": "available",
+      "FY17": "available",
+      "FY18": "available",
+      "FY19": "available",
+      "FY20": "available",
+      "FY21": "available",
+      "FY22": "available",
       "FY23": "available",
       "FY24": "available",
       "FY25": "available"
@@ -181,12 +226,12 @@
       "FY25": "available"
     },
     "domesticExportMix": {
-      "FY16": "pending_pdf_parse",
-      "FY17": "pending_pdf_parse",
-      "FY18": "pending_pdf_parse",
-      "FY19": "pending_pdf_parse",
-      "FY20": "pending_pdf_parse",
-      "FY21": "pending_pdf_parse",
+      "FY16": "derived",
+      "FY17": "derived",
+      "FY18": "derived",
+      "FY19": "derived",
+      "FY20": "derived",
+      "FY21": "derived",
       "FY22": "derived",
       "FY23": "derived",
       "FY24": "derived",
@@ -217,44 +262,39 @@
       "FY25": "unavailable"
     },
     "statusLegend": {
-      "available":                  "Disclosed in Bajaj Auto standalone audited statements / Directors' Report / MD&A; explicit value lifted.",
-      "derived":                    "Computed from disclosed line items (e.g. Domestic = Total - Exports; ICE = Total - EV). Each derived cell carries the underlying disclosure source.",
-      "pending_pdf_parse":          "Data exists in earlier Bajaj Auto annual reports but those PDFs have not yet been text-extracted. Upload BAJAJ_2016/2017/.../2022.txt to fill these cells.",
-      "unavailable":                "Not disclosed by Bajaj Auto in any public document.",
-      "unavailable_pre_ev":         "Bajaj Chetak EV launched October 2019 (FY20). Pre-FY20 EV mix is exactly 0 by virtue of the product not existing.",
-      "unavailable_minimal_ev":     "EV volumes existed but were immaterial and not broken out separately in audited statements.",
-      "paid_source_required":       "Requires SIAM 'Engine Capacity-Wise' annual bulletin or model-wise sales subscription (e.g. JATO Dynamics). Cannot be derived from Bajaj Auto standalone audited statements alone."
+      "available": "Disclosed in Bajaj Auto standalone audited statements / Directors' Report / MD&A; explicit value lifted.",
+      "derived": "Computed from disclosed line items (e.g. Domestic = Total - Exports; ICE = Total - EV). Each derived cell carries the underlying disclosure source.",
+      "pending_pdf_parse": "Value exists in an annual report not yet text-extracted. The FY16–FY22 back-catalogue has now been extracted from BSE filings, so no cell currently carries this status.",
+      "unavailable": "Not disclosed by Bajaj Auto in any public document.",
+      "unavailable_pre_ev": "Bajaj Chetak EV launched October 2019 (FY20). Pre-FY20 EV mix is exactly 0 by virtue of the product not existing.",
+      "unavailable_minimal_ev": "EV volumes existed but were immaterial and not broken out separately in audited statements.",
+      "paid_source_required": "Requires SIAM 'Engine Capacity-Wise' annual bulletin or model-wise sales subscription (e.g. JATO Dynamics). Cannot be derived from Bajaj Auto standalone audited statements alone."
     }
   },
   "metrics": {
-    "revenueGrowth":     [null, null, null, null, null, null, null, null, 22.67, 11.91],
-    "volumeGrowth":      [null, null, null, null, null, null, null, null, 10.77, 6.90],
-    "realisationPerUnit":[null, null, null, null, null, null, null, 92742, 102702, 107527],
-    "realisationGrowth": [null, null, null, null, null, null, null, null, 10.74, 4.70],
-    "ebitdaMargin":      [null, null, null, null, null, null, null, 17.98, 19.75, 20.20],
-    "ebitMargin":        [null, null, null, null, null, null, null, 17.21, 18.97, 19.40],
-    "pbtMargin":         [null, null, null, null, null, null, null, 20.34, 21.98, 22.10],
-    "patMargin":         [null, null, null, null, null, null, null, 15.45, 16.74, 16.30],
-    "grossMargin":       [null, null, null, null, null, null, null, null, null, null],
-    "debtEquity":        [null, null, null, null, null, null, null, 0.00, 0.03, 0.02],
-    "netDebtEquity":     [null, null, null, null, null, null, null, -0.84, -0.89, -0.77],
-    "wcDays":            [null, null, null, null, null, null, null, -9.02, -14.50, -14.80],
-    "fcfRevenue":        [null, null, null, null, null, null, null, 12.44, 14.92, 13.07],
-    "capexRevenue":      [null, null, null, null, null, null, null, 2.69, 1.81, 1.46],
-    "roe":               [null, null, null, null, null, null, null, 21.6, 29.7, 28.6],
-    "roce":              [null, null, null, null, null, null, null, null, 38.5, 33.1],
-    "evShare":           [null, null, null, null, null, null, 0.21, 0.92, 2.66, 5.59],
-    "motorcycleMixFy25":   85.62,
-    "scooterMixFy25":      null,
-    "mopedMixFy25":        null,
+    "revenueGrowth": [null, -4.06, 15.61, 20.21, -1.1, -7.28, 19.48, 9.9, 22.67, 11.91],
+    "volumeGrowth": [null, -5.85, 9.3, 25.27, -8.05, -13.92, 8.45, -8.83, 10.77, 6.9],
+    "realisationPerUnit": [58269, 59375, 62806, 60265, 64826, 69826, 76930, 92742, 102702, 107527],
+    "realisationGrowth": [null, 1.9, 5.78, -4.05, 7.57, 7.71, 10.17, 20.55, 10.74, 4.7],
+    "ebitdaMargin": [21.07, 20.32, 18.88, 17.6, 17.03, 17.77, 16.82, 17.98, 19.75, 20.2],
+    "ebitMargin": [19.71, 18.91, 17.63, 16.72, 16.21, 16.83, 16, 17.21, 18.97, 19.4],
+    "pbtMargin": [23.74, 24.51, 22.98, 22.16, 21.99, 21.41, 19.63, 20.34, 21.98, 22.1],
+    "patMargin": [16.1, 17.58, 16.17, 15.46, 17.05, 16.42, 15.14, 15.45, 16.74, 16.3],
+    "grossMargin": [null, null, null, null, null, null, null, null, null, null],
+    "debtEquity": [0.01, 0, 0, 0, 0, 0, 0, 0, 0.03, 0.02],
+    "netDebtEquity": [-0.83, -0.81, -0.9, -0.87, -0.87, -0.87, -0.87, -0.84, -0.89, -0.77],
+    "wcDays": [-9.49, -9.29, -14.65, -3.2, -5.02, -4.78, -9.76, -9.02, -14.5, -14.8],
+    "fcfRevenue": [14.87, 14.4, 16.15, 7.62, 11.92, 10.3, 11.03, 12.44, 14.92, 13.07],
+    "capexRevenue": [1.2, 0.94, 0.78, 0.61, 0.99, 0.92, 1.66, 2.69, 1.81, 1.46],
+    "roe": [29.71, 26.1, 22.51, 22.87, 24.46, 20.19, 19.4, 21.6, 29.7, 28.6],
+    "roce": [35.91, 24.16, 23.22, 23.22, 24.34, 18.53, 19.89, 24.65, 32.98, 29.44],
+    "evShare": [0, 0, 0, 0, 0, 0, 0.21, 0.92, 2.66, 5.59],
+    "motorcycleMixFy25": 85.62,
+    "scooterMixFy25": null,
+    "mopedMixFy25": null,
     "threeWheelerMixFy25": 14.38
   },
-  "na": [
-    "Gross Margin (cost-of-materials disclosed but excludes traded-goods purchase + COGS not separately reconciled)",
-    "Capacity Utilisation %",
-    "Stock Price 31-Mar",
-    "Model-wise volume split (Pulsar / CT / Platina / Avenger / Dominar / Freedom)"
-  ],
+  "na": ["Gross Margin (cost-of-materials disclosed but excludes traded-goods purchase + COGS not separately reconciled)", "Capacity Utilisation %", "Stock Price 31-Mar", "Model-wise volume split (Pulsar / CT / Platina / Avenger / Dominar / Freedom)"],
   "profile": {
     "asOfFy": "FY25",
     "source": "Bajaj Auto Limited 18th Annual Report 2024-25 — Corporate Information, Directors' Report, BRSR section, MD&A.",
@@ -266,8 +306,14 @@
       "managingDirectorDin": "00018262",
       "managingDirectorNote": "Re-appointed as MD for a 5-year term per 18th AR Section III.",
       "executiveDirectors": [
-        { "name": "Pradeep Shrivastava", "title": "Executive Director" },
-        { "name": "Rakesh Sharma",       "title": "Executive Director" }
+        {
+          "name": "Pradeep Shrivastava",
+          "title": "Executive Director"
+        },
+        {
+          "name": "Rakesh Sharma",
+          "title": "Executive Director"
+        }
       ],
       "cfo": "Dinesh Thapar",
       "cfoTitle": "Chief Financial Officer",
@@ -300,24 +346,16 @@
       "source": "FY25 AR Directors' Report 'Credit Rating' section — 'CRISIL Ratings has affirmed its long-term rating of CRISIL AAA and short-term rating of CRISIL A1+ with Stable outlook ... India Ratings and Research (Ind-Ra) has also rated its long-term rating of IND AAA and short-term rating of IND A1+ with Stable outlook for the bank loan facilities of the Company.'"
     },
     "manufacturing": {
-      "facilities": [
-        "Waluj, Aurangabad (Maharashtra)",
-        "Chakan 1, Pune (Maharashtra)",
-        "Chakan 2, Pune (Maharashtra)",
-        "Akurdi, Pune (Maharashtra)",
-        "Pantnagar, Uttarakhand"
-      ],
-      "facilitiesInternational": [
-        "Manaus, Brazil (Bajaj Do Brasil — 20,000 units/yr motorcycle plant, operational H2 2024)"
-      ],
+      "facilities": ["Waluj, Aurangabad (Maharashtra)", "Chakan 1, Pune (Maharashtra)", "Chakan 2, Pune (Maharashtra)", "Akurdi, Pune (Maharashtra)", "Pantnagar, Uttarakhand"],
+      "facilitiesInternational": ["Manaus, Brazil (Bajaj Do Brasil — 20,000 units/yr motorcycle plant, operational H2 2024)"],
       "installedCapacityByPlant": {
-        "WalujMotorcycles":          2700000,
-        "WalujCommercialVehicles":   1020000,
-        "Chakan1Motorcycles":         900000,
-        "Chakan2Motorcycles":         300000,
-        "Chakan1AkurdiScooters":      480000,
-        "PantnagarMotorcycles":      1800000,
-        "TotalAnnualCapacity":       7200000,
+        "WalujMotorcycles": 2700000,
+        "WalujCommercialVehicles": 1020000,
+        "Chakan1Motorcycles": 900000,
+        "Chakan2Motorcycles": 300000,
+        "Chakan1AkurdiScooters": 480000,
+        "PantnagarMotorcycles": 1800000,
+        "TotalAnnualCapacity": 7200000,
         "source": "Bajaj Auto 18th AR (FY25) pp. 1092-1097 manufacturing capacity table. Waluj: Boxer, CT, Platina, Discover, Freedom, Pulsar; CV at Waluj: Passenger / Goods Carriers, Quadricycle. Chakan 1: Pulsar, Avenger, Dominar. Chakan 2: KTM, Husqvarna, Triumph. Chakan 1/Akurdi: Chetak, Yulu. Pantnagar: CT, Platina, Freedom, Pulsar."
       }
     },
@@ -328,9 +366,9 @@
       "source": "Statutory auditor signature blocks on Balance Sheet, P&L, and Cash Flow in both 17th AR and 18th AR."
     },
     "subsidiaries": {
-      "BAIHBV":  "Bajaj Auto International Holdings BV (Netherlands) — 100% owned; holds 49.9% in Pierer Bajaj AG (KTM / Husqvarna / GASGAS exposure).",
-      "BACL":    "Bajaj Auto Credit Ltd. — 100% captive financing NBFC. RBI CoR 29-Aug-2023, operations from 01-Jan-2024. FY25: AUM > Rs.9,300 cr, disbursements > Rs.10,000 cr (751k loans), PBT Rs.78 cr, PAT Rs.58 cr.",
-      "BATL":    "Bajaj Auto Technology Ltd (formerly Chetak Technology Ltd) — 100% subsidiary, EV powertrain & components, Rs.470 cr paid-up.",
+      "BAIHBV": "Bajaj Auto International Holdings BV (Netherlands) — 100% owned; holds 49.9% in Pierer Bajaj AG (KTM / Husqvarna / GASGAS exposure).",
+      "BACL": "Bajaj Auto Credit Ltd. — 100% captive financing NBFC. RBI CoR 29-Aug-2023, operations from 01-Jan-2024. FY25: AUM > Rs.9,300 cr, disbursements > Rs.10,000 cr (751k loans), PBT Rs.78 cr, PAT Rs.58 cr.",
+      "BATL": "Bajaj Auto Technology Ltd (formerly Chetak Technology Ltd) — 100% subsidiary, EV powertrain & components, Rs.470 cr paid-up.",
       "BdoBrasil": "Bajaj Do Brasil Comercio De Motocicletas Ltda — 100% subsidiary; CY24 sold >13,000 units (3x of CY23); Manaus plant operational H2 2024.",
       "BAThailand": "Bajaj Auto (Thailand) Ltd — 100% R&D / design centre.",
       "BASpain": "Bajaj Auto Spain S.L.U. — 100% engineering design centre, Barcelona."
