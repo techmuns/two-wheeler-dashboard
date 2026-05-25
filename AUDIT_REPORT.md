@@ -1,6 +1,6 @@
 # Two-Wheeler Dashboard — Data Audit
 
-_Generated 2026-05-25T07:32:24.239Z by `scripts/audit-data.mjs`._
+_Generated 2026-05-25T07:54:16.688Z by `scripts/audit-data.mjs`._
 
 This audit reads every per-OEM JSON, computes coverage, runs accounting cross-checks (e.g. EBITDA margin = EBITDA / Revenue, FCF = CFO − Capex, Net debt = Total debt − Cash) and flags discrepancies > tolerance.
 
@@ -9,8 +9,8 @@ This audit reads every per-OEM JSON, computes coverage, runs accounting cross-ch
 | OEM | Basis | fyAxis | P&L cells | BS cells | CF cells | Ops cells | Metrics cells | Verification |
 |---|---|---|---|---|---|---|---|---|
 | **tvs** | Standalone | 10 FYs | 80/80 | 90/90 | 50/50 | 64/70 | 165/170 | audited (curated AR text) |
-| **bajaj** | Standalone | 10 FYs | 80/80 | 90/90 | 50/50 | 44/80 | 157/170 | audited (curated AR text) |
-| **hero** | Standalone | 10 FYs | 80/80 | 90/90 | 50/50 | 17/70 | 155/170 | audited (curated AR text) |
+| **bajaj** | Standalone | 10 FYs | 80/80 | 90/90 | 50/50 | 64/80 | 157/170 | audited (curated AR text) |
+| **hero** | Standalone | 10 FYs | 80/80 | 90/90 | 50/50 | 21/70 | 155/170 | audited (curated AR text) |
 | **eicher** | Consolidated | 10 FYs | 72/80 | 36/40 | 36/50 | 0/10 | 62/80 | audited (Screener sidecar) |
 | **ola** | Consolidated | 10 FYs | 40/80 | 20/40 | 20/50 | 0/10 | 30/80 | audited (Screener sidecar) |
 
@@ -31,8 +31,8 @@ Legend: 🟢 full · 🟡 partial · ⚪ none · · no block
 | OEM | FY16 | FY17 | FY18 | FY19 | FY20 | FY21 | FY22 | FY23 | FY24 | FY25 |
 |---|---|---|---|---|---|---|---|---|---|---|
 | tvs | 🟡5/6 | 🟡5/6 | 🟡5/6 | 🟡5/6 | 🟡5/6 | 🟡5/6 | 🟢 | 🟢 | 🟢 | 🟢 |
-| bajaj | 🟡3/4 | 🟡3/4 | 🟡3/4 | 🟡3/4 | 🟡3/4 | 🟡3/4 | 🟢 | 🟢 | 🟢 | 🟢 |
-| hero | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | 🟡3/4 | 🟢 |
+| bajaj | 🟡5/6 | 🟡5/6 | 🟡5/6 | 🟡5/6 | 🟡5/6 | 🟡5/6 | 🟢 | 🟢 | 🟢 | 🟢 |
+| hero | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | 🟡5/6 | 🟢 |
 | eicher | · | · | · | · | · | · | · | · | · | · |
 | ola | · | · | · | · | · | · | · | · | · | · |
 

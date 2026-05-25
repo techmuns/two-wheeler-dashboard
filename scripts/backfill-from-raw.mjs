@@ -35,8 +35,15 @@ const CFG = {
   // preEvZeroThrough: last FY index whose EV mix is factually ~0 (product did
   // not exist / was immaterial and undisclosed). Bajaj Chetak relaunched Jan-2020
   // but EV mix only became material (and disclosed) from FY22, so FY16–FY21 ≈ 0.
-  bajaj: { twoWheelerKey: 'motorcyclesByFy', has3W: true,  hasScooters: false, preEvZeroThrough: 5 },
-  hero:  { twoWheelerKey: 'motorcyclesByFy', has3W: false, hasScooters: true,  preEvZeroThrough: -1 },
+  // zeroSegments: per-FY volume buckets the OEM factually does not produce, set
+  // to 0 (not null) so the product-mix stack can render the segments it DOES
+  // disclose. Bajaj makes no conventional ICE scooters (only the electric
+  // Chetak, counted under EV) and no mopeds; Hero makes no mopeds or 3-wheelers.
+  // zeroMixFy25: matching FY25 mix-% metric keys set to 0.
+  bajaj: { twoWheelerKey: 'motorcyclesByFy', has3W: true,  hasScooters: false, preEvZeroThrough: 5,
+           zeroSegments: ['scootersByFy', 'mopedsByFy'], zeroMixFy25: ['scooterMixFy25', 'mopedMixFy25'] },
+  hero:  { twoWheelerKey: 'motorcyclesByFy', has3W: false, hasScooters: true,  preEvZeroThrough: -1,
+           zeroSegments: ['mopedsByFy', 'threeWheelersByFy'], zeroMixFy25: [] },
 }[slug]
 
 const n = (v) => (typeof v === 'number' && Number.isFinite(v)) ? v : null
@@ -224,6 +231,22 @@ for (let i = 0; i < FY.length; i++) {
 // materially-disclosed EV year.
 for (let i = 0; i <= CFG.preEvZeroThrough; i++) {
   if (m.evShare[i] == null) m.evShare[i] = 0
+}
+
+// Zero out factually non-produced segments so the product-mix stack renders
+// the disclosed segments instead of going blank — but ONLY for FYs where the
+// primary produced segment is actually disclosed. Otherwise the segment sum
+// (0) would no longer reconcile to the disclosed total volume. (Bajaj discloses
+// 2W+3W every year; Hero discloses the motorcycle/scooter split only FY24–FY25.)
+const primary = co.ops.motorcyclesByFy || {}
+for (const segKey of CFG.zeroSegments) {
+  const obj = co.ops[segKey]
+  if (obj && typeof obj === 'object' && !Array.isArray(obj)) {
+    for (const fy of FY) if (n(primary[fy]) !== null) obj[fy] = 0
+  }
+}
+for (const mixKey of CFG.zeroMixFy25) {
+  if (mixKey in m) m[mixKey] = 0
 }
 
 // ---- Provenance / status updates ----
