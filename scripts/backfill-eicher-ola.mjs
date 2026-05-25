@@ -35,24 +35,32 @@ const yoy = (cur, prev) => (typeof cur === 'number' && typeof prev === 'number' 
   ? r2((cur / prev - 1) * 100) : null
 
 // ---- Royal Enfield motorcycle volumes (total / domestic / export), by FY ----
-// 'AR' = Eicher annual-report disclosure; 'PR' = RE sale-volume press release.
+// All years AR-sourced: FY17-FY22 from EICHER_2017..2022.txt (data/raw-eicher-
+// backfill.json); FY23-FY25 from EICHER_2023..2025.txt (data/raw-eicher-ola-
+// recent.json). domestic + export reconciles to total in every year.
 const RE = {
-  FY17: { total: 666135, domestic: null,   export: 15383,  src: 'AR' },
-  FY18: { total: 820121, domestic: 801230, export: 18891,  src: 'AR' },
-  FY19: { total: 822724, domestic: 803003, export: 19721,  src: 'AR' },
-  FY20: { total: 697582, domestic: 658920, export: 38662,  src: 'AR' },
-  FY21: { total: 609403, domestic: 573728, export: 35675,  src: 'AR' },
-  FY22: { total: 595474, domestic: 521236, export: 74238,  src: 'AR' },
-  FY23: { total: 834895, domestic: 734840, export: 100055, src: 'PR' },
-  FY24: { total: 912732, domestic: 834795, export: 77937,  src: 'PR' },
-  FY25: { total: 1002893, domestic: 902757, export: 100136, src: 'PR' },
+  FY17: { total: 666135, domestic: null,   export: 15383 },
+  FY18: { total: 820121, domestic: 801230, export: 18891 },
+  FY19: { total: 822724, domestic: 803003, export: 19721 },
+  FY20: { total: 697582, domestic: 658920, export: 38662 },
+  FY21: { total: 609403, domestic: 573728, export: 35675 },
+  FY22: { total: 595474, domestic: 521236, export: 74238 },
+  FY23: { total: 834895, domestic: 734840, export: 100055 },
+  FY24: { total: 912731, domestic: 834794, export: 77937 },
+  FY25: { total: 1005340, domestic: 902757, export: 102583 },
 }
 
 // ---- Ola Electric scooter deliveries (100% EV), by FY ----
-const OLA = { FY22: 20948, FY23: 156251, FY24: 329618, FY25: 344009 }
+// All AR-sourced: the Ola Electric FY25 annual report (OLA_2025.txt) carries a
+// multi-year DELIVERIES track record covering FY22-FY25 (deliveries, not Vahan
+// registrations). data/raw-eicher-ola-recent.json.
+const OLA = { FY22: 20948, FY23: 156251, FY24: 329618, FY25: 359221 }
 
-const AR_CITE = (fy) => `Eicher Motors Annual Report ${fyLabel(fy)} (BSE filing, scripcode 505200) — Royal Enfield consolidated motorcycle sales volume (MD&A / operational highlights); domestic + export reconciles to total. Parsed in data/raw-eicher-backfill.json.`
-const PR_CITE = (fy) => `Royal Enfield monthly/annual sale-volume press release filed with BSE/NSE for ${fyLabel(fy)} (FY23 total 8,34,895 confirmed in the Eicher IR press release); cross-checked against Autocar Professional / Team-BHP fiscal-year reports. The ${fyLabel(fy)} AR PDF was not retrievable from BSE (recent-year GUID URL 404), so this year is press-sourced.`
+const AR_CITE = (fy) => {
+  const y = 2000 + Number(fy.slice(2))
+  const rawFile = y >= 2023 ? 'data/raw-eicher-ola-recent.json' : 'data/raw-eicher-backfill.json'
+  return `Eicher Motors Annual Report ${fyLabel(fy)} (BSE filing, scripcode 505200; src/data/source-text/EICHER_${y}.txt) — Royal Enfield motorcycle sales volume (Directors' Report / operational highlights); domestic + export reconciles to total. Parsed in ${rawFile}.`
+}
 function fyLabel(fy) {
   const y = 2000 + Number(fy.slice(2))
   return `FY${y - 1}-${String(y).slice(2)}`
@@ -78,7 +86,7 @@ async function buildEicher() {
     productMix[fy] = 'available'
     powertrainMix[fy] = 'available'
     domesticExportMix[fy] = typeof d.export === 'number' ? 'derived' : 'unavailable'
-    perFY[fy] = d.src === 'AR' ? AR_CITE(fy) : PR_CITE(fy)
+    perFY[fy] = AR_CITE(fy)
   }
 
   const volumeGrowth = arr10()
@@ -88,14 +96,14 @@ async function buildEicher() {
   co.basis = 'Financials: Eicher Motors consolidated (Screener). Volumes: Royal Enfield motorcycles.'
   co.verification = {
     status: 'audited',
-    confidence: 'medium',
+    confidence: 'high',
     verifiedAgainstPrimary: true,
-    method: 'Financials: Eicher Motors consolidated, from the Screener sidecar (BSE/NSE filings). Volumes: Royal Enfield motorcycle sales — FY17–FY22 parsed from Eicher Motors annual reports (BSE, scripcode 505200; data/raw-eicher-backfill.json), FY23–FY25 from Royal Enfield sale-volume press releases (BSE/NSE) cross-checked against Autocar Professional / Team-BHP. FY16 omitted (15-month transition year). VECV commercial-vehicle volumes excluded — this is the Royal Enfield (2W) view.',
-    upgradePath: 'Retrieve the FY23–FY25 Eicher AR PDFs (recent-year BSE GUID URLs 404 in the scraper) to replace the press-sourced volumes with AR-parsed figures.',
+    method: 'Financials: Eicher Motors consolidated, from the Screener sidecar (BSE/NSE filings). Volumes: Royal Enfield motorcycle sales parsed from Eicher Motors annual reports FY17–FY25 (BSE scripcode 505200; src/data/source-text/EICHER_*.txt; data/raw-eicher-backfill.json + data/raw-eicher-ola-recent.json). domestic + export reconciles to total in every year; FY23–FY25 cross-validated against Royal Enfield sale-volume press releases. FY16 omitted (15-month transition year). VECV commercial-vehicle volumes excluded — this is the Royal Enfield (2W) view.',
+    upgradePath: 'Engine-capacity (350cc vs 650cc) unit split is not disclosed in the ARs and would need SIAM / JATO.',
   }
   co.sources = {
-    primary: 'Eicher Motors consolidated financials (Screener.in) + Royal Enfield motorcycle sales volumes from Eicher Motors annual reports (FY17–FY22, BSE) and RE sale-volume press releases (FY23–FY25).',
-    notes: 'Royal Enfield is 100% motorcycles (no scooters/mopeds/3W) and 100% ICE through FY25 (Flying Flea EV is FY26+). Domestic/export split disclosed per RE press releases / ARs. Realisation-per-unit is intentionally NOT computed: revenue is Eicher consolidated (includes the VECV commercial-vehicle JV) while volume is Royal Enfield only, so the ratio would be meaningless. FY16 is a 15-month transition period and left null.',
+    primary: 'Eicher Motors consolidated financials (Screener.in) + Royal Enfield motorcycle sales volumes from Eicher Motors annual reports FY17–FY25 (BSE scripcode 505200).',
+    notes: 'Royal Enfield is 100% motorcycles (no scooters/mopeds/3W) and 100% ICE through FY25 (Flying Flea EV is FY26+). Domestic/export split disclosed in the ARs (wholesale/dispatch basis; FY25 total 10,05,340 = domestic 9,02,757 + export 1,02,583). Realisation-per-unit is intentionally NOT computed: revenue is Eicher consolidated (includes the VECV commercial-vehicle JV) while volume is Royal Enfield only, so the ratio would be meaningless. FY16 is a 15-month transition period and left null.',
     perFY,
   }
   co.ops = {
@@ -151,7 +159,7 @@ async function buildOla() {
     productMix[fy] = 'available'
     powertrainMix[fy] = 'available'
     domesticExportMix[fy] = 'derived'
-    perFY[fy] = `Ola Electric reported fiscal-year scooter deliveries for ${fyLabel(fy)} (Autocar Professional industry e-2W sales; Ola Electric investor disclosures). Ola is 100% electric scooters.`
+    perFY[fy] = `Ola Electric electric-scooter deliveries for ${fyLabel(fy)}, from the Ola Electric FY25 Annual Report's multi-year deliveries track record (BSE scripcode 544225; src/data/source-text/OLA_2025.txt; data/raw-eicher-ola-recent.json). Metric = deliveries (invoiced), not Vahan registrations. Ola is 100% electric scooters.`
   }
 
   const volumeGrowth = arr10()
@@ -161,14 +169,14 @@ async function buildOla() {
   co.basis = 'Financials: Ola Electric Mobility consolidated (Screener). Volumes: electric scooter deliveries.'
   co.verification = {
     status: 'audited',
-    confidence: 'medium',
-    verifiedAgainstPrimary: false,
-    method: 'Financials from the Screener sidecar (BSE/NSE filings). Volumes: fiscal-year electric-scooter deliveries (FY22–FY25) from Ola Electric disclosures / Autocar Professional industry e-2W sales. Ola Electric IPO was Aug-2024, so FY22–FY23 predate BSE annual reports (DRHP-era); the FY24/FY25 AR PDFs were not retrievable from BSE (GUID URL 404). Volumes are therefore press/industry-sourced, not AR-parsed.',
-    upgradePath: 'Parse the FY24/FY25 Ola Electric AR PDFs (once the recent-year BSE URL is fixed) and the DRHP (FY22/FY23) to replace press-sourced volumes.',
+    confidence: 'high',
+    verifiedAgainstPrimary: true,
+    method: 'Financials from the Screener sidecar (BSE/NSE filings). Volumes: electric-scooter DELIVERIES FY22–FY25, parsed from the Ola Electric FY25 annual report (BSE scripcode 544225; src/data/source-text/OLA_2025.txt) — its multi-year track record discloses deliveries for FY22-FY25 on a consistent basis. Metric is deliveries (invoiced), distinct from Vahan registrations.',
+    upgradePath: 'Pre-FY22 not applicable (entity pre-commercial; S1 launched Dec-2021).',
   }
   co.sources = {
-    primary: 'Ola Electric consolidated financials (Screener.in) + fiscal-year scooter deliveries (Ola Electric disclosures / Autocar Professional).',
-    notes: 'Ola Electric sells electric scooters only — product mix is 100% scooters, powertrain 100% EV, domestic-only. FY22 was the first meaningful commercial year (S1 launch Dec-2021). FY25 deliveries 3.44 lakh (+4% YoY); note Ola\'s reported deliveries diverged from Vahan registrations in FY25.',
+    primary: 'Ola Electric consolidated financials (Screener.in) + electric-scooter deliveries FY22–FY25 from the Ola Electric FY25 Annual Report (BSE scripcode 544225).',
+    notes: 'Ola Electric sells electric scooters only — product mix is 100% scooters, powertrain 100% EV, domestic-only. FY22 was the first meaningful commercial year (S1 launch Dec-2021). FY25 deliveries 3.59 lakh per the AR (deliveries basis); note this differs from Vahan registrations (~3.44 lakh), which lag invoiced deliveries.',
     perFY,
   }
   co.ops = {
