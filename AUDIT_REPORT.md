@@ -1,6 +1,6 @@
 # Two-Wheeler Dashboard — Data Audit
 
-_Generated 2026-05-25T07:54:16.688Z by `scripts/audit-data.mjs`._
+_Generated 2026-05-25T08:19:31.015Z by `scripts/audit-data.mjs`._
 
 This audit reads every per-OEM JSON, computes coverage, runs accounting cross-checks (e.g. EBITDA margin = EBITDA / Revenue, FCF = CFO − Capex, Net debt = Total debt − Cash) and flags discrepancies > tolerance.
 
