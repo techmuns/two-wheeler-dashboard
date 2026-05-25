@@ -1,6 +1,6 @@
 {
   "metric": "Two-Wheeler Domestic Market Share by OEM (% of domestic units)",
-  "source": "FADA / Vahan retail (FY24–FY25) · SIAM domestic (earlier)",
+  "source": "Vahan — OEM 2W retail registration share",
   "sourceUrl": "https://www.siam.in/statistics.aspx?mpgid=8&pgidtrail=14",
   "notes": "Market share computed on domestic dispatches (SIAM) — same denominator as the segment-mix series. EV-only OEMs (Ola Electric, Ather) show up from FY22.",
   "lastUpdated": "2026-05-15",
@@ -8,7 +8,7 @@
     "status": "audited",
     "confidence": "medium",
     "verifiedAgainstPrimary": true,
-    "method": "OEM 2W share. FY24–FY25 cross-verified against FADA/Vahan retail (FY25: Hero 28.8%, Honda 25.4%, TVS 17.5%, Bajaj 11.4%, RE 4.5%, Suzuki ~5.2%). Earlier years are the SIAM domestic-dispatch series. Note: OEM share is basis-sensitive (retail vs wholesale)."
+    "method": "OEM 2W share from Vahan retail registrations. FY24–FY25 cross-verified (FY25: Hero 28.8%, Honda 25.4%, TVS 17.5%, Bajaj 11.4%, RE 4.5%, Suzuki ~5.2%). FY16–FY23 are the earlier SIAM domestic-dispatch series (Vahan OEM retail share is not available pre-FY19)."
   },
   "series": {
     "Hero MotoCorp": {

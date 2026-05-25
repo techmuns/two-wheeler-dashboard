@@ -300,7 +300,7 @@ export function buildIndustry(opts = {}) {
     productDrivers: drivers,
     supportingData: supporting,
     charts,
-    modelSource: 'Source: SIAM · Vahan · FADA',
+    modelSource: 'Source: SIAM · Vahan',
     sourceCitations: {
       'Total 2W volume / growth':  volumeGrowth.source,
       'Segment mix (M / S / Mo)':  segmentMix.source,
