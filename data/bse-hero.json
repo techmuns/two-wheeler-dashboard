@@ -1,10 +1,10 @@
 {
   "scrip": "500182",
   "slug": "hero",
-  "fetchedAt": "2026-05-22T10:52:16.882Z",
+  "fetchedAt": "2026-05-25T08:07:39.619Z",
   "window": {
-    "from": "20260221",
-    "to": "20260522",
+    "from": "20260224",
+    "to": "20260525",
     "days": 90
   },
   "pdfBase": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/",
@@ -14,10 +14,38 @@
   "categories": {
     "announcements": {
       "ok": true,
-      "url": "https://api.bseindia.com/BseIndiaAPI/api/AnnGetData/w?pageno=1&strCat=-1&strPrevDate=20260221&strScrip=500182&strSearch=P&strToDate=20260522&strType=C",
-      "count": 36,
+      "url": "https://api.bseindia.com/BseIndiaAPI/api/AnnGetData/w?pageno=1&strCat=-1&strPrevDate=20260224&strScrip=500182&strSearch=P&strToDate=20260525&strType=C",
+      "count": 37,
       "tag": "confirmed",
       "data": [
+        {
+          "NEWSID": "63659e4b-4259-4065-b349-02dc3f4fb14f",
+          "SCRIP_CD": 500182,
+          "XML_NAME": "ANN_500182_63659E4B-4259-4065-B349-02DC3F4FB14F",
+          "NEWSSUB": "Disclosure Under Regulation 30 Of The SEBI (Listing Obligations And Disclosure Requirements) Regulations, 2015-E-Mail To Shareholders Intimating About The Second 100 Days'' Campaign - \"Saksham Niveshak\"",
+          "DT_TM": "2026-05-22T17:55:24.753",
+          "NEWS_DT": "2026-05-22T17:55:24.753",
+          "CRITICALNEWS": 0,
+          "ANNOUNCEMENT_TYPE": "A",
+          "QUARTER_ID": null,
+          "FILESTATUS": "N    ",
+          "ATTACHMENTNAME": "0777ab6b-edb3-49b0-b211-2c2913dca4d2.pdf",
+          "MORE": "",
+          "HEADLINE": "Please find enclosed a specimen of the e-mail which has been sent to the shareholders today, viz. May 22, 2026, whose dividend have remained unpaid / unclaimed, intimating about the Second 100 Days'' Campaign, \"Saksham Niveshak\".",
+          "CATEGORYNAME": "Company Update",
+          "OLD": 1,
+          "RN": 1,
+          "PDFFLAG": 1,
+          "NSURL": "https://www.bseindia.com/stock-share-price/hero-motocorp-ltd/heromotoco/500182/",
+          "SLONGNAME": "Hero MotoCorp Ltd",
+          "AGENDA_ID": 1,
+          "TotalPageCnt": 1,
+          "News_submission_dt": "2026-05-22T17:55:24",
+          "DissemDT": "2026-05-22T17:55:24.753",
+          "TimeDiff": "00:00:00",
+          "Fld_Attachsize": 495116,
+          "_pdfUrl": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/0777ab6b-edb3-49b0-b211-2c2913dca4d2.pdf"
+        },
         {
           "NEWSID": "6a83413b-7eb1-46fa-9d3c-c02e1ad42c08",
           "SCRIP_CD": 500182,
@@ -1030,14 +1058,14 @@
     },
     "corpActions": {
       "ok": true,
-      "url": "https://api.bseindia.com/BseIndiaAPI/api/DefaultData/w?Fdate=20260221&TDate=20260522&Purposecode=&ddlcategorys=E&ddlindustrys=&scripcode=500182&segment=0&strSearch=S",
+      "url": "https://api.bseindia.com/BseIndiaAPI/api/DefaultData/w?Fdate=20260224&TDate=20260525&Purposecode=&ddlcategorys=E&ddlindustrys=&scripcode=500182&segment=0&strSearch=S",
       "count": 0,
       "tag": "confirmed",
       "data": []
     },
     "boardMeetings": {
       "ok": true,
-      "url": "https://api.bseindia.com/BseIndiaAPI/api/Corpforthresults/w?fromdate=20260221&todate=20260522&scripcode=500182",
+      "url": "https://api.bseindia.com/BseIndiaAPI/api/Corpforthresults/w?fromdate=20260224&todate=20260525&scripcode=500182",
       "count": 0,
       "tag": "confirmed",
       "data": []
