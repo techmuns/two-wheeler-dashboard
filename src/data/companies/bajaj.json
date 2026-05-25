@@ -292,7 +292,9 @@
     "motorcycleMixFy25": 85.62,
     "scooterMixFy25": 0,
     "mopedMixFy25": 0,
-    "threeWheelerMixFy25": 14.38
+    "threeWheelerMixFy25": 14.38,
+    "capacity": [6060000, 6060000, 6240000, 6330000, 6330000, 6330000, 6650000, null, 7110000, 7200000],
+    "capacityUtilisation": [64.3, 60.5, 64.2, 79.3, 72.9, 62.8, 64.8, null, 61.2, 64.6]
   },
   "na": ["Gross Margin (cost-of-materials disclosed but excludes traded-goods purchase + COGS not separately reconciled)", "Capacity Utilisation %", "Stock Price 31-Mar", "Model-wise volume split (Pulsar / CT / Platina / Avenger / Dominar / Freedom)"],
   "profile": {
