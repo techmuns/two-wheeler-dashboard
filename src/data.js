@@ -37,6 +37,7 @@ const tvs = {
     brandText: 'TVS',
     brandColor: '#0066B3',
     dotColor: '#0ea5e9',
+    marketShareKey: 'TVS',
   }),
   supportingGroups: buildSupportingGroups(tvsRaw, { shortName: 'TVS', publicName: 'TVS', marketShareKey: 'TVS' }),
 }
