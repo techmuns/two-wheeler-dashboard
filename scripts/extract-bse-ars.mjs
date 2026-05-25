@@ -54,27 +54,50 @@ async function fileExists(p) {
   }
 }
 
-async function downloadPdf(url, outPath) {
-  const delays = [0, 2000, 5000, 12000];
+// BSE serves annual-report PDFs from different paths depending on vintage:
+// older filings use a numeric name under /bseplus/AnnualReport/<scrip>/, while
+// recent filings carry a GUID name (often double ".pdf.pdf") that lives under
+// the corpfiling attachment store. Build every plausible URL and let the
+// downloader try each until one returns a real PDF.
+function arUrlCandidates(scrip, cleanFile) {
+  const base = 'https://www.bseindia.com';
+  const single = cleanFile.replace(/\.pdf\.pdf$/i, '.pdf');
+  return [...new Set([
+    `${base}/bseplus/AnnualReport/${scrip}/${cleanFile}`,
+    `${base}/bseplus/AnnualReport/${scrip}/${single}`,
+    `${base}/xml-data/corpfiling/AttachHis/${cleanFile}`,
+    `${base}/xml-data/corpfiling/AttachHis/${single}`,
+    `${base}/xml-data/corpfiling/AttachLive/${cleanFile}`,
+    `${base}/xml-data/corpfiling/AttachLive/${single}`,
+  ])];
+}
+
+// Try each candidate URL; light retry per URL for transient 403/429, but move
+// on to the next candidate on a 404 / wrong-content. Returns { bytes, url }.
+async function downloadPdf(urls, outPath) {
   let lastErr;
-  for (let i = 0; i < delays.length; i++) {
-    if (delays[i]) await sleep(delays[i]);
-    try {
-      const res = await fetch(url, { headers: HEADERS });
-      if (res.status === 403 || res.status === 429) {
-        lastErr = new Error(`HTTP ${res.status}`);
-        continue;
+  for (const url of urls) {
+    const delays = [0, 1500, 4000];
+    for (let i = 0; i < delays.length; i++) {
+      if (delays[i]) await sleep(delays[i]);
+      try {
+        const res = await fetch(url, { headers: HEADERS });
+        if (res.status === 403 || res.status === 429) {
+          lastErr = new Error(`${url} -> HTTP ${res.status}`);
+          continue; // transient — retry the same URL
+        }
+        if (!res.ok) {
+          lastErr = new Error(`${url} -> HTTP ${res.status}`);
+          break; // 404 etc. — try the next candidate
+        }
+        const buf = Buffer.from(await res.arrayBuffer());
+        if (buf.length < 1024) { lastErr = new Error(`${url} -> too small (${buf.length}b)`); break; }
+        if (buf.slice(0, 4).toString() !== '%PDF') { lastErr = new Error(`${url} -> not a PDF`); break; }
+        await writeFile(outPath, buf);
+        return { bytes: buf.length, url };
+      } catch (e) {
+        lastErr = e;
       }
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const buf = Buffer.from(await res.arrayBuffer());
-      if (buf.length < 1024) throw new Error(`response too small (${buf.length} bytes)`);
-      if (buf.slice(0, 4).toString() !== '%PDF') {
-        throw new Error(`not a PDF (header=${buf.slice(0, 8).toString('hex')})`);
-      }
-      await writeFile(outPath, buf);
-      return buf.length;
-    } catch (e) {
-      lastErr = e;
     }
   }
   throw lastErr;
@@ -131,22 +154,22 @@ for (const [slug, short] of Object.entries(SHORT)) {
       continue;
     }
 
-    const url = `https://www.bseindia.com/bseplus/AnnualReport/${scrip}/${cleanFile}`;
+    const candidates = arUrlCandidates(scrip, cleanFile);
     const pdfPath = `/tmp/${slug}-${year}.pdf`;
 
     try {
       await mkdir('src/data/source-text', { recursive: true });
-      const bytes = await downloadPdf(url, pdfPath);
+      const { bytes, url } = await downloadPdf(candidates, pdfPath);
       pdfToText(pdfPath, txtPath);
       await rm(pdfPath, { force: true });
       const meta = `# Source: BSE Annual Report for scripcode ${scrip}, year ${year}\n# URL: ${url}\n# Extracted: ${new Date().toISOString()}\n`;
       await writeFile(`src/data/source-text/${short}_${year}.meta.txt`, meta, 'utf8');
-      console.log(`[ok]    ${short}_${year}  ${Math.round(bytes / 1024)}KB`);
+      console.log(`[ok]    ${short}_${year}  ${Math.round(bytes / 1024)}KB  ${url}`);
       manifest.push({ slug, year, txtPath, status: 'extracted', url, bytes });
       await sleep(2000);
     } catch (e) {
       console.log(`[fail]  ${short}_${year}  ${e.message || e}`);
-      manifest.push({ slug, year, status: 'failed', url, error: String(e.message || e) });
+      manifest.push({ slug, year, status: 'failed', candidates, error: String(e.message || e) });
     }
   }
 }
