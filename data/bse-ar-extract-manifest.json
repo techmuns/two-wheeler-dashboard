@@ -1,5 +1,5 @@
 {
-  "ranAt": "2026-05-25T08:10:47.199Z",
+  "ranAt": "2026-05-25T08:29:03.505Z",
   "entries": [
     {
       "slug": "bajaj",
@@ -88,78 +88,68 @@
     {
       "slug": "eicher",
       "year": 2025,
-      "status": "failed",
-      "url": "https://www.bseindia.com/bseplus/AnnualReport/505200/12df1c37-a6d3-456e-8151-edcdb4535ad5.pdf.pdf",
-      "error": "HTTP 404"
+      "txtPath": "src/data/source-text/EICHER_2025.txt",
+      "status": "extracted",
+      "url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/12df1c37-a6d3-456e-8151-edcdb4535ad5.pdf",
+      "bytes": 25624943
     },
     {
       "slug": "eicher",
       "year": 2024,
-      "status": "failed",
-      "url": "https://www.bseindia.com/bseplus/AnnualReport/505200/717238ca-0a65-4a34-9441-893ddeea9f2f.pdf.pdf",
-      "error": "HTTP 404"
+      "txtPath": "src/data/source-text/EICHER_2024.txt",
+      "status": "extracted",
+      "url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/717238ca-0a65-4a34-9441-893ddeea9f2f.pdf",
+      "bytes": 21075107
     },
     {
       "slug": "eicher",
       "year": 2023,
-      "status": "failed",
-      "url": "https://www.bseindia.com/bseplus/AnnualReport/505200/857d13f1-9d43-4eac-b527-ed0df0099697.pdf.pdf",
-      "error": "HTTP 404"
+      "txtPath": "src/data/source-text/EICHER_2023.txt",
+      "status": "extracted",
+      "url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/857d13f1-9d43-4eac-b527-ed0df0099697.pdf",
+      "bytes": 16521738
     },
     {
       "slug": "eicher",
       "year": 2023,
-      "status": "failed",
-      "url": "https://www.bseindia.com/bseplus/AnnualReport/505200/11dfd17d-ae86-47c6-8db0-9c8607ad9a51.pdf.pdf",
-      "error": "HTTP 404"
+      "txtPath": "src/data/source-text/EICHER_2023.txt",
+      "status": "already-present"
     },
     {
       "slug": "eicher",
       "year": 2022,
       "txtPath": "src/data/source-text/EICHER_2022.txt",
-      "status": "extracted",
-      "url": "https://www.bseindia.com/bseplus/AnnualReport/505200/74102505200_07_09_22.pdf",
-      "bytes": 9578143
+      "status": "already-present"
     },
     {
       "slug": "eicher",
       "year": 2021,
       "txtPath": "src/data/source-text/EICHER_2021.txt",
-      "status": "extracted",
-      "url": "https://www.bseindia.com/bseplus/AnnualReport/505200/69102505200.pdf",
-      "bytes": 12363863
+      "status": "already-present"
     },
     {
       "slug": "eicher",
       "year": 2020,
       "txtPath": "src/data/source-text/EICHER_2020.txt",
-      "status": "extracted",
-      "url": "https://www.bseindia.com/bseplus/AnnualReport/505200/5052000320.pdf",
-      "bytes": 5853890
+      "status": "already-present"
     },
     {
       "slug": "eicher",
       "year": 2019,
       "txtPath": "src/data/source-text/EICHER_2019.txt",
-      "status": "extracted",
-      "url": "https://www.bseindia.com/bseplus/AnnualReport/505200/5052000319.pdf",
-      "bytes": 2316336
+      "status": "already-present"
     },
     {
       "slug": "eicher",
       "year": 2018,
       "txtPath": "src/data/source-text/EICHER_2018.txt",
-      "status": "extracted",
-      "url": "https://www.bseindia.com/bseplus/AnnualReport/505200/5052000318.pdf",
-      "bytes": 6949843
+      "status": "already-present"
     },
     {
       "slug": "eicher",
       "year": 2017,
       "txtPath": "src/data/source-text/EICHER_2017.txt",
-      "status": "extracted",
-      "url": "https://www.bseindia.com/bseplus/AnnualReport/505200/5052000317.pdf",
-      "bytes": 5347844
+      "status": "already-present"
     },
     {
       "slug": "eicher",
@@ -171,55 +161,45 @@
       "slug": "eicher",
       "year": 2014,
       "txtPath": "src/data/source-text/EICHER_2014.txt",
-      "status": "extracted",
-      "url": "https://www.bseindia.com/bseplus/AnnualReport/505200/5052001214.pdf",
-      "bytes": 2562554
+      "status": "already-present"
     },
     {
       "slug": "eicher",
       "year": 2013,
       "txtPath": "src/data/source-text/EICHER_2013.txt",
-      "status": "extracted",
-      "url": "https://www.bseindia.com/bseplus/AnnualReport/505200/5052001213.pdf",
-      "bytes": 2333436
+      "status": "already-present"
     },
     {
       "slug": "eicher",
       "year": 2012,
       "txtPath": "src/data/source-text/EICHER_2012.txt",
-      "status": "extracted",
-      "url": "https://www.bseindia.com/bseplus/AnnualReport/505200/5052001212.pdf",
-      "bytes": 3398942
+      "status": "already-present"
     },
     {
       "slug": "eicher",
       "year": 2011,
       "txtPath": "src/data/source-text/EICHER_2011.txt",
-      "status": "extracted",
-      "url": "https://www.bseindia.com/bseplus/AnnualReport/505200/5052001211.pdf",
-      "bytes": 3201595
+      "status": "already-present"
     },
     {
       "slug": "eicher",
       "year": 2010,
       "txtPath": "src/data/source-text/EICHER_2010.txt",
+      "status": "already-present"
+    },
+    {
+      "slug": "ola-electric",
+      "year": 2025,
+      "txtPath": "src/data/source-text/OLA_2025.txt",
       "status": "extracted",
-      "url": "https://www.bseindia.com/bseplus/AnnualReport/505200/5052001210.pdf",
-      "bytes": 3678878
+      "url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/5d179c83-6a35-4feb-be6d-a5c61dd0bc7b.pdf",
+      "bytes": 11131800
     },
     {
       "slug": "ola-electric",
       "year": 2025,
-      "status": "failed",
-      "url": "https://www.bseindia.com/bseplus/AnnualReport/544225/5d179c83-6a35-4feb-be6d-a5c61dd0bc7b.pdf.pdf",
-      "error": "HTTP 404"
-    },
-    {
-      "slug": "ola-electric",
-      "year": 2025,
-      "status": "failed",
-      "url": "https://www.bseindia.com/bseplus/AnnualReport/544225/7668374f-1f11-44db-bc4c-59b413ae4ddb.pdf.pdf",
-      "error": "HTTP 404"
+      "txtPath": "src/data/source-text/OLA_2025.txt",
+      "status": "already-present"
     }
   ]
 }
