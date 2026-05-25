@@ -188,17 +188,6 @@ export function buildSupportingGroups(raw, opts = {}) {
       sourceFootnote: NA_REASONS.revMix,
     },
 
-    {
-      name: 'Product / Launches',
-      chartType: 'profile',
-      metrics: [
-        NA('New Model Launches (Nos.)', 'abs',  NA_REASONS.launches, 'newLaunches'),
-        NA('Facelift Launches (Nos.)',  'abs',  NA_REASONS.launches, 'faceliftLaunches'),
-        NA('Top Selling Model',         'text', NA_REASONS.launches, 'topSellingModel'),
-      ],
-      sourceFootnote: NA_REASONS.launches,
-    },
-
     // NOTE: 'Company Profile' group intentionally removed from this dropdown.
     // KMP / dealers / employees / credit rating / manufacturing all live on
     // the Governance & Network card directly on the main page now, so
