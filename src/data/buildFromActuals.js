@@ -9,6 +9,7 @@
 
 import { FY } from './_fy.js'
 import { getIndustryGrowthSeries } from './performance.js'
+import marketShareJson from './industry/2w-market-share.json'
 
 // Align a series indexed by the source's fyAxis (e.g. ['FY16'..'FY25']) onto
 // our shared FY axis ('FY16'..'FY27'). Forward years stay null.
@@ -84,6 +85,22 @@ export function buildFromActuals(json, opts = {}) {
   const capex = alignToFY(json?.cf?.capex, ax)
   const fcf   = alignToFY(json?.cf?.fcf, ax)
 
+  // Market share % (overall 2W) from the SIAM industry file, keyed by the OEM's
+  // market-share name. Approximate (industry estimate), but real trend data —
+  // far better than the hardcoded null the KPI card used to show.
+  const mktKey = opts.marketShareKey
+  const mktRow = mktKey ? marketShareJson.series?.[mktKey] : null
+  const mktShare = FY.map((fy) => (typeof mktRow?.[fy] === 'number' ? mktRow[fy] : null))
+
+  // Export mix % derived from disclosed export volume / total volume.
+  const exportsByFy = json?.ops?.exportsByFy || {}
+  const exportMixSeries = FY.map((fy, i) => {
+    const e = exportsByFy[fy]
+    const t = totalVolume[i]
+    return (typeof e === 'number' && typeof t === 'number' && t > 0)
+      ? Number(((e / t) * 100).toFixed(1)) : null
+  })
+
   // FY values
   const v25 = (s) => s[fy25Idx]
   const v24 = (s) => s[fy24Idx]
@@ -102,9 +119,13 @@ export function buildFromActuals(json, opts = {}) {
     {
       key: 'mktShare',
       label: 'Market Share %',
-      value: null, sub: 'FY25', delta: null, tone: 'flat', fmt: 'pp',
-      series: new Array(FY.length).fill(null),
-      source: 'Pending — not in standalone audited statements',
+      value: fmtPct(mktShare[fy25Idx]),
+      sub: 'FY25',
+      delta: fmtPpSigned(typeof mktShare[fy25Idx] === 'number' && typeof mktShare[fy24Idx] === 'number' ? mktShare[fy25Idx] - mktShare[fy24Idx] : null),
+      tone: toneFromDelta(typeof mktShare[fy25Idx] === 'number' && typeof mktShare[fy24Idx] === 'number' ? mktShare[fy25Idx] - mktShare[fy24Idx] : null),
+      fmt: 'pp',
+      series: mktShare,
+      source: marketShareJson.source ? `${marketShareJson.source} (approximate — domestic 2W share)` : 'SIAM industry estimate',
     },
     {
       key: 'volGrowth',
@@ -153,9 +174,13 @@ export function buildFromActuals(json, opts = {}) {
     {
       key: 'exportMix',
       label: 'Export Mix %',
-      value: null, sub: 'FY25', delta: null, tone: 'flat', fmt: 'pp',
-      series: new Array(FY.length).fill(null),
-      source: 'Pending — not consistently disclosed in audited statements',
+      value: fmtPct(exportMixSeries[fy25Idx]),
+      sub: 'FY25',
+      delta: fmtPpSigned(typeof exportMixSeries[fy25Idx] === 'number' && typeof exportMixSeries[fy24Idx] === 'number' ? exportMixSeries[fy25Idx] - exportMixSeries[fy24Idx] : null),
+      tone: toneFromDelta(typeof exportMixSeries[fy25Idx] === 'number' && typeof exportMixSeries[fy24Idx] === 'number' ? exportMixSeries[fy25Idx] - exportMixSeries[fy24Idx] : null),
+      fmt: 'pp',
+      series: exportMixSeries,
+      source: `${json?.sources?.primary || 'Annual reports'} — export volume / total volume (units).`,
     },
   ]
 
