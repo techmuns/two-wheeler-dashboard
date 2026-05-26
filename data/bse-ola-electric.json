@@ -1,10 +1,10 @@
 {
   "scrip": "544225",
   "slug": "ola-electric",
-  "fetchedAt": "2026-05-25T16:14:32.312Z",
+  "fetchedAt": "2026-05-26T04:56:09.333Z",
   "window": {
-    "from": "20260224",
-    "to": "20260525",
+    "from": "20260225",
+    "to": "20260526",
     "days": 90
   },
   "pdfBase": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/",
@@ -14,10 +14,38 @@
   "categories": {
     "announcements": {
       "ok": true,
-      "url": "https://api.bseindia.com/BseIndiaAPI/api/AnnGetData/w?pageno=1&strCat=-1&strPrevDate=20260224&strScrip=544225&strSearch=P&strToDate=20260525&strType=C",
-      "count": 49,
+      "url": "https://api.bseindia.com/BseIndiaAPI/api/AnnGetData/w?pageno=1&strCat=-1&strPrevDate=20260225&strScrip=544225&strSearch=P&strToDate=20260526&strType=C",
+      "count": 50,
       "tag": "confirmed",
       "data": [
+        {
+          "NEWSID": "09855720-1b1d-4708-ab2b-54df5e0c3436",
+          "SCRIP_CD": 544225,
+          "XML_NAME": "ANN_544225_09855720-1B1D-4708-AB2B-54DF5E0C3436",
+          "NEWSSUB": "Announcement under Regulation 30 (LODR)-Earnings Call Transcript",
+          "DT_TM": "2026-05-25T23:51:05.967",
+          "NEWS_DT": "2026-05-25T23:51:05.967",
+          "CRITICALNEWS": 0,
+          "ANNOUNCEMENT_TYPE": "A",
+          "QUARTER_ID": null,
+          "FILESTATUS": "N    ",
+          "ATTACHMENTNAME": "d725cde8-6465-44ff-98fe-b143c3ef910e.pdf",
+          "MORE": "",
+          "HEADLINE": "Ola Electric Mobility Limited has submitted the transcript of the earnings conference call held for Q4 FY26 with the Stock Exchange",
+          "CATEGORYNAME": "Company Update",
+          "OLD": 1,
+          "RN": 1,
+          "PDFFLAG": 0,
+          "NSURL": "https://www.bseindia.com/stock-share-price/ola-electric-mobility-ltd/olaelec/544225/",
+          "SLONGNAME": "Ola Electric Mobility Ltd",
+          "AGENDA_ID": 157,
+          "TotalPageCnt": 1,
+          "News_submission_dt": "2026-05-25T23:51:05",
+          "DissemDT": "2026-05-25T23:51:05.967",
+          "TimeDiff": "00:00:00",
+          "Fld_Attachsize": 2076886,
+          "_pdfUrl": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/d725cde8-6465-44ff-98fe-b143c3ef910e.pdf"
+        },
         {
           "NEWSID": "a9d90607-b7fd-43d5-9e70-7b78ae5c4a43",
           "SCRIP_CD": 544225,
@@ -35,7 +63,7 @@
           "CATEGORYNAME": "Company Update",
           "OLD": 1,
           "RN": 1,
-          "PDFFLAG": 0,
+          "PDFFLAG": 1,
           "NSURL": "https://www.bseindia.com/stock-share-price/ola-electric-mobility-ltd/olaelec/544225/",
           "SLONGNAME": "Ola Electric Mobility Ltd",
           "AGENDA_ID": 144,
@@ -1394,14 +1422,14 @@
     },
     "corpActions": {
       "ok": true,
-      "url": "https://api.bseindia.com/BseIndiaAPI/api/DefaultData/w?Fdate=20260224&TDate=20260525&Purposecode=&ddlcategorys=E&ddlindustrys=&scripcode=544225&segment=0&strSearch=S",
+      "url": "https://api.bseindia.com/BseIndiaAPI/api/DefaultData/w?Fdate=20260225&TDate=20260526&Purposecode=&ddlcategorys=E&ddlindustrys=&scripcode=544225&segment=0&strSearch=S",
       "count": 0,
       "tag": "confirmed",
       "data": []
     },
     "boardMeetings": {
       "ok": true,
-      "url": "https://api.bseindia.com/BseIndiaAPI/api/Corpforthresults/w?fromdate=20260224&todate=20260525&scripcode=544225",
+      "url": "https://api.bseindia.com/BseIndiaAPI/api/Corpforthresults/w?fromdate=20260225&todate=20260526&scripcode=544225",
       "count": 0,
       "tag": "confirmed",
       "data": []
