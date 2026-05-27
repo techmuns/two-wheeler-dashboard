@@ -1,7 +1,7 @@
 {
   "scrip": "505200",
   "slug": "eicher",
-  "fetchedAt": "2026-05-27T05:07:54.314Z",
+  "fetchedAt": "2026-05-27T16:58:18.188Z",
   "window": {
     "from": "20260226",
     "to": "20260527",
@@ -973,11 +973,11 @@
       ]
     },
     "corpActions": {
-      "ok": true,
+      "ok": false,
       "url": "https://api.bseindia.com/BseIndiaAPI/api/DefaultData/w?Fdate=20260226&TDate=20260527&Purposecode=&ddlcategorys=E&ddlindustrys=&scripcode=505200&segment=0&strSearch=S",
       "count": 0,
       "tag": "confirmed",
-      "data": []
+      "error": "Non-JSON HTML response — wrong endpoint path"
     },
     "boardMeetings": {
       "ok": true,

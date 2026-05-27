@@ -1,7 +1,7 @@
 {
   "scrip": "500182",
   "slug": "hero",
-  "fetchedAt": "2026-05-27T05:07:49.484Z",
+  "fetchedAt": "2026-05-27T16:57:28.000Z",
   "window": {
     "from": "20260226",
     "to": "20260527",
@@ -15,9 +15,37 @@
     "announcements": {
       "ok": true,
       "url": "https://api.bseindia.com/BseIndiaAPI/api/AnnGetData/w?pageno=1&strCat=-1&strPrevDate=20260226&strScrip=500182&strSearch=P&strToDate=20260527&strType=C",
-      "count": 38,
+      "count": 39,
       "tag": "confirmed",
       "data": [
+        {
+          "NEWSID": "be318f39-c8d0-4865-9f6f-d0a7f543d5a9",
+          "SCRIP_CD": 500182,
+          "XML_NAME": "ANN_500182_BE318F39-C8D0-4865-9F6F-D0A7F543D5A9",
+          "NEWSSUB": "Announcement under Regulation 30 (LODR)-Press Release / Media Release",
+          "DT_TM": "2026-05-27T12:40:55.437",
+          "NEWS_DT": "2026-05-27T12:40:55.437",
+          "CRITICALNEWS": 0,
+          "ANNOUNCEMENT_TYPE": "A",
+          "QUARTER_ID": null,
+          "FILESTATUS": "N    ",
+          "ATTACHMENTNAME": "136190ce-ee49-42e3-bbd1-2d4de2be4e19.pdf",
+          "MORE": "",
+          "HEADLINE": "Please find enclosed herewith a copy of the Press Release being issued by the Company.",
+          "CATEGORYNAME": "Company Update",
+          "OLD": 1,
+          "RN": 1,
+          "PDFFLAG": 0,
+          "NSURL": "https://www.bseindia.com/stock-share-price/hero-motocorp-ltd/heromotoco/500182/",
+          "SLONGNAME": "Hero MotoCorp Ltd",
+          "AGENDA_ID": 35,
+          "TotalPageCnt": 1,
+          "News_submission_dt": "2026-05-27T12:40:55",
+          "DissemDT": "2026-05-27T12:40:55.437",
+          "TimeDiff": "00:00:00",
+          "Fld_Attachsize": 860932,
+          "_pdfUrl": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/136190ce-ee49-42e3-bbd1-2d4de2be4e19.pdf"
+        },
         {
           "NEWSID": "7934e87a-d014-47f3-8f2c-5beea10aa243",
           "SCRIP_CD": 500182,
