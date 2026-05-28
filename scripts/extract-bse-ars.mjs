@@ -26,7 +26,7 @@ const SHORT = {
 
 // Default gap years per OEM — drawn from AUDIT_REPORT.md.
 const DEFAULT_YEARS = {
-  tvs: [], // already complete in repo
+  tvs: [2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025], // need source-text for capacity extraction
   bajaj: [2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023],
   hero: [2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023],
   // Eicher: pull the full back-catalogue so Royal Enfield / VECV volumes can be

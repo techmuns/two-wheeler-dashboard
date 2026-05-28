@@ -265,8 +265,8 @@
     "scooterMixFy25": 7.17,
     "mopedMixFy25": 0,
     "threeWheelerMixFy25": 0,
-    "capacity": [8100000, null, 9100000, 9000000, 9100000, 9500000, 9500000, null, 9500000, 9400000],
-    "capacityUtilisation": [81.9, null, 83.4, 86.9, 70.3, 61.1, 52, null, 59.2, 62.8]
+    "capacity": [8100000, null, 9100000, 9000000, 9100000, 9500000, 9500000, 9500000, 9500000, 9400000],
+    "capacityUtilisation": [81.9, null, 83.4, 86.9, 70.3, 61.1, 52, 56.1, 59.2, 62.8]
   },
   "na": ["Mopeds (Hero does not manufacture)", "Three-wheelers (Hero does not manufacture)", "Motorcycle / scooter / export volume split for FY16–FY23 (Hero standalone ARs disclose only total two-wheeler units for these years; the split requires SIAM / JATO subscription data)", "Export Revenue % by FY pre-FY24", "Capacity Utilisation %", "Top Selling Model unit count", "Stock Price 31-Mar"],
   "profile": {
