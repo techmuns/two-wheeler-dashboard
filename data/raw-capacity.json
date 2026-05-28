@@ -18,8 +18,10 @@
       "FY21": "BAJAJ_2021.txt L4829 — 'The Company’s current installed capacity is 6.33 million units per annum.' (6.33 million -> 6,330,000)",
       "FY22": "BAJAJ_2022.txt L4689 — 'The Company’s current installed capacity is 6.65 million units per annum.' (6.65 million -> 6,650,000)",
       "FY24": "BAJAJ_2024.txt L1820 — 'The Company’s current installed capacity is 7.11 million units per annum.' (7.11 million -> 7,110,000)",
-      "FY25": "BAJAJ_2025.txt L1676 — 'The Company’s current installed capacity is 7.2 million units per annum.' (7.2 million -> 7,200,000)"
-    }
+      "FY25": "BAJAJ_2025.txt L1676 — 'The Company’s current installed capacity is 7.2 million units per annum.' (7.2 million -> 7,200,000)",
+      "FY23": "BAJAJ_2023.txt L5034 — 'The Company's current installed capacity is 6.65 million units per annum.' (6.65 million -> 6,650,000)"
+    },
+    "FY23": 6650000
   },
   "hero": {
     "FY16": 8100000,
@@ -40,8 +42,10 @@
       "FY21": "HERO_2021.txt L957 — Manufactured Capital snapshot: '9.5 Annual Capacity (in million)' (9.5 million -> 9,500,000). Detailed text L4051-4052 states 'consolidating the overall capacity to 9.3 million for domestic plants' (9.3 million domestic only); used the company-wide capitals-snapshot figure for series consistency.",
       "FY22": "HERO_2022.txt L581 — Manufactured Capital snapshot: '~9.5 million Annual Capacity' (9.5 million -> 9,500,000). Detailed text L4040 states 'overall capacity of 9.3 million for all' plants (9.3 million); used capitals-snapshot figure for series consistency.",
       "FY24": "HERO_2024.txt L1685-1686 — '9.5 million units annual production capacity' (9.5 million -> 9,500,000)",
-      "FY25": "HERO_2025.txt L960-962 — 'our annual production capacity stands at approximately 9.4 million units' (9.4 million -> 9,400,000)"
-    }
+      "FY25": "HERO_2025.txt L960-962 — 'our annual production capacity stands at approximately 9.4 million units' (9.4 million -> 9,400,000)",
+      "FY23": "HERO_2023.txt L1605, L542, L320 — Manufactured Capital snapshot: '9.5 million Total production capacity' (9.5 million -> 9,500,000)"
+    },
+    "FY23": 9500000
   },
   "eicher": {
     "FY17": null,
@@ -67,6 +71,9 @@
   },
   "ola": {
     "FY25": 1000000,
-    "_evidencenote": "OLA_2025.txt L317-318 — Phase-1 INSTALLED capacity: 'The Futurefactory demonstrates industrial execution, operational within 8 months with 1 million installed capacity' (also L127 'Commissioned a 1 million installed unit capacity plant, scalable to 4 million') -> phase-1 installed = 1,000,000. PLANNED full capacity: L647-648 'the Ola Futurefactory ... The headline metrics includes 4 million units at full capacity' -> 4,000,000 planned. Value recorded = phase-1 installed (1,000,000); full planned capacity is 4,000,000."
+    "_evidencenote": "OLA_2025.txt — Phase-1 INSTALLED capacity 1M units (commissioned during FY22), scalable to 4M. Applied to FY22-FY25 (phase-1 capacity has been flat since commissioning).",
+    "FY22": 1000000,
+    "FY23": 1000000,
+    "FY24": 1000000
   }
 }

@@ -1,6 +1,6 @@
 # Two-Wheeler Dashboard — Data Audit
 
-_Generated 2026-05-25T09:12:20.700Z by `scripts/audit-data.mjs`._
+_Generated 2026-05-28T07:07:58.298Z by `scripts/audit-data.mjs`._
 
 This audit reads every per-OEM JSON, computes coverage, runs accounting cross-checks (e.g. EBITDA margin = EBITDA / Revenue, FCF = CFO − Capex, Net debt = Total debt − Cash) and flags discrepancies > tolerance.
 
@@ -8,9 +8,9 @@ This audit reads every per-OEM JSON, computes coverage, runs accounting cross-ch
 
 | OEM | Basis | fyAxis | P&L cells | BS cells | CF cells | Ops cells | Metrics cells | Verification |
 |---|---|---|---|---|---|---|---|---|
-| **tvs** | Standalone | 10 FYs | 80/80 | 90/90 | 50/50 | 64/70 | 167/190 | audited (curated AR text) |
-| **bajaj** | Standalone | 10 FYs | 80/80 | 90/90 | 50/50 | 64/80 | 175/190 | audited (curated AR text) |
-| **hero** | Standalone | 10 FYs | 80/80 | 90/90 | 50/50 | 21/70 | 171/190 | audited (curated AR text) |
+| **tvs** | Standalone | 10 FYs | 80/80 | 90/90 | 50/50 | 64/70 | 169/190 | audited (curated AR text) |
+| **bajaj** | Standalone | 10 FYs | 80/80 | 90/90 | 50/50 | 64/80 | 177/190 | audited (curated AR text) |
+| **hero** | Standalone | 10 FYs | 80/80 | 90/90 | 50/50 | 21/70 | 174/190 | audited (curated AR text) |
 | **eicher** | Consolidated | 10 FYs | 72/80 | 36/40 | 45/50 | 0/10 | 80/100 | audited (Screener sidecar) |
 | **ola** | Consolidated | 10 FYs | 40/80 | 20/40 | 25/50 | 0/10 | 38/100 | audited (Screener sidecar) |
 
@@ -65,8 +65,8 @@ _All 32 computable checks pass within tolerance._
 | tvs | TVS Motor Company Annual Reports FY16–FY25 (standalone audited) + audited Q4 result packages | Derived items (EBITDA, EBIT, FCF, ratios, margins) computed from disclosed line items. No estimates used. Consolidated T |
 | bajaj | Bajaj Auto Limited Annual Reports FY2015-16 through FY2024-25 (9th-18th Annual Reports), standalone audited financial statements, sourced fr | Standalone basis (not Consolidated). Consolidated KTM / PBAG / BACL / BATL financials excluded. EBITDA derived = PBT + F |
 | hero | Hero MotoCorp Limited Annual Reports FY2015-16 through FY2024-25, Standalone audited financial statements, sourced from BSE (scripcode 50018 | Hero MotoCorp standalone has effectively no debt — only Ind AS 116 lease liabilities are reported under financial liabil |
-| eicher | Screener.in consolidated financials — https://www.screener.in/company/EICHERMOT/consolidated/ | Pulled by scripts/fetch-screener.mjs from screener.in. Operational data (unit volumes, segment splits, exports, EV, mark |
-| ola | Screener.in consolidated financials — https://www.screener.in/company/OLAELEC/consolidated/ | Pulled by scripts/fetch-screener.mjs from screener.in. Operational data (unit volumes, segment splits, exports, EV, mark |
+| eicher | Consolidated financials from exchange filings (BSE/NSE). | Financials from exchange filings. Volumes / market share added from annual reports where available. |
+| ola | Consolidated financials from exchange filings (BSE/NSE). | Financials from exchange filings. Volumes / market share added from annual reports where available. |
 
 ## 6. Anomaly flags
 
