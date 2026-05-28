@@ -1,6 +1,14 @@
 {
-  "ranAt": "2026-05-25T08:29:03.505Z",
+  "ranAt": "2026-05-28T07:04:33.836Z",
   "entries": [
+    {
+      "slug": "bajaj",
+      "year": 2023,
+      "txtPath": "src/data/source-text/BAJAJ_2023.txt",
+      "status": "extracted",
+      "url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/a1461b35-3d93-4cea-9ce0-6b4003c27d31.pdf",
+      "bytes": 11680412
+    },
     {
       "slug": "bajaj",
       "year": 2022,
@@ -42,6 +50,14 @@
       "year": 2016,
       "txtPath": "src/data/source-text/BAJAJ_2016.txt",
       "status": "already-present"
+    },
+    {
+      "slug": "hero",
+      "year": 2023,
+      "txtPath": "src/data/source-text/HERO_2023.txt",
+      "status": "extracted",
+      "url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/b2fab600-70be-4d51-92f8-f2cd4118a8af.pdf",
+      "bytes": 17088268
     },
     {
       "slug": "hero",
@@ -89,25 +105,19 @@
       "slug": "eicher",
       "year": 2025,
       "txtPath": "src/data/source-text/EICHER_2025.txt",
-      "status": "extracted",
-      "url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/12df1c37-a6d3-456e-8151-edcdb4535ad5.pdf",
-      "bytes": 25624943
+      "status": "already-present"
     },
     {
       "slug": "eicher",
       "year": 2024,
       "txtPath": "src/data/source-text/EICHER_2024.txt",
-      "status": "extracted",
-      "url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/717238ca-0a65-4a34-9441-893ddeea9f2f.pdf",
-      "bytes": 21075107
+      "status": "already-present"
     },
     {
       "slug": "eicher",
       "year": 2023,
       "txtPath": "src/data/source-text/EICHER_2023.txt",
-      "status": "extracted",
-      "url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/857d13f1-9d43-4eac-b527-ed0df0099697.pdf",
-      "bytes": 16521738
+      "status": "already-present"
     },
     {
       "slug": "eicher",
@@ -191,9 +201,7 @@
       "slug": "ola-electric",
       "year": 2025,
       "txtPath": "src/data/source-text/OLA_2025.txt",
-      "status": "extracted",
-      "url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/5d179c83-6a35-4feb-be6d-a5c61dd0bc7b.pdf",
-      "bytes": 11131800
+      "status": "already-present"
     },
     {
       "slug": "ola-electric",
