@@ -1,7 +1,7 @@
 {
   "scrip": "505200",
   "slug": "eicher",
-  "fetchedAt": "2026-05-28T05:02:47.993Z",
+  "fetchedAt": "2026-05-28T17:32:00.296Z",
   "window": {
     "from": "20260227",
     "to": "20260528",
@@ -15,9 +15,37 @@
     "announcements": {
       "ok": true,
       "url": "https://api.bseindia.com/BseIndiaAPI/api/AnnGetData/w?pageno=1&strCat=-1&strPrevDate=20260227&strScrip=505200&strSearch=P&strToDate=20260528&strType=C",
-      "count": 34,
+      "count": 35,
       "tag": "confirmed",
       "data": [
+        {
+          "NEWSID": "99ae2823-f71f-4c5c-b475-defa639898ce",
+          "SCRIP_CD": 505200,
+          "XML_NAME": "ANN_505200_99AE2823-F71F-4C5C-B475-DEFA639898CE",
+          "NEWSSUB": "Announcement under Regulation 30 (LODR)-Press Release / Media Release",
+          "DT_TM": "2026-05-28T11:45:06.25",
+          "NEWS_DT": "2026-05-28T11:45:06.25",
+          "CRITICALNEWS": 0,
+          "ANNOUNCEMENT_TYPE": "A",
+          "QUARTER_ID": null,
+          "FILESTATUS": "N    ",
+          "ATTACHMENTNAME": "42b7ddf9-5eb0-4579-b150-cb7f2f22e3f8.pdf",
+          "MORE": "",
+          "HEADLINE": "OLD SCHOOL FOREVER: ROYAL ENFIELD ''BULLET 650'' LAUNCHED IN INDIA",
+          "CATEGORYNAME": "Company Update",
+          "OLD": 1,
+          "RN": 1,
+          "PDFFLAG": 0,
+          "NSURL": "https://www.bseindia.com/stock-share-price/eicher-motors-ltd/eichermot/505200/",
+          "SLONGNAME": "Eicher Motors Ltd",
+          "AGENDA_ID": 35,
+          "TotalPageCnt": 1,
+          "News_submission_dt": "2026-05-28T11:45:06",
+          "DissemDT": "2026-05-28T11:45:06.25",
+          "TimeDiff": "00:00:00",
+          "Fld_Attachsize": 589833,
+          "_pdfUrl": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/42b7ddf9-5eb0-4579-b150-cb7f2f22e3f8.pdf"
+        },
         {
           "NEWSID": "809aeb3c-f03f-40bd-915c-a11194421b2e",
           "SCRIP_CD": 505200,
@@ -973,11 +1001,11 @@
       ]
     },
     "corpActions": {
-      "ok": true,
+      "ok": false,
       "url": "https://api.bseindia.com/BseIndiaAPI/api/DefaultData/w?Fdate=20260227&TDate=20260528&Purposecode=&ddlcategorys=E&ddlindustrys=&scripcode=505200&segment=0&strSearch=S",
       "count": 0,
       "tag": "confirmed",
-      "data": []
+      "error": "Non-JSON HTML response — wrong endpoint path"
     },
     "boardMeetings": {
       "ok": true,

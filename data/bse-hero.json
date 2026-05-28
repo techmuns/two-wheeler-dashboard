@@ -1,7 +1,7 @@
 {
   "scrip": "500182",
   "slug": "hero",
-  "fetchedAt": "2026-05-28T05:02:43.571Z",
+  "fetchedAt": "2026-05-28T17:31:10.443Z",
   "window": {
     "from": "20260227",
     "to": "20260528",
@@ -15,9 +15,37 @@
     "announcements": {
       "ok": true,
       "url": "https://api.bseindia.com/BseIndiaAPI/api/AnnGetData/w?pageno=1&strCat=-1&strPrevDate=20260227&strScrip=500182&strSearch=P&strToDate=20260528&strType=C",
-      "count": 39,
+      "count": 40,
       "tag": "confirmed",
       "data": [
+        {
+          "NEWSID": "db10be60-793f-410a-816b-19725296a5a5",
+          "SCRIP_CD": 500182,
+          "XML_NAME": "ANN_500182_DB10BE60-793F-410A-816B-19725296A5A5",
+          "NEWSSUB": "Announcement under Regulation 30 (LODR)-Newspaper Publication",
+          "DT_TM": "2026-05-28T11:43:27.347",
+          "NEWS_DT": "2026-05-28T11:43:27.347",
+          "CRITICALNEWS": 0,
+          "ANNOUNCEMENT_TYPE": "A",
+          "QUARTER_ID": null,
+          "FILESTATUS": "N    ",
+          "ATTACHMENTNAME": "b9e06819-6aff-4b40-a7ba-f7e3ba919fd5.pdf",
+          "MORE": "",
+          "HEADLINE": "Please find enclosed herewith the copies of the newspaper advertisement published regarding the issue of duplicate share certificates in lieu of original share certificates that are reported to be lost and not traceable.\r\n",
+          "CATEGORYNAME": "Company Update",
+          "OLD": 1,
+          "RN": 1,
+          "PDFFLAG": 0,
+          "NSURL": "https://www.bseindia.com/stock-share-price/hero-motocorp-ltd/heromotoco/500182/",
+          "SLONGNAME": "Hero MotoCorp Ltd",
+          "AGENDA_ID": 144,
+          "TotalPageCnt": 1,
+          "News_submission_dt": "2026-05-28T11:43:27",
+          "DissemDT": "2026-05-28T11:43:27.347",
+          "TimeDiff": "00:00:00",
+          "Fld_Attachsize": 654220,
+          "_pdfUrl": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/b9e06819-6aff-4b40-a7ba-f7e3ba919fd5.pdf"
+        },
         {
           "NEWSID": "be318f39-c8d0-4865-9f6f-d0a7f543d5a9",
           "SCRIP_CD": 500182,
