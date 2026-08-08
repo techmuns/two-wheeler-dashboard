@@ -1,7 +1,7 @@
 {
   "scrip": "532977",
   "slug": "bajaj",
-  "fetchedAt": "2026-08-08T02:48:58.487Z",
+  "fetchedAt": "2026-08-08T14:21:33.979Z",
   "window": {
     "from": "20260510",
     "to": "20260808",
@@ -56,11 +56,11 @@
       ]
     },
     "boardMeetings": {
-      "ok": false,
+      "ok": true,
       "url": "https://api.bseindia.com/BseIndiaAPI/api/Corpforthresults/w?fromdate=20260510&todate=20260808&scripcode=532977",
       "count": 0,
       "tag": "confirmed",
-      "error": "Non-JSON HTML response — wrong endpoint path"
+      "data": []
     },
     "annualReports": {
       "ok": true,
